@@ -1,12 +1,13 @@
 import React from "react";
 import app_logo from "../images/456_logo.png";
+import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const navigate = useNavigate();
 
   const handleSingleplayerBtnClick = () => {
-    navigate({ pathname: "/singleplayer" });
+    navigate({ pathname: "/singleplayermap" });
     window.location.reload();
   };
 
@@ -30,11 +31,8 @@ export default function Home() {
     window.location.reload();
   };
   return (
-    <div class="h-screen w-screen flex flex-col place-items-center bg-violet-200">
-      <div class="sticky top-0">
-        <span>Username</span>
-        <img alt="Profile Picture" />
-      </div>
+    <div class="h-screen w-screen flex flex-col place-items-center bg-violet-200 gap-11">
+      <Header pageTitle="HOME" username="machujason" />
 
       <div class="flex place-content-center place-self-center">
         <img class="w-2/3" src={app_logo} alt="456! Logo" />

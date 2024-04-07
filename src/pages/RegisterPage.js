@@ -14,11 +14,13 @@ export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const dbref = collection(db, "Users");
 
   const handleRegisterBtnClick = async (e) => {
     e.preventDefault();
+    setButtonDisabled(true);
 
     if (!isEmail(email)) {
       alert("Incorrect Email");
@@ -144,7 +146,11 @@ export default function RegisterPage() {
                 </label>
               </div>
 
-              <button type="submit" class="bg-red-300 font-bold p-1 rounded">
+              <button
+                type="submit"
+                class="bg-red-300 font-bold p-1 rounded"
+                disabled={buttonDisabled}
+              >
                 REGISTER
               </button>
             </form>

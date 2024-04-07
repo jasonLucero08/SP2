@@ -10,6 +10,7 @@ export default function LoginPage() {
 
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const dbref = collection(db, "Users");
 
@@ -20,6 +21,7 @@ export default function LoginPage() {
 
   const handleLoginBtnClick = async (e) => {
     e.preventDefault();
+    setButtonDisabled(true);
 
     const matchedUsername = query(
       dbref,
@@ -112,7 +114,11 @@ export default function LoginPage() {
                 </label>
               </div>
 
-              <button type="submit" class="bg-blue-300 font-bold p-1">
+              <button
+                type="submit"
+                class="bg-blue-300 font-bold p-1 rounded"
+                disabled={buttonDisabled}
+              >
                 LOG IN
               </button>
 

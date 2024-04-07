@@ -3,7 +3,8 @@ import Landing from "./pages/Landing";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import Home from "./pages/Home";
-import SinglePlayer from "./pages/SinglePlayer";
+import SinglePlayerMap from "./pages/SinglePlayerMap";
+import LevelOne from "./pages/LevelOne";
 import HeadOn from "./pages/HeadOn";
 import CustomizeScreen from "./pages/CustomizeScreen";
 import SettingsScreen from "./pages/SettingsScreen";
@@ -18,7 +19,8 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/singleplayer" element={<SinglePlayer />} />
+          <Route path="/singleplayermap" element={<SinglePlayerMap />} />
+          <Route path="/singleplayer-levelone" element={<LevelOne />} />
           <Route path="/headon" element={<HeadOn />} />
           <Route path="/customize" element={<CustomizeScreen />} />
           <Route path="/settings" element={<SettingsScreen />} />
