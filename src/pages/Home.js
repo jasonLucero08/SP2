@@ -1,38 +1,57 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { logOut } from "../api/auth";
+import { useAuth } from "../context/AuthContext";
+import { getCurrentUser } from "../api/user";
+
 import app_logo from "../images/456_logo.png";
 import Header from "../components/Header";
-import { useNavigate } from "react-router-dom";
 
 export default function Home() {
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
 
+  const [currUser, setCurrUser] = useState();
+
+  const getUser = async () => {
+    const user = await getCurrentUser(currentUser.uid);
+    setCurrUser(user);
+  };
+
+  useEffect(() => {
+    try {
+      getUser();
+    } catch (error) {}
+  }, []);
+
   const handleSingleplayerBtnClick = () => {
-    navigate({ pathname: "/singleplayermap" });
-    window.location.reload();
+    navigate("/singleplayermap");
   };
 
   const handleHeadOnBtnClick = () => {
-    navigate({ pathname: "/headon" });
-    window.location.reload();
+    navigate("/headon");
   };
 
   const handleCustomizeBtnClick = () => {
-    navigate({ pathname: "/customize" });
-    window.location.reload();
+    navigate("/customize");
   };
 
   const handleSettingsBtnClick = () => {
-    navigate({ pathname: "/settings" });
-    window.location.reload();
+    navigate("/settings");
   };
 
   const handleLogOutBtnClick = () => {
-    navigate({ pathname: "/" });
-    window.location.reload();
+    logOut();
+    navigate("/");
   };
+
   return (
     <div class="h-screen w-screen flex flex-col place-items-center bg-violet-200 gap-11">
-      <Header pageTitle="HOME" username="machujason" />
+      <Header
+        isHome={true}
+        pageTitle="HOME"
+        username={currUser && currUser.username}
+      />
 
       <div class="flex place-content-center place-self-center">
         <img class="w-2/3" src={app_logo} alt="456! Logo" />

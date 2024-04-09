@@ -9,23 +9,26 @@ import HeadOn from "./pages/HeadOn";
 import CustomizeScreen from "./pages/CustomizeScreen";
 import SettingsScreen from "./pages/SettingsScreen";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
     <div class="h-screen">
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/singleplayermap" element={<SinglePlayerMap />} />
-          <Route path="/singleplayer-levelone" element={<LevelOne />} />
-          <Route path="/headon" element={<HeadOn />} />
-          <Route path="/customize" element={<CustomizeScreen />} />
-          <Route path="/settings" element={<SettingsScreen />} />
-          {/* <Route path="/profile" element={<Home />} /> */}
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/singleplayermap" element={<SinglePlayerMap />} />
+            <Route path="/singleplayer-levelone" element={<LevelOne />} />
+            <Route path="/headon" element={<HeadOn />} />
+            <Route path="/customize" element={<CustomizeScreen />} />
+            <Route path="/settings" element={<SettingsScreen />} />
+            {/* <Route path="/profile" element={<Home />} /> */}
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </div>
   );

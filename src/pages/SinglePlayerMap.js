@@ -1,78 +1,84 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { getCurrentUser } from "../api/user";
 
 export default function SinglePlayerMap() {
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
 
+  const [currUser, setCurrUser] = useState();
+
+  const getUser = async () => {
+    const user = await getCurrentUser(currentUser.uid);
+    setCurrUser(user);
+  };
+
+  useEffect(() => {
+    try {
+      getUser();
+    } catch (error) {}
+  }, []);
+
   const handleLvl1Click = () => {
-    navigate({ pathname: "/singleplayer-levelone" });
-    window.location.reload();
+    navigate("/singleplayer-levelone");
   };
 
   const handleLvl2Click = () => {
-    navigate({ pathname: "/singleplayer-leveltwo" });
-    window.location.reload();
+    navigate("/singleplayer-leveltwo");
   };
 
   const handleLvl3Click = () => {
-    navigate({ pathname: "/singleplayer-levelthree" });
-    window.location.reload();
+    navigate("/singleplayer-levelthree");
   };
 
   const handleLvl4Click = () => {
-    navigate({ pathname: "/singleplayer-levelfour" });
-    window.location.reload();
+    navigate("/singleplayer-levelfour");
   };
 
   const handleLvl5Click = () => {
-    navigate({ pathname: "/singleplayer-levelfive" });
-    window.location.reload();
+    navigate("/singleplayer-levelfive");
   };
 
   const handleLvl6Click = () => {
-    navigate({ pathname: "/singleplayer-levelsix" });
-    window.location.reload();
+    navigate("/singleplayer-levelsix");
   };
 
   const handleLvl7Click = () => {
-    navigate({ pathname: "/singleplayer-levelseven" });
-    window.location.reload();
+    navigate("/singleplayer-levelseven");
   };
 
   const handleLvl8Click = () => {
-    navigate({ pathname: "/singleplayer-leveleight" });
-    window.location.reload();
+    navigate("/singleplayer-leveleight");
   };
 
   const handleLvl9Click = () => {
-    navigate({ pathname: "/singleplayer-levelnine" });
-    window.location.reload();
+    navigate("/singleplayer-levelnine");
   };
 
   const handleLvl10Click = () => {
-    navigate({ pathname: "/singleplayer-levelten" });
-    window.location.reload();
+    navigate("/singleplayer-levelten");
   };
 
   const handleLvl11Click = () => {
-    navigate({ pathname: "/singleplayer-leveleleven" });
-    window.location.reload();
+    navigate("/singleplayer-leveleleven");
   };
 
   const handleLvl12Click = () => {
-    navigate({ pathname: "/singleplayer-leveltwelve" });
-    window.location.reload();
+    navigate("/singleplayer-leveltwelve");
   };
 
   const handleLvl13Click = () => {
-    navigate({ pathname: "/singleplayer-levelthirteen" });
-    window.location.reload();
+    navigate("/singleplayer-levelthirteen");
   };
 
   return (
-    <div>
-      <Header pageTitle="Map Selection" username="machujason" />
+    <div class="h-screen w-screen bg-violet-200">
+      <Header
+        pageTitle="Level Selection"
+        username={currUser && currUser.username}
+      />
 
       <div>
         <div

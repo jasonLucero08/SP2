@@ -8,12 +8,10 @@ export default function Landing() {
 
   const handleRegisterBtnClick = () => {
     navigate({ pathname: "/register" });
-    window.location.reload();
   };
 
   const handleLoginBtnClick = () => {
     navigate({ pathname: "/login" });
-    window.location.reload();
   };
 
   return (
