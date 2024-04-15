@@ -74,7 +74,7 @@ export default function SinglePlayerMap() {
   };
 
   return (
-    <div class="h-screen w-screen bg-violet-200">
+    <div class="h-screen w-screen">
       <Header
         pageTitle="Level Selection"
         username={currUser && currUser.username}

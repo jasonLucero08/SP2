@@ -11,7 +11,7 @@ export default function Header({ isHome, pageTitle, username }) {
   };
 
   return (
-    <div class="flex p-4 w-screen place-content-center place-items-center">
+    <div class="flex p-4 w-screen place-content-center place-items-center bg-violet-200">
       {!isHome && (
         <div class="flex absolute left-5">
           <button onClick={handleHomeBtnClick}>

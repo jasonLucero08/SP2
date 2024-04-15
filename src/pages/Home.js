@@ -46,7 +46,7 @@ export default function Home() {
   };
 
   return (
-    <div class="h-screen w-screen flex flex-col place-items-center bg-violet-200 gap-11">
+    <div class="h-screen w-screen flex flex-col place-items-center gap-11">
       <Header
         isHome={true}
         pageTitle="HOME"
