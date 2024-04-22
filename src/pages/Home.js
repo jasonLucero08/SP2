@@ -1,27 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { logOut } from "../api/auth";
-import { useAuth } from "../context/AuthContext";
-import { getCurrentUser } from "../api/user";
+import { useAuth } from "../hooks/Auth";
+import { getUserInfo } from "../hooks/Getters";
 
 import app_logo from "../images/456_logo.png";
 import Header from "../components/Header";
 
 export default function Home() {
-  const { currentUser } = useAuth();
   const navigate = useNavigate();
 
-  const [currUser, setCurrUser] = useState();
+  const { user, session, signOut } = useAuth();
 
-  const getUser = async () => {
-    const user = await getCurrentUser(currentUser.uid);
-    setCurrUser(user);
-  };
+  const [userName, setUsername] = useState(null);
 
   useEffect(() => {
-    try {
-      getUser();
-    } catch (error) {}
+    getUserInfo(session?.user.id).then(function (res) {
+      setUsername(res?.username);
+    });
   }, []);
 
   const handleSingleplayerBtnClick = () => {
@@ -40,54 +35,50 @@ export default function Home() {
     navigate("/settings");
   };
 
-  const handleLogOutBtnClick = () => {
-    logOut();
-    navigate("/");
+  const handleLogOutBtnClick = async (e) => {
+    e.preventDefault();
+    await signOut();
   };
 
   return (
-    <div class="h-screen w-screen flex flex-col place-items-center gap-11">
-      <Header
-        isHome={true}
-        pageTitle="HOME"
-        username={currUser && currUser.username}
-      />
+    <div className="h-screen w-screen flex flex-col place-items-center place-content-center gap-11 bg-slate-900">
+      <Header isHome={true} pageTitle="HOME" username={userName} />
 
-      <div class="flex place-content-center place-self-center">
-        <img class="w-2/3" src={app_logo} alt="456! Logo" />
+      <div className="flex place-content-center place-self-center">
+        <img className="w-2/3" src={app_logo} alt="456! Logo" />
       </div>
 
-      <div class="flex flex-col w-1/2 gap-4">
-        <div class="flex flex-row gap-3">
+      <div className="flex flex-col w-1/2 gap-4">
+        <div className="flex flex-row gap-3">
           <button
-            class="bg-blue-400 h-20 w-5/6 font-bold text-xl rounded-xl"
+            className="bg-red-500 text-white h-20 w-5/6 font-bold text-xl rounded-xl"
             onClick={handleSingleplayerBtnClick}
           >
             Singleplayer
           </button>
           <button
-            class="bg-blue-400 h-20 w-5/6 font-bold text-xl rounded-xl"
+            className="bg-blue-500 text-white h-20 w-5/6 font-bold text-xl rounded-xl"
             onClick={handleHeadOnBtnClick}
           >
             Head On
           </button>
         </div>
 
-        <div class="flex flex-row gap-3">
+        <div className="flex flex-row gap-3">
           <button
-            class="bg-blue-400 h-20 w-5/6 font-bold text-xl rounded-xl"
+            className="bg-white h-20 w-5/6 font-bold text-xl rounded-xl"
             onClick={handleCustomizeBtnClick}
           >
             Customize
           </button>
           <button
-            class="bg-blue-400 h-20 w-5/6 font-bold text-xl rounded-xl"
+            className="bg-white h-20 w-5/6 font-bold text-xl rounded-xl"
             onClick={handleSettingsBtnClick}
           >
             Settings
           </button>
           <button
-            class="bg-blue-400 h-20 w-5/6 font-bold text-xl rounded-xl"
+            className="bg-white h-20 w-5/6 font-bold text-xl rounded-xl"
             onClick={handleLogOutBtnClick}
           >
             Log Out

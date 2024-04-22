@@ -1,25 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { getCurrentUser } from "../api/user";
+
+import LevelCard from "../components/LevelCard";
 
 export default function SinglePlayerMap() {
-  const { currentUser } = useAuth();
   const navigate = useNavigate();
-
-  const [currUser, setCurrUser] = useState();
-
-  const getUser = async () => {
-    const user = await getCurrentUser(currentUser.uid);
-    setCurrUser(user);
-  };
-
-  useEffect(() => {
-    try {
-      getUser();
-    } catch (error) {}
-  }, []);
 
   const handleLvl1Click = () => {
     navigate("/singleplayer-levelone");
@@ -74,77 +60,87 @@ export default function SinglePlayerMap() {
   };
 
   return (
-    <div class="h-screen w-screen">
-      <Header
-        pageTitle="Level Selection"
-        username={currUser && currUser.username}
-      />
+    <div className="flex h-screen w-screen bg-slate-900 place-content-center place-items-center">
+      <Header pageTitle="Level Selection" username="machujason" />
 
-      <div>
-        <div
-          class="bg-black w-10 h-10 rounded-3xl"
+      <div className="flex w-screen gap-5 overflow-x-scroll no-scrollbar p-10">
+        <LevelCard
           onClick={handleLvl1Click}
-        ></div>
+          levelNum="Level One"
+          levelName="Propositional Logic - Basic Terms and Concepts"
+        />
 
-        <div
-          class="bg-black w-10 h-10 rounded-3xl"
+        <LevelCard
           onClick={handleLvl2Click}
-        ></div>
+          levelNum="Level Two"
+          levelName="Propositional Logic - Rules of Inference and Laws of Equivalence"
+        />
 
-        <div
-          class="bg-black w-10 h-10 rounded-3xl"
+        <LevelCard
           onClick={handleLvl3Click}
-        ></div>
+          levelNum="Level Three"
+          levelName="Propositional Logic - Methods of Proof I"
+        />
 
-        <div
-          class="bg-black w-10 h-10 rounded-3xl"
+        <LevelCard
           onClick={handleLvl4Click}
-        ></div>
+          levelNum="Level Four"
+          levelName="Propositional Logic - Methods of Proof II"
+        />
 
-        <div
-          class="bg-black w-10 h-10 rounded-3xl"
+        <LevelCard
           onClick={handleLvl5Click}
-        ></div>
+          levelNum="Level Five"
+          levelName="Predicate Logic - Basic Terms and Concepts"
+        />
 
-        <div
-          class="bg-black w-10 h-10 rounded-3xl"
+        <LevelCard
           onClick={handleLvl6Click}
-        ></div>
+          levelNum="Level Six"
+          levelName="Proving Predicate Logic"
+        />
 
-        <div
-          class="bg-black w-10 h-10 rounded-3xl"
+        <LevelCard
           onClick={handleLvl7Click}
-        ></div>
+          levelNum="Level Seven"
+          levelName="Set Theory"
+        />
 
-        <div
-          class="bg-black w-10 h-10 rounded-3xl"
+        <LevelCard
           onClick={handleLvl8Click}
-        ></div>
+          levelNum="Level Eight"
+          levelName="Proving Sets"
+        />
 
-        <div
-          class="bg-black w-10 h-10 rounded-3xl"
+        <LevelCard
           onClick={handleLvl9Click}
-        ></div>
+          levelNum="Level Nine"
+          levelName="Relations"
+        />
 
-        <div
-          class="bg-black w-10 h-10 rounded-3xl"
+        <LevelCard
           onClick={handleLvl10Click}
-        ></div>
+          levelNum="Level Ten"
+          levelName="Functions, Mathematical Induction and Pigeonhole Principle"
+        />
 
-        <div
-          class="bg-black w-10 h-10 rounded-3xl"
+        <LevelCard
           onClick={handleLvl11Click}
-        ></div>
+          levelNum="Level Eleven"
+          levelName="Boolean Algebra"
+        />
 
-        <div
-          class="bg-black w-10 h-10 rounded-3xl"
+        <LevelCard
           onClick={handleLvl12Click}
-        ></div>
+          levelNum="Level Twelve"
+          levelName="Matrices"
+        />
 
-        <div
-          class="bg-black w-10 h-10 rounded-3xl"
+        <LevelCard
           onClick={handleLvl13Click}
-        ></div>
+          levelNum="Level Thirteen"
+          levelName="Linear Systems"
+        />
       </div>
     </div>
   );

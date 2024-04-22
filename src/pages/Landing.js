@@ -1,47 +1,25 @@
 import React from "react";
-// import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import app_logo from "../images/456_logo.png";
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
+import { supabase } from "../client";
+
+import LandingLogo from "../components/LandingLogo";
 
 export default function Landing() {
-  const navigate = useNavigate();
-
-  const handleRegisterBtnClick = () => {
-    navigate({ pathname: "/register" });
-  };
-
-  const handleLoginBtnClick = () => {
-    navigate({ pathname: "/login" });
-  };
-
   return (
-    <div class="h-screen flex bg-violet-200">
-      <div class="flex w-3/5 place-content-center place-items-center">
-        <div class="relative w-3/4 text-center">
-          <img class="" src={app_logo} alt="456! Logo" />
+    <div className="h-screen flex bg-slate-900">
+      <LandingLogo />
 
-          <span class="">
-            This is a description of this application. Battle your way to the
-            top using your wits and eme eme. Please sana matapos ko to
-            huhuhuhuhh
-          </span>
+      <div className="flex grow">
+        <div className="flex flex-col bg-white place-content-center place-self-center h-1/2 w-4/5 rounded-xl p-10">
+          <Auth
+            supabaseClient={supabase}
+            appearance={{ theme: ThemeSupa }}
+            theme="dark"
+            providers={["google"]}
+            onlyThirdPartyProviders
+          />
         </div>
-      </div>
-
-      <div class="flex flex-col grow place-self-center gap-5">
-        <button
-          onClick={handleRegisterBtnClick}
-          class="bg-red-300 h-20 w-5/6 font-bold text-xl rounded-xl"
-        >
-          REGISTER
-        </button>
-
-        <button
-          onClick={handleLoginBtnClick}
-          class="bg-blue-400 h-20 w-5/6 font-bold text-xl rounded-xl"
-        >
-          LOG IN
-        </button>
       </div>
     </div>
   );
