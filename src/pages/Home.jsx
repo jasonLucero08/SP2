@@ -16,6 +16,7 @@ export default function Home() {
   const [fullname, setFullname] = useState(null);
   const [username, setUsername] = useState(null);
   const [infoIncomplete, setInfoIncomplete] = useState(false);
+  const [usernameError, setUsernameError] = useState(null);
 
   useEffect(() => {
     try {
@@ -34,17 +35,31 @@ export default function Home() {
   const handleRegisterBtnClick = async (e) => {
     e.preventDefault();
 
-    const { error } = await supabase
+    const { data, error1 } = await supabase
       .from("profile")
-      .update({ fullname: fullname, username: username })
-      .eq("id", session?.user.id);
+      .select("username")
+      .eq("username", username);
 
-    if (error) {
-      console.log(error.message);
+    if (error1) {
+      console.log(error1.message);
     }
 
-    setInfoIncomplete(false);
-    window.location.reload();
+    if (data.length > 0) {
+      console.log(data);
+      setUsernameError("Username is already taken. Please enter a new one.");
+    } else {
+      const { error2 } = await supabase
+        .from("profile")
+        .update({ fullname: fullname, username: username })
+        .eq("id", session?.user.id);
+
+      if (error2) {
+        console.log(error2.message);
+      }
+
+      setInfoIncomplete(false);
+      window.location.reload();
+    }
   };
 
   const handleSingleplayerBtnClick = () => {
@@ -73,13 +88,17 @@ export default function Home() {
       {infoIncomplete && (
         <div className="h-screen w-screen flex absolute place-content-center place-items-center">
           <div className="h-screen w-screen bg-black opacity-50"></div>
-          <div className="absolute h-1/2 w-2/5 bg-white self-center rounded-xl p-5 place-content-center text-center">
-            <span className="flex grow place-content-center font-bold text-3xl">
-              SET YOUR NAME
-            </span>
-            <span className="text-sm">
+          <div className="flex flex-col absolute h-1/2 w-2/5 bg-white rounded-xl p-5 place-content-center text-center gap-3">
+            <span className="relative font-bold text-3xl">SET YOUR NAME</span>
+            <span className="relative text-sm">
               Welcome, new user! Register your name and unique username first.
             </span>
+
+            {usernameError && (
+              <div className="relative bg-red-200 text-sm text-left mx-5 pl-3 p-2 rounded text-red-900">
+                Error: {usernameError}
+              </div>
+            )}
 
             <form
               className="flex flex-col m-5 gap-5"
@@ -94,7 +113,10 @@ export default function Home() {
               <InputField
                 type={"text"}
                 label={"Username"}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => {
+                  setUsernameError(null);
+                  setUsername(e.target.value);
+                }}
               />
 
               <button

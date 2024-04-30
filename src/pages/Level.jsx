@@ -20,6 +20,11 @@ function ourReducer(draft, action) {
       console.log("Score: " + draft.score);
       console.log("Player: " + draft.playerHealth);
       console.log("Opponent: " + draft.opponentHealth);
+
+      if (draft.playerHealth <= 0) {
+        draft.gameOver = true;
+      }
+
       draft.currentQuestion = getCurrentQuestion();
       return;
     case "startPlaying":
@@ -28,6 +33,7 @@ function ourReducer(draft, action) {
       draft.playerHealth = 100;
       draft.opponentHealth = 100;
       draft.currentQuestion = getCurrentQuestion();
+      draft.gameOver = false;
     case "addToRandomQuestionsArr":
       draft.randomQuestions = draft.randomQuestions.concat(action.value);
       return;
@@ -37,6 +43,7 @@ function ourReducer(draft, action) {
     if (draft.currentQuestion) {
       draft.randomQuestions = draft.randomQuestions.slice(1);
     }
+
     console.log(draft.randomQuestions.length);
     console.log(draft.randomQuestions);
     return draft.randomQuestions[0];
@@ -50,6 +57,7 @@ const initialState = {
   currentQuestion: null,
   playerHealth: 100,
   opponentHealth: 100,
+  gameOver: false,
 };
 
 export default function Level() {
@@ -63,16 +71,6 @@ export default function Level() {
   // const [levelData, setLevelData] = useState([]);
 
   const levelid = "L" + location.state.num;
-
-  const [currQuestion, setCurrQuestion] = useState(null);
-  const [btn1Txt, setBtn1Txt] = useState(null);
-  const [btn1Val, setBtn1Val] = useState(null);
-  const [btn2Txt, setBtn2Txt] = useState(null);
-  const [btn2Val, setBtn2Val] = useState(null);
-  const [btn3Txt, setBtn3Txt] = useState(null);
-  const [btn3Val, setBtn3Val] = useState(null);
-  const [btn4Txt, setBtn4Txt] = useState(null);
-  const [btn4Val, setBtn4Val] = useState(null);
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
 
@@ -142,18 +140,6 @@ export default function Level() {
     }
 
     return questions;
-    // setQuestions(questions);
-
-    // setCurrQuestion(data[questionCount].question);
-
-    // setBtn1Txt(JSON.parse(data[questionCount].choice1).c);
-    // setBtn1Val(JSON.parse(data[questionCount].choice1).v.toString());
-    // setBtn2Txt(JSON.parse(data[questionCount].choice2).c);
-    // setBtn2Val(JSON.parse(data[questionCount].choice2).v.toString());
-    // setBtn3Txt(JSON.parse(data[questionCount].choice3).c);
-    // setBtn3Val(JSON.parse(data[questionCount].choice3).v.toString());
-    // setBtn4Txt(JSON.parse(data[questionCount].choice4).c);
-    // setBtn4Val(JSON.parse(data[questionCount].choice4).v.toString());
   };
 
   const handleChoiceClick = (value) => {};
@@ -183,73 +169,94 @@ export default function Level() {
   }, []);
 
   return (
-    <div>
-      {session && state.playing && (
-        <div className="w-screen h-screen place-content-end bg-slate-900">
+    <>
+      {session && (
+        <div className="flex flex-col w-screen h-screen place-content-end bg-slate-900">
           <Header pageTitle={pageTitle} username={username} />
 
-          <div className="flex flex-col place-items-center w-screen h-2/3 ">
-            <div className="bg-white w-screen h-1/4 mb-4">
-              <span>{state.currentQuestion.question}</span>
-            </div>
-            <div className="flex relative flex-row  h-2/3 w-screen">
-              <div className="relative bg-orange-300 w-64 h-full left-40"></div>
-              <div className="absolute bg-yellow-300 w-64 h-full inset-y-0 right-40"></div>
-            </div>
-          </div>
+          {state.playing && (
+            <>
+              {state.gameOver && (
+                <div className="h-screen w-screen flex absolute place-content-center place-items-center z-10">
+                  <div className="h-screen w-screen bg-black opacity-50"></div>
+                  <div className="flex flex-col absolute h-1/2 w-2/5 bg-white rounded-xl p-5 place-content-center text-center gap-3">
+                    Game Over
+                  </div>
+                </div>
+              )}
 
-          <div className="flex flex-row  h-1/4 w-screen place-content-center">
-            <button
-              className="bg-white w-1/4 h-30 rounded-xl m-3"
-              value={JSON.parse(state.currentQuestion.choice1).v.toString()}
-              onClick={() =>
-                dispatch({
-                  type: "guessAttempt",
-                  value: JSON.parse(state.currentQuestion.choice1).v.toString(),
-                })
-              }
-            >
-              <span>{JSON.parse(state.currentQuestion.choice1).c}</span>
-            </button>
-            <button
-              className="bg-white w-1/4 h-30 rounded-xl m-3"
-              value={JSON.parse(state.currentQuestion.choice2).v.toString()}
-              onClick={() =>
-                dispatch({
-                  type: "guessAttempt",
-                  value: JSON.parse(state.currentQuestion.choice2).v.toString(),
-                })
-              }
-            >
-              <span>{JSON.parse(state.currentQuestion.choice2).c}</span>
-            </button>
-            <button
-              className="bg-white w-1/4 h-30 rounded-xl m-3"
-              value={JSON.parse(state.currentQuestion.choice3).v.toString()}
-              onClick={() =>
-                dispatch({
-                  type: "guessAttempt",
-                  value: JSON.parse(state.currentQuestion.choice3).v.toString(),
-                })
-              }
-            >
-              <span>{JSON.parse(state.currentQuestion.choice3).c}</span>
-            </button>
-            <button
-              className="bg-white w-1/4 h-30 rounded-xl m-3"
-              value={JSON.parse(state.currentQuestion.choice4).v.toString()}
-              onClick={() =>
-                dispatch({
-                  type: "guessAttempt",
-                  value: JSON.parse(state.currentQuestion.choice4).v.toString(),
-                })
-              }
-            >
-              <span>{JSON.parse(state.currentQuestion.choice4).c}</span>
-            </button>
-          </div>
+              <div className="flex flex-col place-items-center w-screen h-2/3 ">
+                <div className="bg-white w-screen h-1/4 mb-4">
+                  <span>{state.currentQuestion.question}</span>
+                </div>
+                <div className="flex relative flex-row  h-2/3 w-screen">
+                  <div className="relative bg-orange-300 w-64 h-full left-40"></div>
+                  <div className="absolute bg-yellow-300 w-64 h-full inset-y-0 right-40"></div>
+                </div>
+              </div>
+
+              <div className="flex flex-row  h-1/4 w-screen place-content-center">
+                <button
+                  className="bg-white w-1/4 h-30 rounded-xl m-3"
+                  value={JSON.parse(state.currentQuestion.choice1).v.toString()}
+                  onClick={() =>
+                    dispatch({
+                      type: "guessAttempt",
+                      value: JSON.parse(
+                        state.currentQuestion.choice1
+                      ).v.toString(),
+                    })
+                  }
+                >
+                  <span>{JSON.parse(state.currentQuestion.choice1).c}</span>
+                </button>
+                <button
+                  className="bg-white w-1/4 h-30 rounded-xl m-3"
+                  value={JSON.parse(state.currentQuestion.choice2).v.toString()}
+                  onClick={() =>
+                    dispatch({
+                      type: "guessAttempt",
+                      value: JSON.parse(
+                        state.currentQuestion.choice2
+                      ).v.toString(),
+                    })
+                  }
+                >
+                  <span>{JSON.parse(state.currentQuestion.choice2).c}</span>
+                </button>
+                <button
+                  className="bg-white w-1/4 h-30 rounded-xl m-3"
+                  value={JSON.parse(state.currentQuestion.choice3).v.toString()}
+                  onClick={() =>
+                    dispatch({
+                      type: "guessAttempt",
+                      value: JSON.parse(
+                        state.currentQuestion.choice3
+                      ).v.toString(),
+                    })
+                  }
+                >
+                  <span>{JSON.parse(state.currentQuestion.choice3).c}</span>
+                </button>
+                <button
+                  className="bg-white w-1/4 h-30 rounded-xl m-3"
+                  value={JSON.parse(state.currentQuestion.choice4).v.toString()}
+                  onClick={() =>
+                    dispatch({
+                      type: "guessAttempt",
+                      value: JSON.parse(
+                        state.currentQuestion.choice4
+                      ).v.toString(),
+                    })
+                  }
+                >
+                  <span>{JSON.parse(state.currentQuestion.choice4).c}</span>
+                </button>
+              </div>
+            </>
+          )}
         </div>
       )}
-    </div>
+    </>
   );
 }
