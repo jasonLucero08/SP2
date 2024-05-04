@@ -37,4 +37,28 @@ const getQuestionsPerLevel = async (levelid) => {
   }
 };
 
-export { getUserInfo, getQuestionsPerLevel };
+const saveScorePerLevel = async (
+  userid,
+  levelsUnlocked,
+  levelStars,
+  starTotal
+) => {
+  try {
+    const { error } = await supabase
+      .from("profile")
+      .update({
+        levelsUnlocked: levelsUnlocked,
+        levelStars: levelStars,
+        totalStars: starTotal,
+      })
+      .eq("id", userid);
+
+    if (error) {
+      throw error;
+    }
+  } catch (err) {
+    console.error("Error fetching level data:", err.message);
+  }
+};
+
+export { getUserInfo, getQuestionsPerLevel, saveScorePerLevel };

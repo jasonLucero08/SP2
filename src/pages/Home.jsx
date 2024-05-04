@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/Auth";
-import { getUserInfo } from "../hooks/Getters";
+import { getUserInfo } from "../hooks/Hooks";
 import { supabase } from "../supabaseClient";
 
 import app_logo from "../images/456_logo.png";
