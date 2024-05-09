@@ -6,6 +6,7 @@ import Landing from "./pages/Landing";
 import Home from "./pages/Home";
 import SinglePlayerMap from "./pages/SingleplayerMap";
 import Level from "./pages/Level";
+import Customize from "./pages/Customize";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/singleplayermap" element={<SinglePlayerMap />} />
         <Route path="/singleplayer-level" element={<Level />} />
+        <Route path="/customize" element={<Customize />} />
       </Routes>
     </div>
   );

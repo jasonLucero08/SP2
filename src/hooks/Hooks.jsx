@@ -61,4 +61,41 @@ const saveScorePerLevel = async (
   }
 };
 
-export { getUserInfo, getQuestionsPerLevel, saveScorePerLevel };
+const getImages = async () => {
+  try {
+    const { data, error } = await supabase.storage
+      .from("playable-characters")
+      .list();
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+const setCharacterSelected = async (userid, url) => {
+  try {
+    const { error } = await supabase
+      .from("profile")
+      .update({ selectedImgUrl: url })
+      .eq("id", userid);
+
+    if (error) {
+      throw error;
+    }
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+export {
+  getUserInfo,
+  getQuestionsPerLevel,
+  saveScorePerLevel,
+  getImages,
+  setCharacterSelected,
+};

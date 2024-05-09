@@ -11,12 +11,14 @@ import InputField from "../components/InputField";
 export default function Home() {
   const navigate = useNavigate();
 
-  const { user, session, signOut } = useAuth();
+  const { session, signOut } = useAuth();
 
   const [fullname, setFullname] = useState(null);
   const [username, setUsername] = useState(null);
   const [infoIncomplete, setInfoIncomplete] = useState(false);
   const [usernameError, setUsernameError] = useState(null);
+
+  const [characterImg, setCharacterImg] = useState(null);
 
   useEffect(() => {
     try {
@@ -25,6 +27,7 @@ export default function Home() {
           setInfoIncomplete(true);
         } else {
           setUsername(res?.username);
+          setCharacterImg(res.selectedImgUrl);
         }
       });
     } catch (err) {
@@ -134,6 +137,7 @@ export default function Home() {
         isHome={true}
         pageTitle="HOME"
         username={!infoIncomplete && username}
+        profilePicture={characterImg}
       />
 
       <div className="flex place-content-center place-self-center">

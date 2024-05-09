@@ -3,7 +3,12 @@ import user_profile from "../images/user_profile.png";
 import home from "../images/home.png";
 import { useNavigate } from "react-router-dom";
 
-export default function Header({ isHome, pageTitle, username }) {
+export default function Header({
+  isHome,
+  pageTitle,
+  username,
+  profilePicture,
+}) {
   const navigate = useNavigate();
 
   const handleHomeBtnClick = () => {
@@ -28,7 +33,11 @@ export default function Header({ isHome, pageTitle, username }) {
         <span>{username}</span>
 
         <button>
-          <img src={user_profile} alt="Profile" className="w-9 fill-white" />
+          <img
+            src={profilePicture}
+            alt="Profile"
+            className="w-9 fill-white rounded-full"
+          />
         </button>
       </div>
     </div>

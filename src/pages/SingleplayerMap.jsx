@@ -15,6 +15,8 @@ export default function SinglePlayerMap() {
   const [userName, setUsername] = useState(null);
   const [cards, setCards] = useState([]);
 
+  const [characterImg, setCharacterImg] = useState(null);
+
   const setLevels = (userData) => {
     const data = userData.levelsUnlocked;
     Object.keys(data).forEach(function (key) {
@@ -34,6 +36,7 @@ export default function SinglePlayerMap() {
       try {
         const userData = await getUserInfo(session?.user.id);
         setUsername(userData.username);
+        setCharacterImg(userData.selectedImgUrl);
         setLevels(userData);
       } catch (err) {
         console.error("Error: ", err.message);
@@ -49,7 +52,11 @@ export default function SinglePlayerMap() {
 
   return (
     <div className="flex h-screen w-screen bg-slate-900 place-content-center place-items-center">
-      <Header pageTitle="Level Selection" username={userName} />
+      <Header
+        pageTitle="Level Selection"
+        username={userName}
+        profilePicture={characterImg}
+      />
 
       <div className="flex w-screen gap-5 overflow-x-scroll no-scrollbar p-10">
         <LevelCard

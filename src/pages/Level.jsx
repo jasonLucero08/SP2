@@ -6,7 +6,6 @@ import {
   getQuestionsPerLevel,
   saveScorePerLevel,
 } from "../hooks/Hooks";
-import { supabase } from "../supabaseClient";
 import { useImmerReducer } from "use-immer";
 
 import Header from "../components/Header";
@@ -16,12 +15,11 @@ import nonstar from "../images/nonstar.png";
 function ourReducer(draft, action) {
   switch (action.type) {
     case "guessAttempt":
-      const healthToLose = Math.ceil(100 / draft.questionsLength);
       const threeStarLimit = 0.8 * draft.questionsLength;
       const twoStarLimit = 0.6 * draft.questionsLength;
 
       if (action.value === "false") {
-        draft.playerHealth -= healthToLose;
+        draft.playerHealth -= 1;
         draft.score -= 1;
       }
 
@@ -35,7 +33,6 @@ function ourReducer(draft, action) {
       }
 
       console.log("Score: " + draft.score);
-      console.log("Player: " + draft.playerHealth);
       console.log("Stars: " + draft.stars);
 
       draft.currentQuestion = getCurrentQuestion();
@@ -47,8 +44,8 @@ function ourReducer(draft, action) {
 
     case "startPlaying":
       draft.playing = true;
-      draft.playerHealth = 100;
       draft.currentQuestion = getCurrentQuestion();
+      draft.playerHealth = draft.questionsLength;
       draft.score = draft.questionsLength;
       draft.gameOver = false;
       draft.stars = 3;
@@ -94,11 +91,14 @@ const initialState = {
 export default function Level() {
   const location = useLocation();
 
-  const { user, session } = useAuth();
+  const { session } = useAuth();
 
   const [userInfo, setUserInfo] = useState(null);
   const [username, setUsername] = useState(null);
   const [pageTitle, setPageTitle] = useState(null);
+
+  const [characterImg, setCharacterImg] = useState(null);
+  const [characterName, setCharacterName] = useState(null);
 
   const levelid = "L" + location.state.num;
 
@@ -277,15 +277,10 @@ export default function Level() {
     if (currScore > levelsUnlockedJSON[levelid]) {
       if (levelid != "L13" && levelsUnlockedJSON[levelid] == 0) {
         const arr = levelid.split("");
-        console.log("arr ", arr);
         let lastElement = arr[arr.length - 1];
-        console.log("lastElement ", lastElement);
         const changedVal = parseInt(lastElement) + 1;
-        console.log("changedVal ", changedVal);
         arr[arr.length - 1] = changedVal.toString();
-        console.log("arr after change ", arr);
         nextLevelId = arr.join("");
-        console.log(nextLevelId);
 
         levelsUnlockedJSON[nextLevelId] = 0;
       }
@@ -316,12 +311,19 @@ export default function Level() {
     console.log(userData2.totalStars);
   };
 
+  const setCharacter = (data) => {
+    setCharacterImg(data.selectedImgUrl);
+    const b = data.selectedImgUrl.split("/");
+    setCharacterName(b[b.length - 1].split(".").slice(0, -1).join("."));
+  };
+
   useEffect(() => {
     getPageTitle();
 
     getUserInfo(session?.user.id).then(function (res) {
       setUserInfo(res);
       setUsername(res?.username);
+      setCharacter(res);
     });
 
     async function go() {
@@ -342,7 +344,11 @@ export default function Level() {
     <>
       {session && (
         <div className="flex flex-col w-screen h-screen place-content-end bg-slate-900">
-          <Header pageTitle={pageTitle} username={username} />
+          <Header
+            pageTitle={pageTitle}
+            username={username}
+            profilePicture={characterImg}
+          />
 
           {state.playing && (
             <>
@@ -409,12 +415,26 @@ export default function Level() {
                       <span>{state.currentQuestion.question}</span>
                     </div>
                     <div className="flex relative flex-row h-2/3 w-screen">
-                      <div className="flex relative bg-white w-64 h-full left-40 place-content-center p-2 rounded-lg">
-                        <div className="h-3 w-full bg-red-500 rounded-lg">
+                      <div className="flex flex-col relative bg-white w-64 h-full left-40 place-items-center p-5 gap-4 rounded-lg">
+                        <div className="w-56">
+                          <img className="rounded" src={characterImg} />
+                        </div>
+                        <div className="flex gap-10 place-items-end bg-red-400 h-7">
+                          <span className="absolute left-5 text-xl font-bold">
+                            {characterName}
+                          </span>
+                          <span className="absolute right-5 text-sm">
+                            {state.score}
+                          </span>
+                        </div>
+                        <div className="absolute bottom-5 h-3 w-56 bg-red-500 rounded-lg">
                           <div
-                            className="h-3 w-full bg-green-300 rounded-lg"
+                            className="h-3 w-full bg-green-400 rounded-lg"
                             style={{
-                              width: `${(state.playerHealth / 100) * 100}%`,
+                              width: `${
+                                (state.playerHealth / state.questionsLength) *
+                                100
+                              }%`,
                             }}
                           ></div>
                         </div>
