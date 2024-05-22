@@ -11,7 +11,7 @@ export default function LevelCard({ ...props }) {
       onClick={props.onClick}
       id={props.id}
     >
-      <div className="flex flex-row place-content-center gap-3">
+      {/* <div className="flex flex-row place-content-center gap-3">
         {[...Array(props.stars)].map((item, index) => {
           return <img className="w-16" key={index} src={star} alt="Star" />;
         })}
@@ -20,7 +20,7 @@ export default function LevelCard({ ...props }) {
             <img className="w-16" key={index} src={nonstar} alt="Non-Star" />
           );
         })}
-      </div>
+      </div> */}
       <span className="flex flex-grow text-3xl font-bold">
         {props.levelNum}
       </span>

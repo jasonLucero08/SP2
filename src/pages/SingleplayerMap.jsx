@@ -25,7 +25,7 @@ export default function SinglePlayerMap() {
         card.disabled = true;
         card.classList.add("bg-gray-500");
       } else {
-        card.stars = userData.levelStars[key];
+        // card.stars = userData.levelStars[key];
         card.classList.add("bg-orange-300");
       }
     });
@@ -64,7 +64,7 @@ export default function SinglePlayerMap() {
           onClick={() => handleLvlClick(1)}
           levelNum="Level One"
           levelName="Propositional Logic - Basic Terms and Concepts"
-          stars={0}
+          // stars={0}
         />
 
         <LevelCard
@@ -72,7 +72,7 @@ export default function SinglePlayerMap() {
           onClick={() => handleLvlClick(2)}
           levelNum="Level Two"
           levelName="Propositional Logic - Rules of Inference and Laws of Equivalence"
-          stars={0}
+          // stars={0}
         />
 
         <LevelCard
@@ -80,7 +80,7 @@ export default function SinglePlayerMap() {
           onClick={() => handleLvlClick(3)}
           levelNum="Level Three"
           levelName="Propositional Logic - Methods of Proof I"
-          stars={0}
+          // stars={0}
         />
 
         <LevelCard
@@ -88,7 +88,7 @@ export default function SinglePlayerMap() {
           onClick={() => handleLvlClick(4)}
           levelNum="Level Four"
           levelName="Propositional Logic - Methods of Proof II"
-          stars={0}
+          // stars={0}
         />
 
         <LevelCard
@@ -96,7 +96,7 @@ export default function SinglePlayerMap() {
           onClick={() => handleLvlClick(5)}
           levelNum="Level Five"
           levelName="Predicate Logic - Basic Terms and Concepts"
-          stars={0}
+          // stars={0}
         />
 
         <LevelCard
@@ -104,7 +104,7 @@ export default function SinglePlayerMap() {
           onClick={() => handleLvlClick(6)}
           levelNum="Level Six"
           levelName="Proving Predicate Logic"
-          stars={0}
+          // stars={0}
         />
 
         <LevelCard
@@ -112,7 +112,7 @@ export default function SinglePlayerMap() {
           onClick={() => handleLvlClick(7)}
           levelNum="Level Seven"
           levelName="Set Theory"
-          stars={0}
+          // stars={0}
         />
 
         <LevelCard
@@ -120,7 +120,7 @@ export default function SinglePlayerMap() {
           onClick={() => handleLvlClick(8)}
           levelNum="Level Eight"
           levelName="Proving Sets"
-          stars={0}
+          // stars={0}
         />
 
         <LevelCard
@@ -128,7 +128,7 @@ export default function SinglePlayerMap() {
           onClick={() => handleLvlClick(9)}
           levelNum="Level Nine"
           levelName="Relations"
-          stars={0}
+          // stars={0}
         />
 
         <LevelCard
@@ -136,7 +136,7 @@ export default function SinglePlayerMap() {
           onClick={() => handleLvlClick(10)}
           levelNum="Level Ten"
           levelName="Functions, Mathematical Induction and Pigeonhole Principle"
-          stars={0}
+          // stars={0}
         />
 
         <LevelCard
@@ -144,7 +144,7 @@ export default function SinglePlayerMap() {
           onClick={() => handleLvlClick(11)}
           levelNum="Level Eleven"
           levelName="Boolean Algebra"
-          stars={0}
+          // stars={0}
         />
 
         <LevelCard
@@ -152,7 +152,7 @@ export default function SinglePlayerMap() {
           onClick={() => handleLvlClick(12)}
           levelNum="Level Twelve"
           levelName="Matrices"
-          stars={0}
+          // stars={0}
         />
 
         <LevelCard
@@ -160,7 +160,7 @@ export default function SinglePlayerMap() {
           onClick={() => handleLvlClick(13)}
           levelNum="Level Thirteen"
           levelName="Linear Systems"
-          stars={0}
+          // stars={0}
         />
       </div>
     </div>

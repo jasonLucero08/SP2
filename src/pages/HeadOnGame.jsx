@@ -88,7 +88,7 @@ const initialState = {
   stars: 3,
 };
 
-export default function Level() {
+export default function HeadOnGame() {
   const location = useLocation();
 
   const { session } = useAuth();

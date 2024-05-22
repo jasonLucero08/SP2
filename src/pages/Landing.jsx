@@ -11,7 +11,10 @@ export default function Landing() {
       <LandingLogo />
 
       <div className="flex grow">
-        <div className="flex flex-col bg-white place-content-center place-self-center h-1/2 w-4/5 rounded-xl p-10">
+        <div className="flex flex-col bg-white place-content-center place-self-center h-1/2 w-4/5 rounded-xl p-10 gap-5">
+          <span className="font-bold text-2xl text-center">
+            Sign in using your Google Account
+          </span>
           <Auth
             supabaseClient={supabase}
             appearance={{ theme: ThemeSupa }}

@@ -27,7 +27,7 @@ export default function Home() {
           setInfoIncomplete(true);
         } else {
           setUsername(res?.username);
-          setCharacterImg(res.selectedImgUrl);
+          setCharacterImg(res?.selectedImgUrl);
         }
       });
     } catch (err) {
@@ -70,7 +70,7 @@ export default function Home() {
   };
 
   const handleHeadOnBtnClick = () => {
-    navigate("/headon");
+    navigate("/head-on-lobby");
   };
 
   const handleCustomizeBtnClick = () => {
