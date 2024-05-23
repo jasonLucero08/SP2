@@ -2,13 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../hooks/Auth";
 import { getUserInfo } from "../hooks/Hooks";
-import io from "socket.io-client";
-
-const socket = io("http://localhost:4000");
+import { initializeSocket } from "../initSocket";
 
 import Header from "../components/Header";
 
 export default function HeadOnLobby() {
+  const socket = initializeSocket();
   const navigate = useNavigate();
 
   const { session } = useAuth();
@@ -40,6 +39,10 @@ export default function HeadOnLobby() {
   };
 
   useEffect(() => {
+    socket.on("connection", () => {
+      console.log("Connected with socket id:", socket.id);
+    });
+
     async function get() {
       try {
         const userData = await getUserInfo(session?.user.id);
@@ -57,13 +60,13 @@ export default function HeadOnLobby() {
   useEffect(() => {
     socket.on("roomReady", (roomCode) => {
       console.log(`Room ${roomCode} is ready`);
-      navigate(`/room/${roomCode}`, { state: { num: 1 } });
+      navigate(`/room/${roomCode}`, { state: { num: 1, code: roomCode } });
     });
 
     return () => {
       socket.off("roomReady");
     };
-  }, [navigate]);
+  }, []);
 
   return (
     <div className="flex flex-col h-screen w-screen bg-slate-900">

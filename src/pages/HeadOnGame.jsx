@@ -11,6 +11,7 @@ import { useImmerReducer } from "use-immer";
 import Header from "../components/Header";
 import star from "../images/star.png";
 import nonstar from "../images/nonstar.png";
+import { initializeSocket } from "../initSocket";
 
 function ourReducer(draft, action) {
   switch (action.type) {
@@ -89,6 +90,8 @@ const initialState = {
 };
 
 export default function HeadOnGame() {
+  const socket = initializeSocket();
+
   const location = useLocation();
 
   const { session } = useAuth();
@@ -105,6 +108,8 @@ export default function HeadOnGame() {
   const levelid = "L" + location.state.num;
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
+
+  const [enemyData, setEnemyData] = useState(null);
 
   const getPageTitle = () => {
     switch (location.state.num) {
@@ -324,14 +329,18 @@ export default function HeadOnGame() {
   useEffect(() => {
     getPageTitle();
 
-    getUserInfo(session?.user.id).then(function (res) {
-      setUserInfo(res);
-      setUsername(res?.username);
-      setCharacter(res);
-    });
+    // getUserInfo(session?.user.id).then(function (res) {
+    //   setUserInfo(res);
+    //   setUsername(res?.username);
+    //   setCharacter(res);
+    // });
 
     async function go() {
       try {
+        const uInf = await getUserInfo(session?.user.id);
+        setUserInfo(uInf);
+        setUsername(uInf.username);
+        setCharacter(uInf);
         const levelData = await getQuestionsPerLevel(levelid);
         const levelQuestions = setLevelQuestions(levelData);
         dispatch({ type: "addToRandomQuestionsArr", value: levelQuestions });
@@ -343,6 +352,38 @@ export default function HeadOnGame() {
 
     go();
   }, []);
+
+  useEffect(() => {
+    socket.on("connect_error", (error) => {
+      console.error("Connection error:", error);
+    });
+
+    socket.on("connect_timeout", (timeout) => {
+      console.error("Connection timeout:", timeout);
+    });
+
+    socket.emit("userDetails", {
+      roomCode: location.state.code,
+      uData: userInfo,
+    });
+    // console.log(userInfo);
+
+    socket.on("receiveUserList", (data) => {
+      const arr = Object.keys(data);
+
+      arr.forEach((name) => {
+        if (name !== username) {
+          setEnemyData(data[name]);
+        }
+      });
+
+      console.log(enemyData);
+    });
+
+    return () => {
+      socket.off("receiveUserList");
+    };
+  }, [userInfo, socket]);
 
   return (
     <>
@@ -450,7 +491,7 @@ export default function HeadOnGame() {
                         </div>
                         <div className="flex gap-10 place-items-end h-7">
                           <span className="absolute left-5 text-xl font-bold">
-                            {characterName}
+                            {username}
                           </span>
                           <span className="absolute right-5 text-sm">
                             {state.score}
@@ -468,17 +509,19 @@ export default function HeadOnGame() {
                           ></div>
                         </div>
                       </div>
-                      <div className="flex flex-col absolute bg-white w-64 h-full right-40 place-items-center p-5 gap-4 rounded-lg">
-                        <div className="w-56">
-                          <img
-                            className="rounded"
-                            src="https://pnduassrodsmyexxhtsf.supabase.co/storage/v1/object/public/playable-characters/Luan.jpg"
-                          />
+                      {enemyData && (
+                        <div className="flex flex-col absolute bg-white w-64 h-full right-40 place-items-center p-5 gap-4 rounded-lg">
+                          <div className="w-56">
+                            <img
+                              className="rounded"
+                              src={enemyData.selectedImgUrl}
+                            />
+                          </div>
+                          <span className="text-xl font-bold w-full text-right">
+                            {enemyData.username}
+                          </span>
                         </div>
-                        <span className="text-xl font-bold w-full text-right">
-                          Luan
-                        </span>
-                      </div>
+                      )}
                     </div>
                   </div>
 

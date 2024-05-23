@@ -3,15 +3,21 @@ import user_profile from "../images/user_profile.png";
 import home from "../images/home.png";
 import { useNavigate } from "react-router-dom";
 
+import { initializeSocket } from "../initSocket";
+
 export default function Header({
   isHome,
   pageTitle,
   username,
   profilePicture,
 }) {
+  const socket = initializeSocket();
   const navigate = useNavigate();
 
   const handleHomeBtnClick = () => {
+    if (socket) {
+      socket.emit("clearUserList");
+    }
     navigate({ pathname: "/home" });
   };
 
