@@ -10,13 +10,15 @@ import Customize from "./pages/Customize";
 import Admin from "./pages/Admin";
 import HeadOnLobby from "./pages/HeadOnLobby";
 import HeadOnGame from "./pages/HeadOnGame";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
     <div className="h-screen w-screen">
       <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Landing />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/singleplayermap" element={<SinglePlayerMap />} />
         <Route path="/singleplayer-level" element={<Level />} />
         <Route path="/head-on-lobby" element={<HeadOnLobby />} />

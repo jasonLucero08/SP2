@@ -10,6 +10,8 @@ export default function Header({
   pageTitle,
   username,
   profilePicture,
+  disconnectSocket,
+  actualSocket,
 }) {
   const socket = initializeSocket();
   const navigate = useNavigate();
@@ -18,17 +20,28 @@ export default function Header({
     if (socket) {
       socket.emit("clearUserList");
     }
-    navigate({ pathname: "/home" });
+    navigate({ pathname: "/" });
   };
 
   return (
-    <div className="flex absolute top-0 p-4 w-screen place-content-center place-items-center bg-indigo-950 z-20">
+    <div className="flex absolute top-0 p-4 w-screen place-content-center place-items-center bg-sky-900 z-20">
       {!isHome && (
         <div className="flex absolute left-5">
           <button onClick={handleHomeBtnClick}>
             <img src={home} alt="home" className="w-8" />
           </button>
         </div>
+      )}
+
+      {disconnectSocket && actualSocket && (
+        <button
+          className="text-white"
+          onClick={() => {
+            actualSocket.disconnect();
+          }}
+        >
+          X
+        </button>
       )}
 
       <div className="flex place-content-center font-bold text-xl text-white">

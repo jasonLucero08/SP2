@@ -7,6 +7,7 @@ import {
   saveScorePerLevel,
 } from "../hooks/Hooks";
 import { useImmerReducer } from "use-immer";
+import axios from "axios";
 
 import Header from "../components/Header";
 import star from "../images/star.png";
@@ -45,16 +46,16 @@ function ourReducer(draft, action) {
 
     case "startPlaying":
       draft.playing = true;
-      draft.currentQuestion = getCurrentQuestion();
-      draft.playerHealth = draft.questionsLength;
-      draft.score = draft.questionsLength;
+      // draft.currentQuestion = getCurrentQuestion();
+      draft.playerHealth = 100;
+      draft.score = 100;
       draft.gameOver = false;
       draft.stars = 3;
       draft.win = false;
       return;
 
     case "addToRandomQuestionsArr":
-      draft.randomQuestions = draft.randomQuestions.concat(action.value);
+      draft.randomQuestions = action.value;
       return;
   }
 
@@ -83,7 +84,7 @@ const initialState = {
   questionsLength: 0,
   score: 0,
   currentQuestion: null,
-  playerHealth: 100,
+  playerHealth: 0,
   win: false,
   gameOver: false,
   stars: 3,
@@ -103,6 +104,9 @@ export default function HeadOnGame() {
   const [characterImg, setCharacterImg] = useState(null);
   const [characterName, setCharacterName] = useState(null);
 
+  const [playerHealth, setPlayerHealth] = useState(null);
+  const [playerScore, setPlayerScore] = useState(null);
+
   const [enlargeImg, setEnlargeImg] = useState(false);
 
   const levelid = "L" + location.state.num;
@@ -110,6 +114,12 @@ export default function HeadOnGame() {
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
 
   const [enemyData, setEnemyData] = useState(null);
+  const [enemyHealth, setEnemyHealth] = useState(null);
+  const [enemyScore, setEnemyScore] = useState(null);
+
+  const [playing, setPlaying] = useState(false);
+  const [currQues, setCurrQues] = useState(null);
+  const [timer, setTimer] = useState(null);
 
   const getPageTitle = () => {
     switch (location.state.num) {
@@ -179,7 +189,7 @@ export default function HeadOnGame() {
     return questions;
   };
 
-  const showButtonColors = (q) => {
+  const showButtonColors = () => {
     const b1 = document.getElementById("button1");
     const b2 = document.getElementById("button2");
     const b3 = document.getElementById("button3");
@@ -188,7 +198,7 @@ export default function HeadOnGame() {
     b1.classList.remove("bg-white");
     b1.classList.add(
       `${
-        JSON.parse(q.choice1).v.toString() === "true"
+        JSON.parse(currQues.choice1).v.toString() === "true"
           ? "bg-green-200"
           : "bg-red-200"
       }`
@@ -198,7 +208,7 @@ export default function HeadOnGame() {
     b2.classList.remove("bg-white");
     b2.classList.add(
       `${
-        JSON.parse(q.choice2).v.toString() === "true"
+        JSON.parse(currQues.choice2).v.toString() === "true"
           ? "bg-green-200"
           : "bg-red-200"
       }`
@@ -208,7 +218,7 @@ export default function HeadOnGame() {
     b3.classList.remove("bg-white");
     b3.classList.add(
       `${
-        JSON.parse(q.choice3).v.toString() === "true"
+        JSON.parse(currQues.choice3).v.toString() === "true"
           ? "bg-green-200"
           : "bg-red-200"
       }`
@@ -218,7 +228,7 @@ export default function HeadOnGame() {
     b4.classList.remove("bg-white");
     b4.classList.add(
       `${
-        JSON.parse(q.choice4).v.toString() === "true"
+        JSON.parse(currQues.choice4).v.toString() === "true"
           ? "bg-green-200"
           : "bg-red-200"
       }`
@@ -254,16 +264,27 @@ export default function HeadOnGame() {
   };
 
   const handleChoiceClick = (q, choiceNum) => {
-    showButtonColors(q);
+    let val;
 
-    setTimeout(function () {
-      hideButtonColors();
+    if (JSON.parse(choiceNum).v.toString() === "false") {
+      val = "false";
+      var tempHealth = playerHealth;
+      tempHealth = tempHealth - 5;
+      setPlayerHealth(tempHealth);
+      console.log(tempHealth);
+    } else {
+      val = "true";
+      var tempScore = playerScore;
+      tempScore = tempScore + 1;
+      setPlayerScore(tempScore);
+      console.log(tempScore);
+    }
 
-      dispatch({
-        type: "guessAttempt",
-        value: JSON.parse(choiceNum).v.toString(),
-      });
-    }, 1500);
+    socket.emit("sendChoice", {
+      roomCode: location.state.code,
+      uData: userInfo,
+      val: val,
+    });
   };
 
   const handleSaveBtnClick = async () => {
@@ -325,6 +346,13 @@ export default function HeadOnGame() {
   };
 
   // const handleQuesImgClick = (img) => {};
+  const fetchData = async () => {
+    try {
+      await axios.get("http://localhost:4000/fetch-questions");
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   useEffect(() => {
     getPageTitle();
@@ -341,10 +369,16 @@ export default function HeadOnGame() {
         setUserInfo(uInf);
         setUsername(uInf.username);
         setCharacter(uInf);
-        const levelData = await getQuestionsPerLevel(levelid);
-        const levelQuestions = setLevelQuestions(levelData);
-        dispatch({ type: "addToRandomQuestionsArr", value: levelQuestions });
-        dispatch({ type: "startPlaying" });
+        setPlayerHealth(100);
+        setPlayerScore(0);
+
+        socket.emit("clearStatData");
+        fetchData();
+        socket.once("question", (question) => {
+          setCurrQues(question);
+        });
+
+        setPlaying(true);
       } catch (err) {
         console.error("Error: ", err.message);
       }
@@ -352,6 +386,27 @@ export default function HeadOnGame() {
 
     go();
   }, []);
+
+  useEffect(() => {
+    socket.emit("enemyStatChange", {
+      roomCode: location.state.code,
+      score: playerScore,
+      health: playerHealth,
+      user: username,
+    });
+
+    socket.on("broadcastStatChange", (data) => {
+      const arr = Object.keys(data);
+
+      arr.forEach((name) => {
+        if (name != username) {
+          console.log(name);
+          setEnemyHealth(data[name].health);
+          setEnemyScore(data[name].score);
+        }
+      });
+    });
+  }, [currQues]);
 
   useEffect(() => {
     socket.on("connect_error", (error) => {
@@ -366,7 +421,6 @@ export default function HeadOnGame() {
       roomCode: location.state.code,
       uData: userInfo,
     });
-    // console.log(userInfo);
 
     socket.on("receiveUserList", (data) => {
       const arr = Object.keys(data);
@@ -376,14 +430,28 @@ export default function HeadOnGame() {
           setEnemyData(data[name]);
         }
       });
-
-      console.log(enemyData);
     });
 
     return () => {
       socket.off("receiveUserList");
     };
   }, [userInfo, socket]);
+
+  useEffect(() => {
+    socket.on("showCorrectChoices", (list) => {
+      // showButtonColors();
+
+      setTimeout(function () {
+        socket.emit("clearUserChoiceList");
+        // hideButtonColors();
+
+        fetchData();
+        socket.once("question", (question) => {
+          setCurrQues(question);
+        });
+      }, 1500);
+    });
+  }, []);
 
   return (
     <>
@@ -395,7 +463,7 @@ export default function HeadOnGame() {
             profilePicture={characterImg}
           />
 
-          {state.playing && (
+          {playing && (
             <>
               {state.win && (
                 <div className="h-screen w-screen flex absolute place-content-center place-items-center z-10">
@@ -453,7 +521,7 @@ export default function HeadOnGame() {
                 </div>
               )}
 
-              {state.currentQuestion !== null && (
+              {currQues !== null && (
                 <>
                   <div className="flex flex-col place-items-center w-screen h-2/3">
                     {enlargeImg && (
@@ -467,22 +535,20 @@ export default function HeadOnGame() {
                           </button>
                           <img
                             className="flex w-fit h-fit"
-                            src={state.currentQuestion.imgRef}
+                            src={currQues.imgRef}
                           />
                         </div>
                       </>
                     )}
                     <div className="flex flex-row gap-5 bg-white w-10/12 h-1/4 mb-4 p-5">
-                      {state.currentQuestion.imgRef != null && (
+                      {currQues.imgRef != null && (
                         <img
                           className="w-10 h-10 cursor-pointer"
-                          src={state.currentQuestion.imgRef}
+                          src={currQues.imgRef}
                           onClick={() => setEnlargeImg(!enlargeImg)}
                         />
                       )}
-                      <span className="text-xl">
-                        {state.currentQuestion.question}
-                      </span>
+                      <span className="text-xl">{currQues.question}</span>
                     </div>
                     <div className="flex relative flex-row h-2/3 w-screen">
                       <div className="flex flex-col relative bg-white w-64 h-full left-40 place-items-center p-5 gap-4 rounded-lg">
@@ -494,19 +560,21 @@ export default function HeadOnGame() {
                             {username}
                           </span>
                           <span className="absolute right-5 text-sm">
-                            {state.score}
+                            {playerScore}
                           </span>
                         </div>
                         <div className="absolute bottom-5 h-3 w-56 bg-red-500 rounded-lg">
                           <div
                             className="h-3 w-full bg-green-400 rounded-lg"
-                            style={{
-                              width: `${
-                                (state.playerHealth / state.questionsLength) *
-                                100
-                              }%`,
-                            }}
-                          ></div>
+                            // style={{
+                            //   width: `${
+                            //     (playerHealth / state.questionsLength) *
+                            //     100
+                            //   }`,
+                            // }}
+                          >
+                            {playerHealth}
+                          </div>
                         </div>
                       </div>
                       {enemyData && (
@@ -517,77 +585,72 @@ export default function HeadOnGame() {
                               src={enemyData.selectedImgUrl}
                             />
                           </div>
-                          <span className="text-xl font-bold w-full text-right">
-                            {enemyData.username}
-                          </span>
+                          <div className="flex gap-10 place-items-end h-7">
+                            <span className="absolute left-5 text-sm">
+                              {enemyScore}
+                            </span>
+                            <span className="absolute right-5 text-xl font-bold">
+                              {enemyData.username}
+                            </span>
+                          </div>
+                          <div className="absolute bottom-5 h-3 w-56 bg-red-500 rounded-lg">
+                            <div
+                              className="h-3 w-full bg-green-400 rounded-lg"
+                              // style={{
+                              //   width: `${enemyHealth}`,
+                              // }}
+                            >
+                              {enemyHealth}
+                            </div>
+                          </div>
                         </div>
                       )}
                     </div>
                   </div>
 
                   <div className="flex flex-row h-1/4 w-screen place-content-center px-10">
-                    {JSON.parse(state.currentQuestion.choice1).v !== null && (
+                    {JSON.parse(currQues.choice1).v !== null && (
                       <button
                         id="button1"
                         className="w-1/4 h-30 rounded-xl m-3 bg-white p-5 text-lg"
                         onClick={() =>
-                          handleChoiceClick(
-                            state.currentQuestion,
-                            state.currentQuestion.choice1
-                          )
+                          handleChoiceClick(currQues, currQues.choice1)
                         }
                       >
-                        <span>
-                          {JSON.parse(state.currentQuestion.choice1).c}
-                        </span>
+                        <span>{JSON.parse(currQues.choice1).c}</span>
                       </button>
                     )}
-                    {JSON.parse(state.currentQuestion.choice2).v !== null && (
+                    {JSON.parse(currQues.choice2).v !== null && (
                       <button
                         id="button2"
                         className="w-1/4 h-30 rounded-xl m-3 bg-white text-lg"
                         onClick={() =>
-                          handleChoiceClick(
-                            state.currentQuestion,
-                            state.currentQuestion.choice2
-                          )
+                          handleChoiceClick(currQues, currQues.choice2)
                         }
                       >
-                        <span>
-                          {JSON.parse(state.currentQuestion.choice2).c}
-                        </span>
+                        <span>{JSON.parse(currQues.choice2).c}</span>
                       </button>
                     )}
-                    {JSON.parse(state.currentQuestion.choice3).v !== null && (
+                    {JSON.parse(currQues.choice3).v !== null && (
                       <button
                         id="button3"
                         className="w-1/4 h-30 rounded-xl m-3 bg-white text-lg"
                         onClick={() =>
-                          handleChoiceClick(
-                            state.currentQuestion,
-                            state.currentQuestion.choice3
-                          )
+                          handleChoiceClick(currQues, currQues.choice3)
                         }
                       >
-                        <span>
-                          {JSON.parse(state.currentQuestion.choice3).c}
-                        </span>
+                        <span>{JSON.parse(currQues.choice3).c}</span>
                       </button>
                     )}
-                    {JSON.parse(state.currentQuestion.choice4).v !== null && (
+                    {JSON.parse(currQues.choice4).v !== null && (
                       <button
                         id="button4"
                         className="w-1/4 h-30 rounded-xl m-3 bg-white text-lg"
                         onClick={() =>
-                          handleChoiceClick(
-                            state.currentQuestion,
-                            state.currentQuestion.choice4
-                          )
+                          handleChoiceClick(currQues, currQues.choice4)
                         }
                       >
-                        <span>
-                          {JSON.parse(state.currentQuestion.choice4).c}
-                        </span>
+                        <span>{JSON.parse(currQues.choice4).c}</span>
                       </button>
                     )}
                   </div>

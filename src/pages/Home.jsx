@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useDebugValue, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/Auth";
 import { getUserInfo } from "../hooks/Hooks";
@@ -12,6 +12,8 @@ export default function Home() {
   const navigate = useNavigate();
 
   const { session, signOut } = useAuth();
+
+  const [loggedIn, setLoggedIn] = useState(null);
 
   const [fullname, setFullname] = useState(null);
   const [username, setUsername] = useState(null);
@@ -76,22 +78,28 @@ export default function Home() {
   const handleCustomizeBtnClick = () => {
     navigate("/customize");
   };
+  const handleStatsBtnClick = () => {};
 
   const handleSettingsBtnClick = () => {
     navigate("/settings");
   };
 
+  const handleProfileClick = () => {
+    navigate("/profile");
+  };
+
   const handleLogOutBtnClick = async (e) => {
     e.preventDefault();
     await signOut();
+    window.location.reload();
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col place-items-center place-content-center gap-11 bg-slate-900">
+    <div className="h-screen w-screen flex flex-row place-items-center place-content-center bg-stone-bg bg-cover">
       {infoIncomplete && (
         <div className="h-screen w-screen flex absolute place-content-center place-items-center">
           <div className="h-screen w-screen bg-black opacity-50"></div>
-          <div className="flex flex-col absolute h-1/2 w-2/5 bg-white rounded-xl p-5 place-content-center text-center gap-3">
+          <div className="flex flex-col absolute h-1/2 w-2/5 bg-white rounded-s-xl p-5 place-content-center text-center gap-3">
             <span className="relative font-bold text-3xl">SET YOUR NAME</span>
             <span className="relative text-sm">
               Welcome, new user! Register your name and unique username first.
@@ -133,54 +141,95 @@ export default function Home() {
           </div>
         </div>
       )}
-      <Header
+      {/* <Header
         isHome={true}
         pageTitle="HOME"
         username={!infoIncomplete && username}
         profilePicture={characterImg}
-      />
+      /> */}
 
-      <div className="flex place-content-center place-self-center">
-        <img className="w-2/3" src={app_logo} alt="456! Logo" />
+      <div className="flex flex-col grow place-items-center place-content-center w-4/6">
+        <div className="flex absolute bg-slate-700 w-2/4 h-full z-0 rounded-t-full overflow-hidden"></div>
+        <div className="flex flex-col place-content-center place-items-center gap-5">
+          <img className="w-3/5 z-10" src={app_logo} alt="456! Logo" />
+          <div className="flex w-3/5 text-center text-white font-bold text-lg z-10">
+            Welcome to 456! An application to test your wits regarding Discrete
+            Mathematics in Computer Science. Come and test your knowledge now!
+          </div>
+        </div>
       </div>
 
-      <div className="flex flex-col w-1/2 gap-4">
-        <div className="flex flex-row gap-3">
+      <>
+        <div className="flex flex-col gap-4 w-2/6 h-full overflow-hidden">
+          {session ? (
+            <div className="flex pt-10 pb-10 gap-5 w-full place-content-end place-items-center">
+              <button
+                className="flex flex-row place-items-center gap-5 bg-orange-400 text-white p-3 rounded"
+                onClick={() => handleProfileClick()}
+              >
+                <img
+                  src={characterImg}
+                  alt="Profile"
+                  className="w-20 fill-white rounded-full"
+                />
+                <span className="text-2xl font-bold">{username}</span>
+              </button>
+              <button
+                className="flex bg-white font-bold text-xl rounded-s-xl p-3 w-1/3 place-content-center"
+                onClick={handleLogOutBtnClick}
+              >
+                Log Out
+              </button>
+            </div>
+          ) : (
+            <div className="flex pt-10 pb-10 gap-5 w-full place-content-center place-items-center">
+              <button
+                className="flex flex-row place-items-center place-self-center gap-5 bg-slate-500 p-5 rounded-md text-white"
+                onClick={() => navigate("/login")}
+              >
+                {/* <img
+              src={characterImg}
+              alt="Profile"
+              className="w-20 fill-white rounded-full"
+            /> */}
+                <span className="text-2xl font-bold">Login to Play!</span>
+              </button>
+            </div>
+          )}
+
           <button
-            className="bg-red-500 text-white h-20 w-5/6 font-bold text-xl rounded-xl"
+            className="flex shadow-inner bg-red-500 w-2/6 text-white font-bold text-xl rounded-s-xl p-7 place-items-center place-self-end hover:w-full"
             onClick={handleSingleplayerBtnClick}
           >
             Singleplayer
           </button>
           <button
-            className="bg-blue-500 text-white h-20 w-5/6 font-bold text-xl rounded-xl"
+            className="flex shadow-inner bg-blue-500 w-3/6 text-white font-bold text-xl rounded-s-xl p-7 place-items-center place-self-end hover:w-full"
             onClick={handleHeadOnBtnClick}
           >
             Head On
           </button>
-        </div>
 
-        <div className="flex flex-row gap-3">
           <button
-            className="bg-white h-20 w-5/6 font-bold text-xl rounded-xl"
+            className="flex shadow-inner bg-white w-4/6 font-bold text-xl rounded-s-xl p-7 place-items-center place-self-end hover:w-full"
             onClick={handleCustomizeBtnClick}
           >
             Customize
           </button>
           <button
-            className="bg-white h-20 w-5/6 font-bold text-xl rounded-xl"
+            className="flex shadow-inner bg-white w-5/6 font-bold text-xl rounded-s-xl p-7 place-items-center place-self-end hover:w-full"
+            onClick={handleStatsBtnClick}
+          >
+            Stats
+          </button>
+          <button
+            className="flex bg-white font-bold text-xl rounded-s-xl p-7 place-items-center"
             onClick={handleSettingsBtnClick}
           >
             Settings
           </button>
-          <button
-            className="bg-white h-20 w-5/6 font-bold text-xl rounded-xl"
-            onClick={handleLogOutBtnClick}
-          >
-            Log Out
-          </button>
         </div>
-      </div>
+      </>
     </div>
   );
 }
