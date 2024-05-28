@@ -6,21 +6,6 @@ import { supabase } from "../supabaseClient";
 import LandingLogo from "../components/LandingLogo";
 
 export default function Landing() {
-  // const handleSignIn = async () => {
-  //   try {
-  //     const { data, error } = await supabase.auth.signInWithOAuth({
-  //       provider: "google",
-  //     });
-
-  //     if (error) {
-  //       throw error;
-  //     }
-
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.error("Error signin in:", error.message);
-  //   }
-  // };
   return (
     <div className="h-screen flex bg-stone-bg bg-cover">
       <LandingLogo />

@@ -78,8 +78,7 @@ export default function Home() {
 
   const handleLogOutBtnClick = async (e) => {
     e.preventDefault();
-    await signOut();
-    window.location.reload();
+    signOut();
   };
 
   useEffect(() => {
@@ -145,7 +144,7 @@ export default function Home() {
       /> */}
 
       <div className="flex flex-col grow place-items-center place-content-center w-4/6">
-        <div className="flex absolute bg-slate-700 w-2/4 h-full z-0 rounded-t-full overflow-hidden"></div>
+        {/* <div className="flex absolute bg-slate-700 w-2/4 h-full z-0 rounded-t-full overflow-hidden"></div> */}
         <div className="flex flex-col place-content-center place-items-center gap-5">
           <img className="w-3/5 z-10" src={app_logo} alt="456! Logo" />
           <div className="flex w-3/5 text-center text-white font-bold text-lg z-10">

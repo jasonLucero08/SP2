@@ -11,6 +11,8 @@ import { useImmerReducer } from "use-immer";
 import Header from "../components/Header";
 import star from "../images/star.png";
 import nonstar from "../images/nonstar.png";
+import cardChar from "../images/card-filled.png";
+import cardEn from "../images/card-simple.png";
 
 function ourReducer(draft, action) {
   switch (action.type) {
@@ -450,19 +452,23 @@ export default function Level() {
                       </span>
                     </div>
                     <div className="flex relative flex-row h-2/3 w-screen">
-                      <div className="flex flex-col relative bg-white w-64 h-full left-40 place-items-center p-5 gap-4 rounded-lg">
-                        <div className="w-56">
+                      <div className="flex flex-col relative w-2/12 h-full left-40 place-items-center p-5 gap-4">
+                        <img
+                          src={cardChar}
+                          className="flex absolute bottom-0 w-full h-full "
+                        />
+                        <div className="w-5/6 z-10 mt-7">
                           <img className="rounded" src={characterImg} />
                         </div>
-                        <div className="flex gap-10 place-items-end h-7">
-                          <span className="absolute left-5 text-xl font-bold">
-                            {characterName}
+                        <div className="flex gap-10 z-10 place-items-end h-6">
+                          <span className="absolute left-10 text-lg font-bold ">
+                            {username}
                           </span>
-                          <span className="absolute right-5 text-sm">
+                          <span className="absolute right-10 text-sm">
                             {state.score}
                           </span>
                         </div>
-                        <div className="absolute bottom-5 h-3 w-56 bg-red-500 rounded-lg">
+                        <div className="absolute bottom-9 h-3 w-36 bg-red-500 rounded-lg">
                           <div
                             className="h-3 w-full bg-green-400 rounded-lg"
                             style={{
@@ -474,16 +480,22 @@ export default function Level() {
                           ></div>
                         </div>
                       </div>
-                      <div className="flex flex-col absolute bg-white w-64 h-full right-40 place-items-center p-5 gap-4 rounded-lg">
-                        <div className="w-56">
+                      <div className="flex flex-col absolute right-40 place-items-center p-5 gap-4 rounded-lg w-2/12 h-full">
+                        <img
+                          src={cardEn}
+                          className="flex absolute bottom-0 w-full h-full "
+                        />
+                        <div className="w-5/6 z-10 mt-7">
                           <img
                             className="rounded"
                             src="https://pnduassrodsmyexxhtsf.supabase.co/storage/v1/object/public/playable-characters/Luan.jpg"
                           />
                         </div>
-                        <span className="text-xl font-bold w-full text-right">
-                          Luan
-                        </span>
+                        <div className="flex gap-10 z-10 place-items-end h-6">
+                          <span className="text-xl w-full text-right right-10 absolute font-bold z-10">
+                            Luan
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>

@@ -109,7 +109,7 @@ export default function HeadOnGame() {
 
   const [enlargeImg, setEnlargeImg] = useState(false);
 
-  const levelid = "L" + location.state.num;
+  // const levelid = "L" + location.state.num;
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
 
