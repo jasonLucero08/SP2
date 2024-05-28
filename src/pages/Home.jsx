@@ -11,7 +11,7 @@ import InputField from "../components/InputField";
 export default function Home() {
   const navigate = useNavigate();
 
-  const { session, signOut } = useAuth();
+  const { profile, session, signOut } = useAuth();
 
   const [loggedIn, setLoggedIn] = useState(null);
 
@@ -21,21 +21,6 @@ export default function Home() {
   const [usernameError, setUsernameError] = useState(null);
 
   const [characterImg, setCharacterImg] = useState(null);
-
-  useEffect(() => {
-    try {
-      getUserInfo(session?.user.id).then(function (res) {
-        if (res?.username === null || res?.fullname === null) {
-          setInfoIncomplete(true);
-        } else {
-          setUsername(res?.username);
-          setCharacterImg(res?.selectedImgUrl);
-        }
-      });
-    } catch (err) {
-      console.log("Error: ", err.message);
-    }
-  }, [username]);
 
   const handleRegisterBtnClick = async (e) => {
     e.preventDefault();
@@ -78,7 +63,10 @@ export default function Home() {
   const handleCustomizeBtnClick = () => {
     navigate("/customize");
   };
-  const handleStatsBtnClick = () => {};
+
+  const handleStatsBtnClick = () => {
+    navigate("/stats");
+  };
 
   const handleSettingsBtnClick = () => {
     navigate("/settings");
@@ -93,6 +81,14 @@ export default function Home() {
     await signOut();
     window.location.reload();
   };
+
+  useEffect(() => {
+    // getUser();
+    if (profile) {
+      setUsername(profile.username);
+      setCharacterImg(profile.selectedImgUrl);
+    }
+  }, [profile]);
 
   return (
     <div className="h-screen w-screen flex flex-row place-items-center place-content-center bg-stone-bg bg-cover">
@@ -161,7 +157,7 @@ export default function Home() {
 
       <>
         <div className="flex flex-col gap-4 w-2/6 h-full overflow-hidden">
-          {session ? (
+          {profile ? (
             <div className="flex pt-10 pb-10 gap-5 w-full place-content-end place-items-center">
               <button
                 className="flex flex-row place-items-center gap-5 bg-orange-400 text-white p-3 rounded"

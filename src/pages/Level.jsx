@@ -91,7 +91,7 @@ const initialState = {
 export default function Level() {
   const location = useLocation();
 
-  const { session } = useAuth();
+  const { profile } = useAuth();
 
   const [userInfo, setUserInfo] = useState(null);
   const [username, setUsername] = useState(null);
@@ -324,11 +324,17 @@ export default function Level() {
   useEffect(() => {
     getPageTitle();
 
-    getUserInfo(session?.user.id).then(function (res) {
-      setUserInfo(res);
-      setUsername(res?.username);
-      setCharacter(res);
-    });
+    // getUserInfo(session?.user.id).then(function (res) {
+    //   setUserInfo(res);
+    //   setUsername(res?.username);
+    //   setCharacter(res);
+    // });
+
+    if (profile) {
+      setUserInfo(profile);
+      setUsername(profile.username);
+      setCharacter(profile);
+    }
 
     async function go() {
       try {
@@ -346,7 +352,7 @@ export default function Level() {
 
   return (
     <>
-      {session && (
+      {profile && (
         <div className="flex flex-col w-screen h-screen place-content-end bg-slate-900">
           <Header
             pageTitle={pageTitle}

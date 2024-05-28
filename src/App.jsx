@@ -11,6 +11,7 @@ import Admin from "./pages/Admin";
 import HeadOnLobby from "./pages/HeadOnLobby";
 import HeadOnGame from "./pages/HeadOnGame";
 import Profile from "./pages/Profile";
+import Stats from "./pages/Stats";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Landing />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/stats" element={<Stats />} />
         <Route path="/singleplayermap" element={<SinglePlayerMap />} />
         <Route path="/singleplayer-level" element={<Level />} />
         <Route path="/head-on-lobby" element={<HeadOnLobby />} />

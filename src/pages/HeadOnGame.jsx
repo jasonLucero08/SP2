@@ -95,7 +95,7 @@ export default function HeadOnGame() {
 
   const location = useLocation();
 
-  const { session } = useAuth();
+  const { profile } = useAuth();
 
   const [userInfo, setUserInfo] = useState(null);
   const [username, setUsername] = useState(null);
@@ -296,7 +296,7 @@ export default function HeadOnGame() {
     var starsToAdd = 0;
     var nextLevelId = "";
 
-    const userData = await getUserInfo(session?.user.id);
+    const userData = profile;
     var starTotal = userData.totalStars;
 
     levelsUnlockedJSON = userData.levelsUnlocked;
@@ -327,13 +327,13 @@ export default function HeadOnGame() {
     }
 
     await saveScorePerLevel(
-      session?.user.id,
+      profile.id,
       levelsUnlockedJSON,
       levelStarsJSON,
       starTotal
     );
 
-    const userData2 = await getUserInfo(session?.user.id);
+    const userData2 = profile;
     console.log(userData2.levelsUnlocked);
     console.log(userData2.levelStars);
     console.log(userData2.totalStars);
@@ -365,12 +365,13 @@ export default function HeadOnGame() {
 
     async function go() {
       try {
-        const uInf = await getUserInfo(session?.user.id);
-        setUserInfo(uInf);
-        setUsername(uInf.username);
-        setCharacter(uInf);
-        setPlayerHealth(100);
-        setPlayerScore(0);
+        if (profile) {
+          setUserInfo(profile);
+          setUsername(profile.username);
+          setCharacter(profile);
+          setPlayerHealth(100);
+          setPlayerScore(0);
+        }
 
         socket.emit("clearStatData");
         fetchData();
@@ -455,7 +456,7 @@ export default function HeadOnGame() {
 
   return (
     <>
-      {session && (
+      {profile && (
         <div className="flex flex-col w-screen h-screen place-content-end bg-slate-900">
           <Header
             pageTitle={pageTitle}

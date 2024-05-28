@@ -10,8 +10,9 @@ import LevelCard from "../components/LevelCard";
 export default function SinglePlayerMap() {
   const navigate = useNavigate();
 
-  const { session } = useAuth();
+  const { profile } = useAuth();
 
+  const [userInfo, setUserInfo] = useState(null);
   const [userName, setUsername] = useState(null);
   const [cards, setCards] = useState([]);
 
@@ -32,18 +33,12 @@ export default function SinglePlayerMap() {
   };
 
   useEffect(() => {
-    async function get() {
-      try {
-        const userData = await getUserInfo(session?.user.id);
-        setUsername(userData.username);
-        setCharacterImg(userData.selectedImgUrl);
-        setLevels(userData);
-      } catch (err) {
-        console.error("Error: ", err.message);
-      }
+    if (profile) {
+      setUserInfo(profile);
+      setUsername(profile.username);
+      setCharacterImg(profile.selectedImgUrl);
+      setLevels(profile);
     }
-
-    get();
   }, []);
 
   const handleLvlClick = (num) => {

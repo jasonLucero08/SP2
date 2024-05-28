@@ -10,7 +10,7 @@ export default function HeadOnLobby() {
   const socket = initializeSocket();
   const navigate = useNavigate();
 
-  const { session } = useAuth();
+  const { profile } = useAuth();
 
   const [userInfo, setUserInfo] = useState(null);
   const [username, setUsername] = useState(null);
@@ -43,18 +43,23 @@ export default function HeadOnLobby() {
       console.log("Connected with socket id:", socket.id);
     });
 
-    async function get() {
-      try {
-        const userData = await getUserInfo(session?.user.id);
-        setUserInfo(userData);
-        setUsername(userData.username);
-        setCharacterImg(userData.selectedImgUrl);
-      } catch (err) {
-        console.error("Error: ", err.message);
-      }
-    }
+    // async function get() {
+    //   try {
+    //     const userData = await getUserInfo(session?.user.id);
+    //     setUserInfo(userData);
+    //     setUsername(userData.username);
+    //     setCharacterImg(userData.selectedImgUrl);
+    //   } catch (err) {
+    //     console.error("Error: ", err.message);
+    //   }
+    // }
 
-    get();
+    // get();
+    if (profile) {
+      setUserInfo(profile);
+      setUsername(profile.username);
+      setCharacterImg(profile.selectedImgUrl);
+    }
   }, []);
 
   useEffect(() => {
