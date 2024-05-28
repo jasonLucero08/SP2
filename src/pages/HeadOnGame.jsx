@@ -348,7 +348,7 @@ export default function HeadOnGame() {
   // const handleQuesImgClick = (img) => {};
   const fetchData = async () => {
     try {
-      await axios.get("http://localhost:4000/fetch-questions");
+      await axios.get("https://456-mu.vercel.app/fetch-questions");
     } catch (error) {
       console.error("Error fetching data:", error);
     }
