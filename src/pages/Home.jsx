@@ -2,9 +2,23 @@ import React, { useDebugValue, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/Auth";
 import { getUserInfo } from "../hooks/Hooks";
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "../supabaseClient";
 
 import app_logo from "../images/456_logo.png";
+import log_out from "../images/log-out.png";
+import single_player from "../images/single-player.png";
+import head_on from "../images/head-on.png";
+import shop from "../images/shop.png";
+import stats from "../images/stats.png";
+import settings from "../images/settings.png";
+import white from "../images/white-banner.png";
+import red from "../images/red-banner.png";
+import orange from "../images/orange-banner.png";
+import purple from "../images/purple-banner.png";
+import green from "../images/green-banner.png";
+
 import Header from "../components/Header";
 import InputField from "../components/InputField";
 
@@ -53,23 +67,43 @@ export default function Home() {
   };
 
   const handleSingleplayerBtnClick = () => {
-    navigate("/singleplayermap");
+    if (profile) {
+      navigate("/singleplayermap");
+    } else {
+      alert("Login to play!");
+    }
   };
 
   const handleHeadOnBtnClick = () => {
-    navigate("/head-on-lobby");
+    if (profile) {
+      navigate("/head-on-lobby");
+    } else {
+      alert("Login to play!");
+    }
   };
 
-  const handleCustomizeBtnClick = () => {
-    navigate("/customize");
+  const handleShopBtnClick = () => {
+    if (profile) {
+      navigate("/shop");
+    } else {
+      alert("Login to play!");
+    }
   };
 
   const handleStatsBtnClick = () => {
-    navigate("/stats");
+    if (profile) {
+      navigate("/stats");
+    } else {
+      alert("Login to play!");
+    }
   };
 
   const handleSettingsBtnClick = () => {
-    navigate("/settings");
+    if (profile) {
+      navigate("/settings");
+    } else {
+      alert("Login to play!");
+    }
   };
 
   const handleProfileClick = () => {
@@ -147,7 +181,7 @@ export default function Home() {
         {/* <div className="flex absolute bg-slate-700 w-2/4 h-full z-0 rounded-t-full overflow-hidden"></div> */}
         <div className="flex flex-col place-content-center place-items-center gap-5">
           <img className="w-3/5 z-10" src={app_logo} alt="456! Logo" />
-          <div className="flex w-3/5 text-center text-white font-bold text-lg z-10">
+          <div className="flex px-20 text-center text-white font-bold text-xl z-10">
             Welcome to 456! An application to test your wits regarding Discrete
             Mathematics in Computer Science. Come and test your knowledge now!
           </div>
@@ -155,74 +189,131 @@ export default function Home() {
       </div>
 
       <>
-        <div className="flex flex-col gap-4 w-2/6 h-full overflow-hidden">
+        <div className="flex flex-col gap-4 w-2/6 h-full overflow-hidden place-content-center">
           {profile ? (
-            <div className="flex pt-10 pb-10 gap-5 w-full place-content-end place-items-center">
-              <button
-                className="flex flex-row place-items-center gap-5 bg-orange-400 text-white p-3 rounded"
-                onClick={() => handleProfileClick()}
-              >
-                <img
-                  src={characterImg}
-                  alt="Profile"
-                  className="w-20 fill-white rounded-full"
-                />
-                <span className="text-2xl font-bold">{username}</span>
-              </button>
-              <button
-                className="flex bg-white font-bold text-xl rounded-s-xl p-3 w-1/3 place-content-center"
-                onClick={handleLogOutBtnClick}
-              >
-                Log Out
-              </button>
+            <div className="flex absolute right-0 top-10 gap-5 place-items-center">
+              {characterImg && (
+                <button
+                  className="group flex relative place-items-center place-content-end gap-5 px-10 py-3 hover:px-14 hover:py-4 transition-all"
+                  onClick={() => handleProfileClick()}
+                >
+                  <img
+                    src={white}
+                    className="flex absolute w-full h-full left-0 z-0"
+                  />
+                  <span className="flex text-xl font-bold group-hover:text-2xl transition-all z-10">
+                    {username}
+                  </span>
+                  <img
+                    src={characterImg}
+                    alt="Profile"
+                    className="flex w-10 fill-white rounded-full group-hover:w-14 transition-all z-10"
+                  />
+                </button>
+              )}
             </div>
           ) : (
-            <div className="flex pt-10 pb-10 gap-5 w-full place-content-center place-items-center">
-              <button
+            <div className="flex gap-5 w-full place-content-end">
+              {/* <button
                 className="flex flex-row place-items-center place-self-center gap-5 bg-slate-500 p-5 rounded-md text-white"
                 onClick={() => navigate("/login")}
               >
-                {/* <img
-              src={characterImg}
-              alt="Profile"
-              className="w-20 fill-white rounded-full"
-            /> */}
                 <span className="text-2xl font-bold">Login to Play!</span>
-              </button>
+              </button> */}
+              <div className="flex font-bold text-xl px-5 py-2 place-content-center place-items-center absolute right-0 top-10">
+                <div className="flex flex-row z-10 px-5 py-2  place-content-center place-items-center gap-5">
+                  <span>Log in to play:</span>
+                  <Auth
+                    supabaseClient={supabase}
+                    appearance={{ theme: ThemeSupa }}
+                    theme="dark"
+                    providers={["google"]}
+                    onlyThirdPartyProviders
+                  />
+                </div>
+                <img src={white} className="flex absolute w-full  left-0 z-0" />
+              </div>
             </div>
           )}
 
           <button
-            className="flex shadow-inner bg-red-500 w-2/6 text-white font-bold text-xl rounded-s-xl p-7 place-items-center place-self-end hover:w-full"
+            className="group flex relative gap-5 w-4/6 text-white font-bold text-xl rounded-s-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all cursor-pointer"
             onClick={handleSingleplayerBtnClick}
           >
-            Singleplayer
+            <img src={green} className="flex absolute w-full h-full left-0" />
+            <img
+              src={single_player}
+              className="w-7 group-hover:w-10 transition-all z-10"
+            />
+            <span className="text-xl group-hover:text-2xl transition-all z-10">
+              Singleplayer
+            </span>
           </button>
           <button
-            className="flex shadow-inner bg-blue-500 w-3/6 text-white font-bold text-xl rounded-s-xl p-7 place-items-center place-self-end hover:w-full"
+            className="group flex relative gap-5 w-4/6 text-white font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
             onClick={handleHeadOnBtnClick}
           >
-            Head On
+            <img src={purple} className="flex absolute w-full h-full left-0" />
+            <img
+              src={head_on}
+              className="w-7 group-hover:w-10 transition-all z-10"
+            />
+            <span className="text-xl group-hover:text-2xl transition-all z-10">
+              Head On
+            </span>
           </button>
 
           <button
-            className="flex shadow-inner bg-white w-4/6 font-bold text-xl rounded-s-xl p-7 place-items-center place-self-end hover:w-full"
-            onClick={handleCustomizeBtnClick}
+            className="group flex relative gap-5 w-4/6 font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
+            onClick={handleShopBtnClick}
           >
-            Customize
+            <img src={orange} className="flex absolute w-full h-full left-0" />
+            <img
+              src={shop}
+              className="w-7 group-hover:w-10 transition-all z-10"
+            />
+            <span className=" text-white text-xl group-hover:text-2xl transition-all z-10">
+              Shop
+            </span>
           </button>
           <button
-            className="flex shadow-inner bg-white w-5/6 font-bold text-xl rounded-s-xl p-7 place-items-center place-self-end hover:w-full"
+            className="group flex relative gap-5  w-4/6 font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
             onClick={handleStatsBtnClick}
           >
-            Stats
+            <img src={red} className="flex absolute w-full h-full left-0" />
+            <img
+              src={stats}
+              className="w-7 group-hover:w-10 transition-all z-10"
+            />
+            <span className="text-white text-xl group-hover:text-2xl transition-all z-10">
+              Stats
+            </span>
           </button>
           <button
-            className="flex bg-white font-bold text-xl rounded-s-xl p-7 place-items-center"
+            className="group flex relative gap-5 w-4/6 font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
             onClick={handleSettingsBtnClick}
           >
-            Settings
+            <img src={white} className="flex absolute w-full h-full left-0" />
+            <img
+              src={settings}
+              className="w-7 group-hover:w-10 transition-all z-10"
+            />
+            <span className="text-xl group-hover:text-2xl transition-all z-10">
+              Settings
+            </span>
           </button>
+          {profile && (
+            <button
+              className="group flex relative gap-5 w-4/6 font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
+              onClick={handleLogOutBtnClick}
+            >
+              <img src={white} className="flex absolute w-full h-full left-0" />
+              <img src={log_out} className="flex w-8 z-10" />
+              <span className="text-xl group-hover:text-2xl transition-all z-10">
+                Log Out
+              </span>
+            </button>
+          )}
         </div>
       </>
     </div>

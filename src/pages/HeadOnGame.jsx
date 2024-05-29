@@ -120,6 +120,7 @@ export default function HeadOnGame() {
   const [playing, setPlaying] = useState(false);
   const [currQues, setCurrQues] = useState(null);
   const [timer, setTimer] = useState(null);
+  const intervalRef = useRef(null);
 
   const getPageTitle = () => {
     switch (location.state.num) {
@@ -348,12 +349,25 @@ export default function HeadOnGame() {
   // const handleQuesImgClick = (img) => {};
   const fetchData = async () => {
     try {
-      await axios.get("https://456-server.glitch.me/fetch-questions");
+      await axios.get("http://localhost:4000/fetch-questions");
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
+  const startTimer = () => {
+    clearInterval(intervalRef.current);
+    let timerValue = 30;
+    setTimer(timerValue);
+
+    intervalRef.current = setInterval(() => {
+      timerValue--;
+      setTimer(timerValue);
+      if (timerValue <= 0) {
+        clearInterval(intervalRef.current);
+      }
+    }, 1000);
+  };
   useEffect(() => {
     getPageTitle();
 
@@ -372,6 +386,9 @@ export default function HeadOnGame() {
           setPlayerHealth(100);
           setPlayerScore(0);
         }
+        socket.once("timer", () => {
+          startTimer();
+        });
 
         socket.emit("clearStatData");
         fetchData();
@@ -400,14 +417,18 @@ export default function HeadOnGame() {
       const arr = Object.keys(data);
 
       arr.forEach((name) => {
-        if (name != username) {
+        if (name !== username) {
           console.log(name);
           setEnemyHealth(data[name].health);
           setEnemyScore(data[name].score);
         }
       });
     });
-  }, [currQues]);
+
+    return () => {
+      socket.off("broadcastStatChange");
+    };
+  }, [playerHealth, playerScore, currQues]);
 
   useEffect(() => {
     socket.on("connect_error", (error) => {
@@ -441,6 +462,7 @@ export default function HeadOnGame() {
   useEffect(() => {
     socket.on("showCorrectChoices", (list) => {
       // showButtonColors();
+      clearInterval(intervalRef.current);
 
       setTimeout(function () {
         socket.emit("clearUserChoiceList");
@@ -449,6 +471,7 @@ export default function HeadOnGame() {
         fetchData();
         socket.once("question", (question) => {
           setCurrQues(question);
+          startTimer();
         });
       }, 1500);
     });
@@ -462,6 +485,7 @@ export default function HeadOnGame() {
             pageTitle={pageTitle}
             username={username}
             profilePicture={characterImg}
+            actualSocket={socket}
           />
 
           {playing && (
@@ -542,6 +566,7 @@ export default function HeadOnGame() {
                       </>
                     )}
                     <div className="flex flex-row gap-5 bg-white w-10/12 h-1/4 mb-4 p-5">
+                      {timer && <span>{timer}</span>}
                       {currQues.imgRef != null && (
                         <img
                           className="w-10 h-10 cursor-pointer"
@@ -567,12 +592,9 @@ export default function HeadOnGame() {
                         <div className="absolute bottom-5 h-3 w-56 bg-red-500 rounded-lg">
                           <div
                             className="h-3 w-full bg-green-400 rounded-lg"
-                            // style={{
-                            //   width: `${
-                            //     (playerHealth / state.questionsLength) *
-                            //     100
-                            //   }`,
-                            // }}
+                            style={{
+                              width: `${(playerHealth * 100) / 100}`,
+                            }}
                           >
                             {playerHealth}
                           </div>

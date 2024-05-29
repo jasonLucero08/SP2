@@ -16,19 +16,8 @@ export default function Profile() {
   const [characterImg, setCharacterImg] = useState(null);
 
   const [unlockedChars, setUnlockedChars] = useState(null);
-
-  useEffect(() => {
-    async function go() {
-      if (profile) {
-        setUserInfo(profile);
-        setUserName(profile.username);
-        setCharacterImg(profile.selectedImgUrl);
-        await getImages(profile);
-      }
-    }
-
-    go();
-  }, []);
+  const [selectedImg, setSelectedImg] = useState(null);
+  const [selectedImgName, setSelectedImgName] = useState(null);
 
   const getImages = async (profile) => {
     try {
@@ -55,9 +44,47 @@ export default function Profile() {
     }
   };
 
+  const equip = async (data) => {
+    // await setCharacterSelected(session?.user.id, data);
+    try {
+      const { error } = await supabase
+        .from("profile")
+        .update({ selectedImgUrl: data })
+        .eq("id", profile.id);
+
+      if (error) {
+        throw error;
+      }
+      setCharacterImg(profile.selectedImgUrl);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  const handleImgClick = async (data) => {
+    // await setCharacterSelected(session?.user.id, imgBucketUrl + data.name);
+    // console.log(data);
+    setSelectedImg(data);
+    setSelectedImgName(data.split("/").pop().split(".")[0]);
+  };
+
+  useEffect(() => {
+    async function go() {
+      if (profile) {
+        setUserInfo(profile);
+        setUserName(profile.username);
+        setCharacterImg(profile.selectedImgUrl);
+        await getImages(profile);
+      }
+    }
+
+    go();
+  }, [profile]);
+
   return (
-    <div className="flex flex-col h-screen w-screen bg-slate-900 place-content-center place-items-center gap-3">
+    <div className="flex flex-col h-screen w-screen bg-stone-bg bg-cover place-content-center place-items-center gap-3">
       <Header
+        isProfile={true}
         pageTitle="Profile"
         username={userName}
         profilePicture={characterImg}
@@ -65,7 +92,7 @@ export default function Profile() {
 
       {userInfo && (
         <>
-          <div className="flex flex-row w-screen h-2/3 bg-gray-500">
+          <div className="flex flex-row w-screen h-fill p-5 bg-gray-500">
             <img src={userInfo.selectedImgUrl} className="w-20 h-20" />
             <div className="flex flex-col">
               <span>{userInfo.username}</span>
@@ -77,26 +104,49 @@ export default function Profile() {
               </div>
             </div>
           </div>
-          <div className="w-full h-full bg-red-50">
-            {unlockedChars && (
-              <div className="flex place-items-center place-content-start mt-20 mb-5 p-3 gap-5 overflow-y-scroll">
-                {unlockedChars.map((image) => {
-                  return (
+          <div className="w-full h-full flex flex-row gap-5">
+            <div className="w-1/3 h-full place-items-center p-5">
+              {userInfo && selectedImg && selectedImgName && (
+                <div className="flex flex-col h-full place-content-center place-items-center bg-white rounded-xl gap-5">
+                  <img src={selectedImg} className="rounded w-2/3" />
+                  <span className="text-xl font-bold">{selectedImgName}</span>
+                  <div className="flex flex-row w-full gap-3">
+                    {/* {!handleEquipDisabled(selectedImg) && ( */}
                     <button
-                      className="flex flex-col place-content-center place-items-center w-36 h-40 bg-white p-2 hover:cursor-pointer rounded gap-1"
-                      onClick={() => handleImgClick(image)}
-                      key={image}
-                      // disabled={handleDisabled(image)}
+                      className="flex w-full bg-green-500 place-content-center text-white p-2 rounded-full"
+                      onClick={() => equip(selectedImg)}
                     >
-                      <img className="w-28 h-28 rounded" src={image} />
-                      <span className="">
-                        {image.split("/").pop().split(".")[0]}
-                      </span>
+                      Equip
                     </button>
-                  );
-                })}
-              </div>
-            )}
+                    {/* )} */}
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="w-2/3 h-full bg-red-50">
+              {unlockedChars && (
+                <div className="flex flex-col p-3 gap-5 overflow-y-scroll">
+                  <span>Unlocked Characters:</span>
+                  <div className="flex place-items-center p-3 gap-5 w-full">
+                    {unlockedChars.map((image) => {
+                      return (
+                        <button
+                          className="flex flex-col place-content-center place-items-center w-36 h-40 bg-white p-2 hover:cursor-pointer rounded gap-1"
+                          onClick={() => handleImgClick(image)}
+                          key={image}
+                          // disabled={handleDisabled(image)}
+                        >
+                          <img className="w-28 h-28 rounded" src={image} />
+                          <span className="">
+                            {image.split("/").pop().split(".")[0]}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </>
       )}

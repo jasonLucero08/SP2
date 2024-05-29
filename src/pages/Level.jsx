@@ -355,13 +355,7 @@ export default function Level() {
   return (
     <>
       {profile && (
-        <div className="flex flex-col w-screen h-screen place-content-end bg-slate-900">
-          <Header
-            pageTitle={pageTitle}
-            username={username}
-            profilePicture={characterImg}
-          />
-
+        <div className="flex flex-col w-screen h-screen place-content-end bg-stone-bg bg-cover">
           {state.playing && (
             <>
               {state.win && (
@@ -422,6 +416,11 @@ export default function Level() {
 
               {state.currentQuestion !== null && (
                 <>
+                  <Header
+                    pageTitle={pageTitle}
+                    username={username}
+                    profilePicture={characterImg}
+                  />
                   <div className="flex flex-col place-items-center w-screen h-2/3">
                     {enlargeImg && (
                       <>

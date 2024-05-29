@@ -39,9 +39,7 @@ export default function HeadOnLobby() {
   };
 
   useEffect(() => {
-    socket.on("connection", () => {
-      console.log("Connected with socket id:", socket.id);
-    });
+    socket.connect();
 
     // async function get() {
     //   try {

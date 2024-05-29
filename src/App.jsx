@@ -25,7 +25,7 @@ function App() {
         <Route path="/singleplayer-level" element={<Level />} />
         <Route path="/head-on-lobby" element={<HeadOnLobby />} />
         <Route path="/room/:roomId" element={<HeadOnGame />} />
-        <Route path="/customize" element={<Customize />} />
+        <Route path="/shop" element={<Customize />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
     </div>
