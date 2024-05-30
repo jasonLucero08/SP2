@@ -8,13 +8,12 @@ export default function LevelCard({ ...props }) {
   return (
     <button
       disabled={props.disabled}
-      className="flex relative flex-col flex-none w-80 h-96 rounded-xl p-10 place-items-center gap-5"
+      className="flex relative flex-col w-full h-full rounded-xl p-10 place-items-center gap-5"
       onClick={props.onClick}
       id={props.id}
     >
-      {/* {console.log(props.stars)} */}
       {props.stars !== null ? (
-        <div className="flex flex-row place-content-center gap-3 z-10 mt-14">
+        <div className="flex flex-row place-content-center gap-3 z-10 mt-14 w-fit h-fit">
           {[...Array(props.stars)].map((item, index) => {
             return <img className="w-16" key={index} src={star} alt="Star" />;
           })}

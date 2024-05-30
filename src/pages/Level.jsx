@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/Auth";
 import {
   getUserInfo,
@@ -16,6 +16,20 @@ import cardEn from "../images/card-simple.png";
 
 function ourReducer(draft, action) {
   switch (action.type) {
+    case "startOver":
+      draft.playing = true;
+      draft.currentQuestion = getCurrentQuestion();
+      draft.playerHealth = draft.questionsLength;
+      draft.score = draft.questionsLength;
+      draft.gameOver = false;
+      draft.stars = 3;
+      draft.win = false;
+      window.location.reload();
+      return;
+    case "noChoiceClicked":
+      draft.playerHealth -= 1;
+      draft.score -= 1;
+      return;
     case "guessAttempt":
       const threeStarLimit = 0.8 * draft.questionsLength;
       const twoStarLimit = 0.6 * draft.questionsLength;
@@ -59,6 +73,8 @@ function ourReducer(draft, action) {
       return;
   }
 
+  // const startTimer = () => {};
+
   function getCurrentQuestion() {
     if (draft.currentQuestion) {
       draft.randomQuestions = draft.randomQuestions.splice(1);
@@ -92,6 +108,7 @@ const initialState = {
 
 export default function Level() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const { profile } = useAuth();
 
@@ -107,6 +124,10 @@ export default function Level() {
   const levelid = "L" + location.state.num;
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
+
+  const [timer, setTimer] = useState(null);
+  const intervalRef = useRef(null);
+  const [choiceClicked, setChoiceClicked] = useState(false);
 
   const getPageTitle = () => {
     switch (location.state.num) {
@@ -251,7 +272,9 @@ export default function Level() {
   };
 
   const handleChoiceClick = (q, choiceNum) => {
+    setChoiceClicked(true);
     showButtonColors(q);
+    clearInterval(intervalRef.current);
 
     setTimeout(function () {
       hideButtonColors();
@@ -263,7 +286,7 @@ export default function Level() {
     }, 1500);
   };
 
-  const handleSaveBtnClick = async () => {
+  const handleNextLvlClick = async () => {
     var currScore = state.score;
     var currStars = state.stars;
 
@@ -272,7 +295,7 @@ export default function Level() {
     var starsToAdd = 0;
     var nextLevelId = "";
 
-    const userData = await getUserInfo(session?.user.id);
+    const userData = await getUserInfo(profile.id);
     var starTotal = userData.totalStars;
 
     levelsUnlockedJSON = userData.levelsUnlocked;
@@ -303,16 +326,17 @@ export default function Level() {
     }
 
     await saveScorePerLevel(
-      session?.user.id,
+      profile.id,
       levelsUnlockedJSON,
       levelStarsJSON,
       starTotal
     );
 
-    const userData2 = await getUserInfo(session?.user.id);
-    console.log(userData2.levelsUnlocked);
-    console.log(userData2.levelStars);
-    console.log(userData2.totalStars);
+    dispatch({ type: "startOver" });
+
+    const nextLevel = location.state.num + 1;
+    console.log(nextLevel);
+    navigate("/singleplayer-level", { state: { num: nextLevel } });
   };
 
   const setCharacter = (data) => {
@@ -322,6 +346,27 @@ export default function Level() {
   };
 
   // const handleQuesImgClick = (img) => {};
+  const startTimer = () => {
+    clearInterval(intervalRef.current);
+    let timerValue = 30;
+    setTimer(timerValue);
+
+    intervalRef.current = setInterval(() => {
+      timerValue--;
+      setTimer(timerValue);
+      if (timerValue <= 0) {
+        clearInterval(intervalRef.current);
+
+        if (!choiceClicked) {
+          setTimeout(function () {
+            dispatch({
+              type: "noChoiceClicked",
+            });
+          }, 1500);
+        }
+      }
+    }, 1000);
+  };
 
   useEffect(() => {
     getPageTitle();
@@ -351,6 +396,18 @@ export default function Level() {
 
     go();
   }, []);
+
+  useEffect(() => {
+    startTimer();
+  }, [state.currentQuestion]);
+
+  useEffect(() => {
+    if (profile) {
+      setUserInfo(profile);
+      setUsername(profile.username);
+      setCharacter(profile);
+    }
+  }, [state.playing]);
 
   return (
     <>
@@ -389,10 +446,16 @@ export default function Level() {
                     </span>
                     <span className="text-2xl">Score: {state.score}</span>
                     <button
-                      className="bg-blue-300"
-                      onClick={() => handleSaveBtnClick()}
+                      className="bg-red-300"
+                      onClick={() => handleNextLvlClick()}
                     >
-                      Save
+                      Next Level
+                    </button>
+                    <button
+                      className="bg-blue-300"
+                      onClick={() => handleExitBtnClick()}
+                    >
+                      Exit
                     </button>
                   </div>
                 </div>
@@ -421,6 +484,17 @@ export default function Level() {
                     username={username}
                     profilePicture={characterImg}
                   />
+                  <div>
+                    {timer && (
+                      <div className="flex flex-row place-items-center gap-5 p-2 place-content-center w-full">
+                        <span className="text-white">{timer}</span>
+                        <div
+                          className="bg-blue-500 w-full h-2 transition-all rounded-full"
+                          style={{ width: `${timer}%` }}
+                        ></div>
+                      </div>
+                    )}
+                  </div>
                   <div className="flex flex-col place-items-center w-screen h-2/3">
                     {enlargeImg && (
                       <>
@@ -439,7 +513,7 @@ export default function Level() {
                       </>
                     )}
                     <div className="flex flex-row gap-5 bg-white w-10/12 h-1/4 mb-4 p-5">
-                      {state.currentQuestion.imgRef != null && (
+                      {state.currentQuestion.imgRef && (
                         <img
                           className="w-10 h-10 cursor-pointer"
                           src={state.currentQuestion.imgRef}
@@ -503,7 +577,7 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice1).v !== null && (
                       <button
                         id="button1"
-                        className="w-1/4 h-30 rounded-xl m-3 bg-white p-5 text-lg"
+                        className="w-1/4 h-full rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
                         onClick={() =>
                           handleChoiceClick(
                             state.currentQuestion,
@@ -519,7 +593,7 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice2).v !== null && (
                       <button
                         id="button2"
-                        className="w-1/4 h-30 rounded-xl m-3 bg-white text-lg"
+                        className="w-1/4 h-full rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
                         onClick={() =>
                           handleChoiceClick(
                             state.currentQuestion,
@@ -535,7 +609,7 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice3).v !== null && (
                       <button
                         id="button3"
-                        className="w-1/4 h-30 rounded-xl m-3 bg-white text-lg"
+                        className="w-1/4 h-full rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
                         onClick={() =>
                           handleChoiceClick(
                             state.currentQuestion,
@@ -551,7 +625,7 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice4).v !== null && (
                       <button
                         id="button4"
-                        className="w-1/4 h-30 rounded-xl m-3 bg-white text-lg"
+                        className="w-1/4 h-full rounded-t-lg bg-white p-5 text-lg place-self-end hover:animate-pulse"
                         onClick={() =>
                           handleChoiceClick(
                             state.currentQuestion,

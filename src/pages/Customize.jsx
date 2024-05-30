@@ -71,15 +71,15 @@ export default function Customize() {
   }, []);
 
   return (
-    <div className="h-screen w-screen flex flex-col place-items-center place-content-center gap-10 bg-slate-900">
+    <div className="h-screen w-screen flex flex-col place-items-center place-content-center bg-stone-bg">
       <Header
         pageTitle="Select Your Character"
         username={username}
         profilePicture={characterImg}
       />
 
-      <div className="flex flex-row h-full w-screen">
-        <div className="flex flex-col h-full w-1/3 ml-10 place-content-center gap-3">
+      <div className="flex flex-row h-full w-full gap-5">
+        <div className="flex flex-col h-full w-1/3 place-content-center gap-3">
           {userInfo && (
             <div className="flex flex-row w-20 h-10 mt-5 bg-white place-content-center place-items-center gap-2 rounded-xl">
               <img src={star} className="w-6 h-6" />
@@ -92,12 +92,12 @@ export default function Customize() {
               <span className="text-xl font-bold">{selectedImgName}</span>
               <div className="flex flex-row w-full gap-3">
                 {/* {!handleEquipDisabled(selectedImg) && ( */}
-                <button
+                {/* <button
                   className="flex w-full bg-green-500 place-content-center text-white p-2 rounded-full"
                   onClick={() => equip(selectedImg)}
                 >
                   Equip
-                </button>
+                </button> */}
                 {/* )} */}
                 {/* {!handleBuyDisabled(selectedImg) && ( */}
                 <button
@@ -112,19 +112,19 @@ export default function Customize() {
           )}
         </div>
 
-        <div className="flex h-full w-2/3 bg-slate-500 place-content-center place-self-end">
+        <div className="flex h-full w-full bg-slate-500 place-content-center ">
           {images !== null && (
-            <div className="grid grid-cols-5 place-items-center place-content-start mt-20 mb-5 p-3 gap-5 overflow-y-scroll">
+            <div className="grid grid-cols-5 w-full h-full place-items-center place-content-start p-10 gap-5 overflow-y-scroll">
               {images.map((image) => {
                 return (
                   <button
-                    className="flex flex-col place-content-center place-items-center w-36 h-40 bg-white p-2 hover:cursor-pointer rounded gap-1"
+                    className="flex flex-col place-content-center place-items-center bg-white p-2 hover:cursor-pointer rounded gap-1"
                     onClick={() => handleImgClick(image)}
                     key={image.id}
                     // disabled={handleDisabled(image)}
                   >
                     <img
-                      className="w-28 h-28 rounded"
+                      className="w-16 rounded"
                       src={imgBucketUrl + image.name}
                     />
                     <span className="">

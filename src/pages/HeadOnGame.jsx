@@ -12,6 +12,10 @@ import axios from "axios";
 import Header from "../components/Header";
 import star from "../images/star.png";
 import nonstar from "../images/nonstar.png";
+
+import cardChar from "../images/card-filled.png";
+import cardEn from "../images/card-simple.png";
+
 import { initializeSocket } from "../initSocket";
 
 function ourReducer(draft, action) {
@@ -121,6 +125,8 @@ export default function HeadOnGame() {
   const [currQues, setCurrQues] = useState(null);
   const [timer, setTimer] = useState(null);
   const intervalRef = useRef(null);
+
+  const [choiceClicked, setChoiceClicked] = useState(false);
 
   const getPageTitle = () => {
     switch (location.state.num) {
@@ -265,6 +271,8 @@ export default function HeadOnGame() {
   };
 
   const handleChoiceClick = (q, choiceNum) => {
+    setChoiceClicked(true);
+    clearInterval(intervalRef.current);
     let val;
 
     if (JSON.parse(choiceNum).v.toString() === "false") {
@@ -286,6 +294,10 @@ export default function HeadOnGame() {
       uData: userInfo,
       val: val,
     });
+  };
+
+  const noChoiceClicked = () => {
+    setPlayerHealth(playerHealth - 5);
   };
 
   const handleSaveBtnClick = async () => {
@@ -365,6 +377,9 @@ export default function HeadOnGame() {
       setTimer(timerValue);
       if (timerValue <= 0) {
         clearInterval(intervalRef.current);
+        if (!choiceClicked) {
+          noChoiceClicked();
+        }
       }
     }, 1000);
   };
@@ -480,7 +495,7 @@ export default function HeadOnGame() {
   return (
     <>
       {profile && (
-        <div className="flex flex-col w-screen h-screen place-content-end bg-slate-900">
+        <div className="flex flex-col w-screen h-screen place-content-end bg-stone-bg bg-cover">
           <Header
             pageTitle={pageTitle}
             username={username}
@@ -565,66 +580,73 @@ export default function HeadOnGame() {
                         </div>
                       </>
                     )}
-                    <div className="flex flex-row gap-5 bg-white w-10/12 h-1/4 mb-4 p-5">
-                      {timer && <span>{timer}</span>}
-                      {currQues.imgRef != null && (
-                        <img
-                          className="w-10 h-10 cursor-pointer"
-                          src={currQues.imgRef}
-                          onClick={() => setEnlargeImg(!enlargeImg)}
-                        />
+                    <div>
+                      {timer && (
+                        <div className="flex flex-row place-items-center gap-5 p-2 place-content-center">
+                          <span className="text-white">{timer}</span>
+                          <div
+                            className="bg-blue-500 w-full h-2 transition-all rounded-full"
+                            style={{ width: `${(timer / 100) * 100}` }}
+                          ></div>
+                        </div>
                       )}
+                    </div>
+                    <div className="flex flex-row gap-5 bg-white w-10/12 h-1/4 mb-4 p-5">
                       <span className="text-xl">{currQues.question}</span>
                     </div>
                     <div className="flex relative flex-row h-2/3 w-screen">
-                      <div className="flex flex-col relative bg-white w-64 h-full left-40 place-items-center p-5 gap-4 rounded-lg">
-                        <div className="w-56">
+                      <div className="flex flex-col relative w-2/12 h-full left-40 place-items-center p-5 gap-4">
+                        <img
+                          src={cardChar}
+                          className="flex absolute bottom-0 w-full h-full "
+                        />
+                        <div className="w-5/6 z-10 mt-7">
                           <img className="rounded" src={characterImg} />
                         </div>
-                        <div className="flex gap-10 place-items-end h-7">
-                          <span className="absolute left-5 text-xl font-bold">
+                        <div className="flex gap-10 z-10 place-items-end h-6">
+                          <span className="absolute left-10 text-lg font-bold ">
                             {username}
                           </span>
-                          <span className="absolute right-5 text-sm">
+                          <span className="absolute right-10 text-sm">
                             {playerScore}
                           </span>
                         </div>
-                        <div className="absolute bottom-5 h-3 w-56 bg-red-500 rounded-lg">
+                        <div className="absolute bottom-9 h-3 w-36 bg-red-500 rounded-lg">
                           <div
                             className="h-3 w-full bg-green-400 rounded-lg"
                             style={{
-                              width: `${(playerHealth * 100) / 100}`,
+                              width: `${(playerHealth * 100) / 100}%`,
                             }}
-                          >
-                            {playerHealth}
-                          </div>
+                          ></div>
                         </div>
                       </div>
                       {enemyData && (
-                        <div className="flex flex-col absolute bg-white w-64 h-full right-40 place-items-center p-5 gap-4 rounded-lg">
-                          <div className="w-56">
+                        <div className="flex flex-col absolute right-40 place-items-center p-5 gap-4 rounded-lg w-2/12 h-full">
+                          <img
+                            src={cardEn}
+                            className="flex absolute bottom-0 w-full h-full "
+                          />
+                          <div className="w-5/6 z-10 mt-7">
                             <img
                               className="rounded"
                               src={enemyData.selectedImgUrl}
                             />
                           </div>
-                          <div className="flex gap-10 place-items-end h-7">
-                            <span className="absolute left-5 text-sm">
+                          <div className="flex gap-10 z-10 place-items-end h-6">
+                            <span className="absolute left-10 text-sm">
                               {enemyScore}
                             </span>
-                            <span className="absolute right-5 text-xl font-bold">
+                            <span className="absolute right-10 text-lg font-bold ">
                               {enemyData.username}
                             </span>
                           </div>
-                          <div className="absolute bottom-5 h-3 w-56 bg-red-500 rounded-lg">
+                          <div className="absolute bottom-9 h-3 w-36 bg-red-500 rounded-lg">
                             <div
                               className="h-3 w-full bg-green-400 rounded-lg"
-                              // style={{
-                              //   width: `${enemyHealth}`,
-                              // }}
-                            >
-                              {enemyHealth}
-                            </div>
+                              style={{
+                                width: `${(enemyHealth / 100) * 100}%`,
+                              }}
+                            ></div>
                           </div>
                         </div>
                       )}

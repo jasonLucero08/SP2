@@ -289,7 +289,7 @@ export default function Home() {
               Stats
             </span>
           </button>
-          <button
+          {/* <button
             className="group flex relative gap-5 w-4/6 font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
             onClick={handleSettingsBtnClick}
           >
@@ -301,7 +301,7 @@ export default function Home() {
             <span className="text-xl group-hover:text-2xl transition-all z-10">
               Settings
             </span>
-          </button>
+          </button> */}
           {profile && (
             <button
               className="group flex relative gap-5 w-4/6 font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
