@@ -128,6 +128,15 @@ export default function Profile() {
                   </span>
                 </div>
               </div>
+              <div className="flex flex-col">
+                <span className="text-sm">Current Stars:</span>
+                <div className="flex flex-row w-20 h-10 place-items-center gap-2">
+                  <img src={star} className="w-6 h-6" />
+                  <span className="text-xl font-bold">
+                    {userInfo.currentStars}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
           <div className="w-full h-full flex flex-row gap-5">

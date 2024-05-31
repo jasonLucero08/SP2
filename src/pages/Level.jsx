@@ -217,45 +217,53 @@ export default function Level() {
     const b3 = document.getElementById("button3");
     const b4 = document.getElementById("button4");
 
-    b1.classList.remove("bg-white");
-    b1.classList.add(
-      `${
-        JSON.parse(q.choice1).v.toString() === "true"
-          ? "bg-green-200"
-          : "bg-red-200"
-      }`
-    );
-    b1.disabled = true;
+    if (b1) {
+      b1.classList.remove("bg-white");
+      b1.classList.add(
+        `${
+          JSON.parse(q.choice1).v.toString() === "true"
+            ? "bg-green-200"
+            : "bg-red-200"
+        }`
+      );
+      b1.disabled = true;
+    }
 
-    b2.classList.remove("bg-white");
-    b2.classList.add(
-      `${
-        JSON.parse(q.choice2).v.toString() === "true"
-          ? "bg-green-200"
-          : "bg-red-200"
-      }`
-    );
-    b2.disabled = true;
+    if (b2) {
+      b2.classList.remove("bg-white");
+      b2.classList.add(
+        `${
+          JSON.parse(q.choice2).v.toString() === "true"
+            ? "bg-green-200"
+            : "bg-red-200"
+        }`
+      );
+      b2.disabled = true;
+    }
 
-    b3.classList.remove("bg-white");
-    b3.classList.add(
-      `${
-        JSON.parse(q.choice3).v.toString() === "true"
-          ? "bg-green-200"
-          : "bg-red-200"
-      }`
-    );
-    b3.disabled = true;
+    if (b3) {
+      b3.classList.remove("bg-white");
+      b3.classList.add(
+        `${
+          JSON.parse(q.choice3).v.toString() === "true"
+            ? "bg-green-200"
+            : "bg-red-200"
+        }`
+      );
+      b3.disabled = true;
+    }
 
-    b4.classList.remove("bg-white");
-    b4.classList.add(
-      `${
-        JSON.parse(q.choice4).v.toString() === "true"
-          ? "bg-green-200"
-          : "bg-red-200"
-      }`
-    );
-    b4.disabled = true;
+    if (b4) {
+      b4.classList.remove("bg-white");
+      b4.classList.add(
+        `${
+          JSON.parse(q.choice4).v.toString() === "true"
+            ? "bg-green-200"
+            : "bg-red-200"
+        }`
+      );
+      b4.disabled = true;
+    }
   };
 
   const hideButtonColors = () => {
@@ -264,37 +272,45 @@ export default function Level() {
     const b3 = document.getElementById("button3");
     const b4 = document.getElementById("button4");
 
-    b1.classList.remove("bg-green-200");
-    b1.classList.remove("bg-red-200");
-    b1.classList.add("bg-white");
-    b1.disabled = false;
+    if (b1) {
+      b1.classList.remove("bg-green-200");
+      b1.classList.remove("bg-red-200");
+      b1.classList.add("bg-white");
+      b1.disabled = false;
 
-    b1.classList.remove("h-full");
-    b1.classList.add("h-2/3");
+      b1.classList.remove("h-full");
+      b1.classList.add("h-2/3");
+    }
 
-    b2.classList.remove("h-full");
-    b2.classList.add("h-2/3");
+    if (b2) {
+      b2.classList.remove("bg-green-200");
+      b2.classList.remove("bg-red-200");
+      b2.classList.add("bg-white");
+      b2.disabled = false;
 
-    b3.classList.remove("h-full");
-    b3.classList.add("h-2/3");
+      b2.classList.remove("h-full");
+      b2.classList.add("h-2/3");
+    }
 
-    b4.classList.remove("h-full");
-    b4.classList.add("h-2/3");
+    if (b3) {
+      b3.classList.remove("bg-green-200");
+      b3.classList.remove("bg-red-200");
+      b3.classList.add("bg-white");
+      b3.disabled = false;
 
-    b2.classList.remove("bg-green-200");
-    b2.classList.remove("bg-red-200");
-    b2.classList.add("bg-white");
-    b2.disabled = false;
+      b3.classList.remove("h-full");
+      b3.classList.add("h-2/3");
+    }
 
-    b3.classList.remove("bg-green-200");
-    b3.classList.remove("bg-red-200");
-    b3.classList.add("bg-white");
-    b3.disabled = false;
+    if (b4) {
+      b4.classList.remove("bg-green-200");
+      b4.classList.remove("bg-red-200");
+      b4.classList.add("bg-white");
+      b4.disabled = false;
 
-    b4.classList.remove("bg-green-200");
-    b4.classList.remove("bg-red-200");
-    b4.classList.add("bg-white");
-    b4.disabled = false;
+      b4.classList.remove("h-full");
+      b4.classList.add("h-2/3");
+    }
   };
 
   const handleCardClick = (q, choiceNum, cardNum) => {
@@ -303,17 +319,25 @@ export default function Level() {
     const b3 = document.getElementById("button3");
     const b4 = document.getElementById("button4");
 
-    b1.classList.remove("h-full");
-    b1.classList.add("h-2/3");
+    if (b1) {
+      b1.classList.remove("h-full");
+      b1.classList.add("h-2/3");
+    }
 
-    b2.classList.remove("h-full");
-    b2.classList.add("h-2/3");
+    if (b2) {
+      b2.classList.remove("h-full");
+      b2.classList.add("h-2/3");
+    }
 
-    b3.classList.remove("h-full");
-    b3.classList.add("h-2/3");
+    if (b3) {
+      b3.classList.remove("h-full");
+      b3.classList.add("h-2/3");
+    }
 
-    b4.classList.remove("h-full");
-    b4.classList.add("h-2/3");
+    if (b4) {
+      b4.classList.remove("h-full");
+      b4.classList.add("h-2/3");
+    }
 
     if (cardNum == 1) {
       b1.classList.remove("h-2/3");

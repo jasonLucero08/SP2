@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/Auth";
 import {
   getUserInfo,
@@ -8,6 +8,7 @@ import {
 } from "../hooks/Hooks";
 import { useImmerReducer } from "use-immer";
 import axios from "axios";
+import { supabase } from "../supabaseClient";
 
 import Header from "../components/Header";
 import star from "../images/star.png";
@@ -97,6 +98,7 @@ const initialState = {
 
 export default function HeadOnGame() {
   const socket = initializeSocket();
+  const navigate = useNavigate();
 
   const location = useLocation();
 
@@ -148,7 +150,7 @@ export default function HeadOnGame() {
           setUserInfo(profile);
           setUsername(profile.username);
           setCharacter(profile);
-          setPlayerHealth(25);
+          setPlayerHealth(100);
           setPlayerScore(0);
         }
         socket.once("timer", () => {
@@ -156,6 +158,7 @@ export default function HeadOnGame() {
         });
 
         socket.emit("clearStatData");
+        socket.emit("clearUserChoiceList");
         fetchData();
         socket.once("question", (question) => {
           setCurrQues(question);
@@ -183,7 +186,6 @@ export default function HeadOnGame() {
 
       arr.forEach((name) => {
         if (name !== username) {
-          console.log(name);
           setEnemyHealth(data[name].health);
           setEnemyScore(data[name].score);
         }
@@ -194,6 +196,20 @@ export default function HeadOnGame() {
       socket.off("broadcastStatChange");
     };
   }, [playerHealth, playerScore, currQues]);
+
+  useEffect(() => {
+    if (playerHealth !== null && playerHealth <= 0) {
+      setCurrQues(null);
+      clearInterval(intervalRef.current);
+      setGameOver(true);
+      setPlaying(false);
+    } else if (enemyHealth !== null && enemyHealth <= 0) {
+      setCurrQues(null);
+      clearInterval(intervalRef.current);
+      setGameWin(true);
+      setPlaying(false);
+    }
+  }, [currQues]);
 
   useEffect(() => {
     socket.on("connect_error", (error) => {
@@ -240,7 +256,11 @@ export default function HeadOnGame() {
         });
       }, 1500);
     });
-  }, []);
+
+    return () => {
+      socket.off("showCorrectChoices");
+    };
+  }, [currQues]);
 
   const getPageTitle = () => {
     switch (location.state.num) {
@@ -295,45 +315,53 @@ export default function HeadOnGame() {
     const b3 = document.getElementById("button3");
     const b4 = document.getElementById("button4");
 
-    b1.classList.remove("bg-white");
-    b1.classList.add(
-      `${
-        JSON.parse(currQues.choice1).v.toString() === "true"
-          ? "bg-green-200"
-          : "bg-red-200"
-      }`
-    );
-    b1.disabled = true;
+    if (b1) {
+      b1.classList.remove("bg-white");
+      b1.classList.add(
+        `${
+          JSON.parse(currQues.choice1).v.toString() === "true"
+            ? "bg-green-200"
+            : "bg-red-200"
+        }`
+      );
+      b1.disabled = true;
+    }
 
-    b2.classList.remove("bg-white");
-    b2.classList.add(
-      `${
-        JSON.parse(currQues.choice2).v.toString() === "true"
-          ? "bg-green-200"
-          : "bg-red-200"
-      }`
-    );
-    b2.disabled = true;
+    if (b2) {
+      b2.classList.remove("bg-white");
+      b2.classList.add(
+        `${
+          JSON.parse(currQues.choice2).v.toString() === "true"
+            ? "bg-green-200"
+            : "bg-red-200"
+        }`
+      );
+      b2.disabled = true;
+    }
 
-    b3.classList.remove("bg-white");
-    b3.classList.add(
-      `${
-        JSON.parse(currQues.choice3).v.toString() === "true"
-          ? "bg-green-200"
-          : "bg-red-200"
-      }`
-    );
-    b3.disabled = true;
+    if (b3) {
+      b3.classList.remove("bg-white");
+      b3.classList.add(
+        `${
+          JSON.parse(currQues.choice3).v.toString() === "true"
+            ? "bg-green-200"
+            : "bg-red-200"
+        }`
+      );
+      b3.disabled = true;
+    }
 
-    b4.classList.remove("bg-white");
-    b4.classList.add(
-      `${
-        JSON.parse(currQues.choice4).v.toString() === "true"
-          ? "bg-green-200"
-          : "bg-red-200"
-      }`
-    );
-    b4.disabled = true;
+    if (b4) {
+      b4.classList.remove("bg-white");
+      b4.classList.add(
+        `${
+          JSON.parse(currQues.choice4).v.toString() === "true"
+            ? "bg-green-200"
+            : "bg-red-200"
+        }`
+      );
+      b4.disabled = true;
+    }
   };
 
   const hideButtonColors = () => {
@@ -342,25 +370,33 @@ export default function HeadOnGame() {
     const b3 = document.getElementById("button3");
     const b4 = document.getElementById("button4");
 
-    b1.classList.remove("bg-green-200");
-    b1.classList.remove("bg-red-200");
-    b1.classList.add("bg-white");
-    b1.disabled = false;
+    if (b1) {
+      b1.classList.remove("bg-green-200");
+      b1.classList.remove("bg-red-200");
+      b1.classList.add("bg-white");
+      b1.disabled = false;
+    }
 
-    b2.classList.remove("bg-green-200");
-    b2.classList.remove("bg-red-200");
-    b2.classList.add("bg-white");
-    b2.disabled = false;
+    if (b2) {
+      b2.classList.remove("bg-green-200");
+      b2.classList.remove("bg-red-200");
+      b2.classList.add("bg-white");
+      b2.disabled = false;
+    }
 
-    b3.classList.remove("bg-green-200");
-    b3.classList.remove("bg-red-200");
-    b3.classList.add("bg-white");
-    b3.disabled = false;
+    if (b3) {
+      b3.classList.remove("bg-green-200");
+      b3.classList.remove("bg-red-200");
+      b3.classList.add("bg-white");
+      b3.disabled = false;
+    }
 
-    b4.classList.remove("bg-green-200");
-    b4.classList.remove("bg-red-200");
-    b4.classList.add("bg-white");
-    b4.disabled = false;
+    if (b4) {
+      b4.classList.remove("bg-green-200");
+      b4.classList.remove("bg-red-200");
+      b4.classList.add("bg-white");
+      b4.disabled = false;
+    }
   };
 
   const handleChoiceClick = (q, choiceNum) => {
@@ -436,14 +472,16 @@ export default function HeadOnGame() {
 
   const noChoiceClicked = () => {
     clearInterval(intervalRef.current);
-    var tempHealth = playerHealth;
-    tempHealth = playerHealth - 5;
-    setPlayerHealth(tempHealth);
-    const val = "false";
+    setPlayerHealth((prevHealth) => {
+      const updatedHealth = prevHealth - 5;
+      console.log(updatedHealth); // This should now reflect the correct updated value
+      return updatedHealth;
+    });
 
+    const val = "false";
     socket.emit("sendChoice", {
       roomCode: location.state.code,
-      uData: userInfo,
+      uData: profile,
       val: val,
     });
   };
@@ -539,17 +577,25 @@ export default function HeadOnGame() {
     const b3 = document.getElementById("button3");
     const b4 = document.getElementById("button4");
 
-    b1.classList.remove("h-full");
-    b1.classList.add("h-2/3");
+    if (b1) {
+      b1.classList.remove("h-full");
+      b1.classList.add("h-2/3");
+    }
 
-    b2.classList.remove("h-full");
-    b2.classList.add("h-2/3");
+    if (b2) {
+      b2.classList.remove("h-full");
+      b2.classList.add("h-2/3");
+    }
 
-    b3.classList.remove("h-full");
-    b3.classList.add("h-2/3");
+    if (b3) {
+      b3.classList.remove("h-full");
+      b3.classList.add("h-2/3");
+    }
 
-    b4.classList.remove("h-full");
-    b4.classList.add("h-2/3");
+    if (b4) {
+      b4.classList.remove("h-full");
+      b4.classList.add("h-2/3");
+    }
 
     if (cardNum == 1) {
       b1.classList.remove("h-2/3");
@@ -570,231 +616,252 @@ export default function HeadOnGame() {
     }
   };
 
+  const handleExitBtnClick = async () => {
+    var userTotalStars = profile.totalStars;
+    var userCurrentStars = profile.currentStars;
+
+    userTotalStars += 2;
+    userCurrentStars += 2;
+
+    console.log("userTotalStars:", userTotalStars);
+    console.log("userCurrentStars:", userCurrentStars);
+
+    try {
+      const { error } = await supabase
+        .from("profile")
+        .update({ totalStars: userTotalStars, currentStars: userCurrentStars })
+        .eq("id", profile.id);
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error("Error updating stars:", error.message);
+    }
+
+    socket.disconnect();
+    navigate("/");
+  };
+
   return (
     <>
       {profile && (
         <div className="flex flex-col w-screen h-screen place-content-end bg-stone-bg bg-cover">
-          <Header
-            pageTitle="Head On"
-            username={username}
-            profilePicture={characterImg}
-            actualSocket={socket}
-          />
-
-          {playing && (
-            <>
-              {state.win && (
-                <div className="h-screen w-screen flex absolute place-content-center place-items-center z-10">
-                  <div className="h-screen w-screen bg-black opacity-50"></div>
-                  <div className="flex flex-col absolute h-1/2 w-1/3 bg-white rounded-xl p-5 place-content-center text-center gap-5">
-                    <div className="flex flex-row place-content-center gap-3">
-                      {[...Array(state.stars)].map((item, index) => {
-                        return (
-                          <img
-                            className="w-16"
-                            key={index}
-                            src={star}
-                            alt="Star"
-                          />
-                        );
-                      })}
-                      {[...Array(3 - state.stars)].map((item, index) => {
-                        return (
-                          <img
-                            className="w-16"
-                            key={index}
-                            src={nonstar}
-                            alt="Non-Star"
-                          />
-                        );
-                      })}
-                    </div>
-                    <span className="text-6xl font-bold text-green-500">
-                      You Win
-                    </span>
-                    <span className="text-2xl">Score: {state.score}</span>
-                    <button
-                      className="bg-blue-300"
-                      onClick={() => handleSaveBtnClick()}
-                    >
-                      Save
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {state.gameOver && (
-                <div className="h-screen w-screen flex absolute place-content-center place-items-center z-10">
-                  <div className="h-screen w-screen bg-black opacity-50"></div>
-                  <div className="flex flex-col absolute h-1/2 w-1/3 bg-white rounded-xl p-7 place-content-center text-center gap-5">
-                    <span className="text-6xl font-bold text-red-500">
-                      Game Over
-                    </span>
-                    <span className="text-base">
-                      Perhaps you have a lot more to learn regarding this
-                      topic...
-                    </span>
-                    <button className="bg-blue-300">Retry</button>
-                  </div>
-                </div>
-              )}
-
-              {currQues !== null && (
-                <>
-                  <div className="flex flex-col place-items-center w-screen h-full">
-                    {enlargeImg && (
-                      <>
-                        <div className="flex absolute place-content-center place-items-center h-screen top-0 z-30 gap-5">
-                          <div className="flex absolute bg-black w-screen h-screen opacity-75"></div>
-                          <button
-                            className=" w-10 h-10 z-30"
-                            onClick={() => setEnlargeImg(!enlargeImg)}
-                          >
-                            <img src={close} className="w-20" />
-                          </button>
-                          <img
-                            className="flex w-fit h-fit z-30"
-                            src={currQues.imgRef}
-                          />
-                        </div>
-                      </>
-                    )}
-                    <div className="flex w-full h-fit place-items-center place-content-center">
-                      {timer && (
-                        <div className="flex w-full place-items-center place-content-center gap-5 p-2">
-                          <span className="text-white">{timer}</span>
-                          <div
-                            className="bg-blue-500 w-full h-2 transition-all rounded-full"
-                            style={{ width: `${timer}%` }}
-                          ></div>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex flex-row gap-5 bg-white w-10/12 h-1/4 mb-4 p-5">
-                      {currQues.imgRef && (
+          <>
+            {gameWin && (
+              <div className="h-screen w-screen flex absolute place-content-center place-items-center z-40">
+                <div className="h-screen w-screen bg-black opacity-50"></div>
+                <div className="flex flex-col absolute h-1/2 w-1/3 bg-white rounded-xl p-5 place-content-center text-center gap-5">
+                  <div className="flex flex-row place-content-center gap-3">
+                    {[...Array(2)].map((item, index) => {
+                      return (
                         <img
-                          className="w-10 h-10 cursor-pointer outline outline-1"
-                          src={currQues.imgRef}
-                          onClick={() => setEnlargeImg(!enlargeImg)}
+                          className="w-16"
+                          key={index}
+                          src={star}
+                          alt="Star"
                         />
-                      )}
-                      <span className="text-xl">{currQues.question}</span>
-                    </div>
-                    <div className="flex relative flex-row h-2/3 w-screen place-items-center gap-64 place-content-center sm:gap-10 md:gap-20 lg:gap-40 xl:gap-64 2xl:gap-72">
-                      <div className="flex flex-col relative w-2/12 h-full place-items-center p-5 gap-4">
+                      );
+                    })}
+                  </div>
+                  <span className="text-6xl font-bold text-green-500">
+                    You Win
+                  </span>
+                  <span className="text-2xl">You get 2 stars!</span>
+                  <button
+                    className="bg-blue-300"
+                    onClick={() => handleExitBtnClick()}
+                  >
+                    Exit
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {gameOver && (
+              <div className="h-screen w-screen flex absolute place-content-center place-items-center z-40">
+                <div className="h-screen w-screen bg-black opacity-50"></div>
+                <div className="flex flex-col absolute h-1/2 w-1/3 bg-white rounded-xl p-7 place-content-center text-center gap-5">
+                  <span className="text-6xl font-bold text-red-500">
+                    Game Over
+                  </span>
+                  <span className="text-base">
+                    Perhaps you have a lot more to learn regarding this topic...
+                  </span>
+                  <button
+                    className="bg-red-300"
+                    onClick={() => {
+                      socket.disconnect();
+                      navigate("/");
+                    }}
+                  >
+                    Exit
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {currQues !== null && (
+              <>
+                <Header
+                  pageTitle="Head On"
+                  username={username}
+                  profilePicture={characterImg}
+                  actualSocket={socket}
+                />
+                <div className="flex flex-col place-items-center w-screen h-full">
+                  {enlargeImg && (
+                    <>
+                      <div className="flex absolute place-content-center place-items-center h-screen top-0 z-30 gap-5">
+                        <div className="flex absolute bg-black w-screen h-screen opacity-75"></div>
+                        <button
+                          className=" w-10 h-10 z-30"
+                          onClick={() => setEnlargeImg(!enlargeImg)}
+                        >
+                          <img src={close} className="w-20" />
+                        </button>
                         <img
-                          src={cardChar}
+                          className="flex w-fit h-fit z-30"
+                          src={currQues.imgRef}
+                        />
+                      </div>
+                    </>
+                  )}
+                  <div className="flex w-full h-fit place-items-center place-content-center">
+                    {timer && (
+                      <div className="flex w-full place-items-center place-content-center gap-5 p-2">
+                        <span className="text-white">{timer}</span>
+                        <div
+                          className="bg-blue-500 w-full h-2 transition-all rounded-full"
+                          style={{ width: `${timer}%` }}
+                        ></div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-row gap-5 bg-white w-10/12 h-1/4 mb-4 p-5">
+                    {currQues.imgRef && (
+                      <img
+                        className="w-10 h-10 cursor-pointer outline outline-1"
+                        src={currQues.imgRef}
+                        onClick={() => setEnlargeImg(!enlargeImg)}
+                      />
+                    )}
+                    <span className="text-xl">{currQues.question}</span>
+                  </div>
+                  <div className="flex relative flex-row h-2/3 w-screen place-items-center gap-64 place-content-center sm:gap-10 md:gap-20 lg:gap-40 xl:gap-64 2xl:gap-72">
+                    <div className="flex flex-col relative w-2/12 h-full place-items-center p-5 gap-4">
+                      <img
+                        src={cardChar}
+                        className="flex absolute bottom-0 w-full h-full "
+                      />
+                      <div className="w-5/6 z-10 mt-7">
+                        <img className="rounded" src={characterImg} />
+                      </div>
+                      <div className="flex gap-10 z-10 place-items-end h-6">
+                        <span className="absolute left-10 text-lg font-bold ">
+                          {username}
+                        </span>
+                        <span className="absolute right-10 text-sm">
+                          {playerScore}
+                        </span>
+                      </div>
+                      <div className="absolute bottom-9 h-3 w-36 bg-red-500 rounded-lg">
+                        <div
+                          className="h-3 w-full bg-green-400 rounded-lg"
+                          style={{
+                            width: `${(playerHealth * 100) / 100}%`,
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                    <button
+                      className="text-white bg-green-500 p-10"
+                      onClick={() => handleChoiceClick()}
+                    >
+                      Pick Card
+                    </button>
+                    {enemyData && (
+                      <div className="flex flex-col relative place-items-center p-5 gap-4 w-2/12 h-full">
+                        <img
+                          src={cardEn}
                           className="flex absolute bottom-0 w-full h-full "
                         />
                         <div className="w-5/6 z-10 mt-7">
-                          <img className="rounded" src={characterImg} />
+                          <img
+                            className="rounded"
+                            src={enemyData.selectedImgUrl}
+                          />
                         </div>
                         <div className="flex gap-10 z-10 place-items-end h-6">
-                          <span className="absolute left-10 text-lg font-bold ">
-                            {username}
+                          <span className="absolute left-10 text-sm">
+                            {enemyScore}
                           </span>
-                          <span className="absolute right-10 text-sm">
-                            {playerScore}
+                          <span className="absolute right-10 text-lg font-bold ">
+                            {enemyData.username}
                           </span>
                         </div>
                         <div className="absolute bottom-9 h-3 w-36 bg-red-500 rounded-lg">
                           <div
                             className="h-3 w-full bg-green-400 rounded-lg"
                             style={{
-                              width: `${(playerHealth * 100) / 100}%`,
+                              width: `${(enemyHealth / 100) * 100}%`,
                             }}
                           ></div>
                         </div>
                       </div>
-                      <button
-                        className="text-white bg-green-500 p-10"
-                        onClick={() => handleChoiceClick()}
-                      >
-                        Pick Card
-                      </button>
-                      {enemyData && (
-                        <div className="flex flex-col relative place-items-center p-5 gap-4 w-2/12 h-full">
-                          <img
-                            src={cardEn}
-                            className="flex absolute bottom-0 w-full h-full "
-                          />
-                          <div className="w-5/6 z-10 mt-7">
-                            <img
-                              className="rounded"
-                              src={enemyData.selectedImgUrl}
-                            />
-                          </div>
-                          <div className="flex gap-10 z-10 place-items-end h-6">
-                            <span className="absolute left-10 text-sm">
-                              {enemyScore}
-                            </span>
-                            <span className="absolute right-10 text-lg font-bold ">
-                              {enemyData.username}
-                            </span>
-                          </div>
-                          <div className="absolute bottom-9 h-3 w-36 bg-red-500 rounded-lg">
-                            <div
-                              className="h-3 w-full bg-green-400 rounded-lg"
-                              style={{
-                                width: `${(enemyHealth / 100) * 100}%`,
-                              }}
-                            ></div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                    )}
                   </div>
+                </div>
 
-                  <div className="flex flex-row h-1/4 w-screen place-content-center px-10">
-                    {JSON.parse(currQues.choice1).v !== null && (
-                      <button
-                        id="button1"
-                        className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
-                        onClick={() =>
-                          handleCardClick(currQues, currQues.choice1, 1)
-                        }
-                      >
-                        <span>{JSON.parse(currQues.choice1).c}</span>
-                      </button>
-                    )}
-                    {JSON.parse(currQues.choice2).v !== null && (
-                      <button
-                        id="button2"
-                        className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
-                        onClick={() =>
-                          handleCardClick(currQues, currQues.choice2, 2)
-                        }
-                      >
-                        <span>{JSON.parse(currQues.choice2).c}</span>
-                      </button>
-                    )}
-                    {JSON.parse(currQues.choice3).v !== null && (
-                      <button
-                        id="button3"
-                        className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
-                        onClick={() =>
-                          handleCardClick(currQues, currQues.choice3, 3)
-                        }
-                      >
-                        <span>{JSON.parse(currQues.choice3).c}</span>
-                      </button>
-                    )}
-                    {JSON.parse(currQues.choice4).v !== null && (
-                      <button
-                        id="button4"
-                        className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
-                        onClick={() =>
-                          handleCardClick(currQues, currQues.choice4, 4)
-                        }
-                      >
-                        <span>{JSON.parse(currQues.choice4).c}</span>
-                      </button>
-                    )}
-                  </div>
-                </>
-              )}
-            </>
-          )}
+                <div className="flex flex-row h-1/4 w-screen place-content-center px-10">
+                  {JSON.parse(currQues.choice1).v !== null && (
+                    <button
+                      id="button1"
+                      className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
+                      onClick={() =>
+                        handleCardClick(currQues, currQues.choice1, 1)
+                      }
+                    >
+                      <span>{JSON.parse(currQues.choice1).c}</span>
+                    </button>
+                  )}
+                  {JSON.parse(currQues.choice2).v !== null && (
+                    <button
+                      id="button2"
+                      className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
+                      onClick={() =>
+                        handleCardClick(currQues, currQues.choice2, 2)
+                      }
+                    >
+                      <span>{JSON.parse(currQues.choice2).c}</span>
+                    </button>
+                  )}
+                  {JSON.parse(currQues.choice3).v !== null && (
+                    <button
+                      id="button3"
+                      className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
+                      onClick={() =>
+                        handleCardClick(currQues, currQues.choice3, 3)
+                      }
+                    >
+                      <span>{JSON.parse(currQues.choice3).c}</span>
+                    </button>
+                  )}
+                  {JSON.parse(currQues.choice4).v !== null && (
+                    <button
+                      id="button4"
+                      className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
+                      onClick={() =>
+                        handleCardClick(currQues, currQues.choice4, 4)
+                      }
+                    >
+                      <span>{JSON.parse(currQues.choice4).c}</span>
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+          </>
         </div>
       )}
     </>

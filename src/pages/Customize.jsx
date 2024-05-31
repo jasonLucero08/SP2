@@ -104,9 +104,11 @@ export default function Customize() {
 
   const buy = async () => {
     var updatedStars = 0;
+    var updatedTotalCharsCount = 0;
     const charsUnlocked = profile.charactersUnlocked;
     if (profile.currentStars >= selectedCharacterCost) {
       updatedStars = profile.currentStars - selectedCharacterCost;
+      updatedTotalCharsCount = profile.totalCharactersUnlocked + 1;
       charsUnlocked[selectedImg] = "true";
 
       try {
@@ -115,6 +117,7 @@ export default function Customize() {
           .update({
             charactersUnlocked: charsUnlocked,
             currentStars: updatedStars,
+            totalCharactersUnlocked: updatedTotalCharsCount,
           })
           .eq("id", profile.id);
 
