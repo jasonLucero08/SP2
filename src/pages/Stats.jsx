@@ -3,7 +3,6 @@ import { supabase } from "../supabaseClient";
 import { useAuth } from "../hooks/Auth";
 
 import Header from "../components/Header";
-import { all } from "axios";
 
 export default function Stats() {
   const { profile } = useAuth();
@@ -13,58 +12,96 @@ export default function Stats() {
   const [characterImg, setCharacterImg] = useState(null);
 
   const [allUsers, setAllUsers] = useState(null);
+  const [showStarsTab, setShowStarsTab] = useState(true);
+  const [showCharsTab, setShowCharsTab] = useState(false);
 
   useEffect(() => {
-    async function go() {
-      try {
-        if (profile) {
-          setUserInfo(profile);
-          setUserName(profile.username);
-          setCharacterImg(profile.selectedImgUrl);
-          await getAllUsers();
-        }
-      } catch (error) {
-        console.error("Error getting users:", error.message);
-      }
+    // async function go() {
+    //   try {
+    //     if (profile) {
+    //       setUserInfo(profile);
+    //       setUserName(profile.username);
+    //       setCharacterImg(profile.selectedImgUrl);
+    //       await getStarsLB();
+    //     }
+    //   } catch (error) {
+    //     console.error("Error getting users:", error.message);
+    //   }
+    // }
+    // go();
+    if (profile) {
+      setUserInfo(profile);
+      setUserName(profile.username);
+      setCharacterImg(profile.selectedImgUrl);
+      getStarsLB();
     }
-    go();
-  }, []);
+  }, [profile]);
 
-  const getAllUsers = async () => {
+  const getStarsLB = async () => {
     try {
       const { data, error } = await supabase.from("profile").select();
       if (error) {
         throw error;
       }
       if (data) {
-        setAllUsers(data);
+        if (showStarsTab) {
+          const sortedData = data.sort((a, b) => b.totalStars - a.totalStars);
+          setAllUsers(sortedData);
+        } else if (showCharsTab) {
+          const sortedData = data.sort((a, b) => b.totalStars - a.totalStars);
+          setAllUsers(sortedData);
+        }
       }
     } catch (error) {
       console.error("Error getting users:", error.message);
     }
   };
 
+  const handleStarsTabClick = () => {
+    setShowStarsTab(true);
+    setShowCharsTab(false);
+  };
+
+  const handleCharTabClick = () => {
+    setShowCharsTab(true);
+    setShowStarsTab(false);
+  };
+
   return (
-    <div className="flex flex-col h-screen w-screen bg-slate-900 place-content-center place-items-center gap-3">
-      {/* <Header
-        pageTitle="Profile"
+    <div className="flex flex-col h-screen w-screen bg-stone-bg bg-cover place-content-center place-items-center gap-3">
+      <Header
+        pageTitle="Leaderboard"
         username={userName}
         profilePicture={characterImg}
-      /> */}
+      />
 
       {profile && (
-        <div className="flex w-full h-full bg-red-50">
-          {allUsers && (
-            <div className="w-full h-20">
-              {allUsers.map((person) => {
+        <div className="flex flex-col w-11/12 h-full">
+          <div className="flex flex-row w-full gap-2">
+            <button
+              className="flex grow bg-white rounded-t-lg p-3"
+              onClick={() => handleStarsTabClick()}
+            >
+              Stars
+            </button>
+            <button
+              className="flex grow bg-white rounded-t-lg p-3"
+              onClick={() => handleCharTabClick()}
+            >
+              Characters
+            </button>
+          </div>
+          <div className="bg-white h-full">
+            {allUsers &&
+              allUsers.map((user) => {
                 return (
-                  <span className="text-black" key={person.id}>
-                    {person.username}
-                  </span>
+                  <div className="flex" key={user.id}>
+                    <span>{user.username}</span>
+                    <span>{user.totalStars}</span>
+                  </div>
                 );
               })}
-            </div>
-          )}
+          </div>
         </div>
       )}
     </div>

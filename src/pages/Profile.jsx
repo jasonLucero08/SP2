@@ -59,6 +59,7 @@ export default function Profile() {
       }
 
       setCharacterImg(data);
+      window.location.reload();
     } catch (err) {
       console.error(err.message);
     }

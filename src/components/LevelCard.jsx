@@ -13,7 +13,7 @@ export default function LevelCard({ ...props }) {
       id={props.id}
     >
       {props.stars !== null ? (
-        <div className="flex flex-row place-content-center gap-3 z-10 mt-14 w-fit h-fit">
+        <div className="flex relative flex-row place-content-center gap-3 z-10 mt-14 w-fit h-fit">
           {[...Array(props.stars)].map((item, index) => {
             return <img className="w-16" key={index} src={star} alt="Star" />;
           })}
@@ -24,7 +24,7 @@ export default function LevelCard({ ...props }) {
           })}
         </div>
       ) : (
-        <div className="flex flex-row place-content-center gap-3 z-10 mt-14">
+        <div className="flex relative flex-row place-content-center gap-3 z-10 mt-14">
           {[...Array(3)].map((item, index) => {
             return (
               <img className="w-16" key={index} src={nonstar} alt="Non-Star" />
@@ -37,10 +37,10 @@ export default function LevelCard({ ...props }) {
         className="flex absolute w-fit h-fit"
         id={props.imageId}
       />
-      <span className="flex flex-grow text-3xl font-bold z-10 text-white">
+      <span className="flex relative flex-grow text-3xl font-bold z-10 text-white">
         {props.levelNum}
       </span>
-      <span className="flex text-xl z-10 mb-3 text-white">
+      <span className="flex relative text-xl z-10 mb-3 text-white">
         {props.levelName}
       </span>
     </button>

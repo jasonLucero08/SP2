@@ -118,8 +118,12 @@ export default function Home() {
   useEffect(() => {
     // getUser();
     if (profile) {
-      setUsername(profile.username);
-      setCharacterImg(profile.selectedImgUrl);
+      if (profile.username === null || profile.fullname === null) {
+        setInfoIncomplete(true);
+      } else {
+        setUsername(profile.username);
+        setCharacterImg(profile.selectedImgUrl);
+      }
     }
   }, [profile]);
 
@@ -127,8 +131,8 @@ export default function Home() {
     <div className="h-screen w-screen flex flex-row place-items-center place-content-center bg-stone-bg bg-cover">
       {infoIncomplete && (
         <div className="h-screen w-screen flex absolute place-content-center place-items-center">
-          <div className="h-screen w-screen bg-black opacity-50"></div>
-          <div className="flex flex-col absolute h-1/2 w-2/5 bg-white rounded-s-xl p-5 place-content-center text-center gap-3">
+          <div className="h-screen w-screen bg-black opacity-50 z-20"></div>
+          <div className="flex flex-col absolute h-1/2 w-2/5 bg-white rounded-xl p-5 place-content-center text-center gap-3 z-20">
             <span className="relative font-bold text-3xl">SET YOUR NAME</span>
             <span className="relative text-sm">
               Welcome, new user! Register your name and unique username first.
@@ -286,7 +290,7 @@ export default function Home() {
               className="w-7 group-hover:w-10 transition-all z-10"
             />
             <span className="text-white text-xl group-hover:text-2xl transition-all z-10">
-              Stats
+              Leaderboard
             </span>
           </button>
           {/* <button

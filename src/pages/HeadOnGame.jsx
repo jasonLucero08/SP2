@@ -15,6 +15,7 @@ import nonstar from "../images/nonstar.png";
 
 import cardChar from "../images/card-filled.png";
 import cardEn from "../images/card-simple.png";
+import close from "../images/close.png";
 
 import { initializeSocket } from "../initSocket";
 
@@ -127,262 +128,11 @@ export default function HeadOnGame() {
   const intervalRef = useRef(null);
 
   const [choiceClicked, setChoiceClicked] = useState(false);
+  const [choiceForClicked, setChoiceForClicked] = useState(null);
 
-  const getPageTitle = () => {
-    switch (location.state.num) {
-      case 1:
-        setPageTitle("Level One");
-        break;
-      case 2:
-        setPageTitle("Level Two");
-        break;
-      case 3:
-        setPageTitle("Level Three");
-        break;
-      case 4:
-        setPageTitle("Level Four");
-        break;
-      case 5:
-        setPageTitle("Level Five");
-        break;
-      case 6:
-        setPageTitle("Level Six");
-        break;
-      case 7:
-        setPageTitle("Level Seven");
-        break;
-      case 8:
-        setPageTitle("Level Eight");
-        break;
-      case 9:
-        setPageTitle("Level Nine");
-        break;
-      case 10:
-        setPageTitle("Level Ten");
-        break;
-      case 11:
-        setPageTitle("Level Eleven");
-        break;
-      case 12:
-        setPageTitle("Level Twelve");
-        break;
-      case 13:
-        setPageTitle("Level Thirteen");
-        break;
-      default:
-        setPageTitle(" ");
-        break;
-    }
-  };
+  const [gameOver, setGameOver] = useState(false);
+  const [gameWin, setGameWin] = useState(false);
 
-  const setLevelQuestions = (data) => {
-    const sessionQuestionCount = data.length / 2;
-    var questionCount = 0;
-
-    const questions = [];
-
-    while (questionCount < sessionQuestionCount) {
-      let randomIndex = Math.floor(Math.random() * data.length);
-      let randomElement = data[randomIndex];
-
-      if (!questions.includes(randomElement)) {
-        questions.push(randomElement);
-        questionCount++;
-      } else {
-        continue;
-      }
-    }
-
-    return questions;
-  };
-
-  const showButtonColors = () => {
-    const b1 = document.getElementById("button1");
-    const b2 = document.getElementById("button2");
-    const b3 = document.getElementById("button3");
-    const b4 = document.getElementById("button4");
-
-    b1.classList.remove("bg-white");
-    b1.classList.add(
-      `${
-        JSON.parse(currQues.choice1).v.toString() === "true"
-          ? "bg-green-200"
-          : "bg-red-200"
-      }`
-    );
-    b1.disabled = true;
-
-    b2.classList.remove("bg-white");
-    b2.classList.add(
-      `${
-        JSON.parse(currQues.choice2).v.toString() === "true"
-          ? "bg-green-200"
-          : "bg-red-200"
-      }`
-    );
-    b2.disabled = true;
-
-    b3.classList.remove("bg-white");
-    b3.classList.add(
-      `${
-        JSON.parse(currQues.choice3).v.toString() === "true"
-          ? "bg-green-200"
-          : "bg-red-200"
-      }`
-    );
-    b3.disabled = true;
-
-    b4.classList.remove("bg-white");
-    b4.classList.add(
-      `${
-        JSON.parse(currQues.choice4).v.toString() === "true"
-          ? "bg-green-200"
-          : "bg-red-200"
-      }`
-    );
-    b4.disabled = true;
-  };
-
-  const hideButtonColors = () => {
-    const b1 = document.getElementById("button1");
-    const b2 = document.getElementById("button2");
-    const b3 = document.getElementById("button3");
-    const b4 = document.getElementById("button4");
-
-    b1.classList.remove("bg-green-200");
-    b1.classList.remove("bg-red-200");
-    b1.classList.add("bg-white");
-    b1.disabled = false;
-
-    b2.classList.remove("bg-green-200");
-    b2.classList.remove("bg-red-200");
-    b2.classList.add("bg-white");
-    b2.disabled = false;
-
-    b3.classList.remove("bg-green-200");
-    b3.classList.remove("bg-red-200");
-    b3.classList.add("bg-white");
-    b3.disabled = false;
-
-    b4.classList.remove("bg-green-200");
-    b4.classList.remove("bg-red-200");
-    b4.classList.add("bg-white");
-    b4.disabled = false;
-  };
-
-  const handleChoiceClick = (q, choiceNum) => {
-    setChoiceClicked(true);
-    clearInterval(intervalRef.current);
-    let val;
-
-    if (JSON.parse(choiceNum).v.toString() === "false") {
-      val = "false";
-      var tempHealth = playerHealth;
-      tempHealth = tempHealth - 5;
-      setPlayerHealth(tempHealth);
-      console.log(tempHealth);
-    } else {
-      val = "true";
-      var tempScore = playerScore;
-      tempScore = tempScore + 1;
-      setPlayerScore(tempScore);
-      console.log(tempScore);
-    }
-
-    socket.emit("sendChoice", {
-      roomCode: location.state.code,
-      uData: userInfo,
-      val: val,
-    });
-  };
-
-  const noChoiceClicked = () => {
-    setPlayerHealth(playerHealth - 5);
-  };
-
-  const handleSaveBtnClick = async () => {
-    var currScore = state.score;
-    var currStars = state.stars;
-
-    var levelsUnlockedJSON = null;
-    var levelStarsJSON = null;
-    var starsToAdd = 0;
-    var nextLevelId = "";
-
-    const userData = profile;
-    var starTotal = userData.totalStars;
-
-    levelsUnlockedJSON = userData.levelsUnlocked;
-    levelStarsJSON = userData.levelStars;
-
-    if (currScore > levelsUnlockedJSON[levelid]) {
-      if (levelid != "L13" && levelsUnlockedJSON[levelid] == 0) {
-        const arr = levelid.split("");
-        let lastElement = arr[arr.length - 1];
-        const changedVal = parseInt(lastElement) + 1;
-        arr[arr.length - 1] = changedVal.toString();
-        nextLevelId = arr.join("");
-
-        levelsUnlockedJSON[nextLevelId] = 0;
-      }
-
-      levelsUnlockedJSON[levelid] = currScore;
-    }
-
-    if (currStars > levelStarsJSON[levelid]) {
-      if (levelid != "L13" && levelStarsJSON[levelid] == 0) {
-        levelStarsJSON[nextLevelId] = 0;
-      }
-
-      starsToAdd = currStars - levelStarsJSON[levelid];
-      starTotal += starsToAdd;
-      levelStarsJSON[levelid] = currStars;
-    }
-
-    await saveScorePerLevel(
-      profile.id,
-      levelsUnlockedJSON,
-      levelStarsJSON,
-      starTotal
-    );
-
-    const userData2 = profile;
-    console.log(userData2.levelsUnlocked);
-    console.log(userData2.levelStars);
-    console.log(userData2.totalStars);
-  };
-
-  const setCharacter = (data) => {
-    setCharacterImg(data.selectedImgUrl);
-    const b = data.selectedImgUrl.split("/");
-    setCharacterName(b[b.length - 1].split(".").slice(0, -1).join("."));
-  };
-
-  // const handleQuesImgClick = (img) => {};
-  const fetchData = async () => {
-    try {
-      await axios.get("http://localhost:4000/fetch-questions");
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const startTimer = () => {
-    clearInterval(intervalRef.current);
-    let timerValue = 30;
-    setTimer(timerValue);
-
-    intervalRef.current = setInterval(() => {
-      timerValue--;
-      setTimer(timerValue);
-      if (timerValue <= 0) {
-        clearInterval(intervalRef.current);
-        if (!choiceClicked) {
-          noChoiceClicked();
-        }
-      }
-    }, 1000);
-  };
   useEffect(() => {
     getPageTitle();
 
@@ -398,7 +148,7 @@ export default function HeadOnGame() {
           setUserInfo(profile);
           setUsername(profile.username);
           setCharacter(profile);
-          setPlayerHealth(100);
+          setPlayerHealth(25);
           setPlayerScore(0);
         }
         socket.once("timer", () => {
@@ -492,12 +242,340 @@ export default function HeadOnGame() {
     });
   }, []);
 
+  const getPageTitle = () => {
+    switch (location.state.num) {
+      case 1:
+        setPageTitle("Level One");
+        break;
+      case 2:
+        setPageTitle("Level Two");
+        break;
+      case 3:
+        setPageTitle("Level Three");
+        break;
+      case 4:
+        setPageTitle("Level Four");
+        break;
+      case 5:
+        setPageTitle("Level Five");
+        break;
+      case 6:
+        setPageTitle("Level Six");
+        break;
+      case 7:
+        setPageTitle("Level Seven");
+        break;
+      case 8:
+        setPageTitle("Level Eight");
+        break;
+      case 9:
+        setPageTitle("Level Nine");
+        break;
+      case 10:
+        setPageTitle("Level Ten");
+        break;
+      case 11:
+        setPageTitle("Level Eleven");
+        break;
+      case 12:
+        setPageTitle("Level Twelve");
+        break;
+      case 13:
+        setPageTitle("Level Thirteen");
+        break;
+      default:
+        setPageTitle(" ");
+        break;
+    }
+  };
+
+  const showButtonColors = () => {
+    const b1 = document.getElementById("button1");
+    const b2 = document.getElementById("button2");
+    const b3 = document.getElementById("button3");
+    const b4 = document.getElementById("button4");
+
+    b1.classList.remove("bg-white");
+    b1.classList.add(
+      `${
+        JSON.parse(currQues.choice1).v.toString() === "true"
+          ? "bg-green-200"
+          : "bg-red-200"
+      }`
+    );
+    b1.disabled = true;
+
+    b2.classList.remove("bg-white");
+    b2.classList.add(
+      `${
+        JSON.parse(currQues.choice2).v.toString() === "true"
+          ? "bg-green-200"
+          : "bg-red-200"
+      }`
+    );
+    b2.disabled = true;
+
+    b3.classList.remove("bg-white");
+    b3.classList.add(
+      `${
+        JSON.parse(currQues.choice3).v.toString() === "true"
+          ? "bg-green-200"
+          : "bg-red-200"
+      }`
+    );
+    b3.disabled = true;
+
+    b4.classList.remove("bg-white");
+    b4.classList.add(
+      `${
+        JSON.parse(currQues.choice4).v.toString() === "true"
+          ? "bg-green-200"
+          : "bg-red-200"
+      }`
+    );
+    b4.disabled = true;
+  };
+
+  const hideButtonColors = () => {
+    const b1 = document.getElementById("button1");
+    const b2 = document.getElementById("button2");
+    const b3 = document.getElementById("button3");
+    const b4 = document.getElementById("button4");
+
+    b1.classList.remove("bg-green-200");
+    b1.classList.remove("bg-red-200");
+    b1.classList.add("bg-white");
+    b1.disabled = false;
+
+    b2.classList.remove("bg-green-200");
+    b2.classList.remove("bg-red-200");
+    b2.classList.add("bg-white");
+    b2.disabled = false;
+
+    b3.classList.remove("bg-green-200");
+    b3.classList.remove("bg-red-200");
+    b3.classList.add("bg-white");
+    b3.disabled = false;
+
+    b4.classList.remove("bg-green-200");
+    b4.classList.remove("bg-red-200");
+    b4.classList.add("bg-white");
+    b4.disabled = false;
+  };
+
+  const handleChoiceClick = (q, choiceNum) => {
+    setChoiceClicked(true);
+    let val;
+
+    if (choiceForClicked === 1) {
+      if (JSON.parse(currQues.choice1).v.toString() === "false") {
+        val = "false";
+        var tempHealth = playerHealth;
+        tempHealth = tempHealth - 5;
+        setPlayerHealth(tempHealth);
+        console.log(tempHealth);
+      } else {
+        val = "true";
+        var tempScore = playerScore;
+        tempScore = tempScore + 1;
+        setPlayerScore(tempScore);
+        console.log(tempScore);
+      }
+    } else if (choiceForClicked === 2) {
+      if (JSON.parse(currQues.choice2).v.toString() === "false") {
+        val = "false";
+        var tempHealth = playerHealth;
+        tempHealth = tempHealth - 5;
+        setPlayerHealth(tempHealth);
+        console.log(tempHealth);
+      } else {
+        val = "true";
+        var tempScore = playerScore;
+        tempScore = tempScore + 1;
+        setPlayerScore(tempScore);
+        console.log(tempScore);
+      }
+    } else if (choiceForClicked === 3) {
+      if (JSON.parse(currQues.choice3).v.toString() === "false") {
+        val = "false";
+        var tempHealth = playerHealth;
+        tempHealth = tempHealth - 5;
+        setPlayerHealth(tempHealth);
+        console.log(tempHealth);
+      } else {
+        val = "true";
+        var tempScore = playerScore;
+        tempScore = tempScore + 1;
+        setPlayerScore(tempScore);
+        console.log(tempScore);
+      }
+    } else if (choiceForClicked === 4) {
+      if (JSON.parse(currQues.choice4).v.toString() === "false") {
+        val = "false";
+        var tempHealth = playerHealth;
+        tempHealth = tempHealth - 5;
+        setPlayerHealth(tempHealth);
+        console.log(tempHealth);
+      } else {
+        val = "true";
+        var tempScore = playerScore;
+        tempScore = tempScore + 1;
+        setPlayerScore(tempScore);
+        console.log(tempScore);
+      }
+    }
+    setChoiceForClicked(null);
+    setChoiceClicked(false);
+
+    socket.emit("sendChoice", {
+      roomCode: location.state.code,
+      uData: userInfo,
+      val: val,
+    });
+  };
+
+  const noChoiceClicked = () => {
+    clearInterval(intervalRef.current);
+    var tempHealth = playerHealth;
+    tempHealth = playerHealth - 5;
+    setPlayerHealth(tempHealth);
+    const val = "false";
+
+    socket.emit("sendChoice", {
+      roomCode: location.state.code,
+      uData: userInfo,
+      val: val,
+    });
+  };
+
+  const handleSaveBtnClick = async () => {
+    var currScore = state.score;
+    var currStars = state.stars;
+
+    var levelsUnlockedJSON = null;
+    var levelStarsJSON = null;
+    var starsToAdd = 0;
+    var nextLevelId = "";
+
+    const userData = profile;
+    var starTotal = userData.totalStars;
+
+    levelsUnlockedJSON = userData.levelsUnlocked;
+    levelStarsJSON = userData.levelStars;
+
+    if (currScore > levelsUnlockedJSON[levelid]) {
+      if (levelid != "L13" && levelsUnlockedJSON[levelid] == 0) {
+        const arr = levelid.split("");
+        let lastElement = arr[arr.length - 1];
+        const changedVal = parseInt(lastElement) + 1;
+        arr[arr.length - 1] = changedVal.toString();
+        nextLevelId = arr.join("");
+
+        levelsUnlockedJSON[nextLevelId] = 0;
+      }
+
+      levelsUnlockedJSON[levelid] = currScore;
+    }
+
+    if (currStars > levelStarsJSON[levelid]) {
+      if (levelid != "L13" && levelStarsJSON[levelid] == 0) {
+        levelStarsJSON[nextLevelId] = 0;
+      }
+
+      starsToAdd = currStars - levelStarsJSON[levelid];
+      starTotal += starsToAdd;
+      levelStarsJSON[levelid] = currStars;
+    }
+
+    await saveScorePerLevel(
+      profile.id,
+      levelsUnlockedJSON,
+      levelStarsJSON,
+      starTotal
+    );
+
+    const userData2 = profile;
+    console.log(userData2.levelsUnlocked);
+    console.log(userData2.levelStars);
+    console.log(userData2.totalStars);
+  };
+
+  const setCharacter = (data) => {
+    setCharacterImg(data.selectedImgUrl);
+    const b = data.selectedImgUrl.split("/");
+    setCharacterName(b[b.length - 1].split(".").slice(0, -1).join("."));
+  };
+
+  // const handleQuesImgClick = (img) => {};
+  const fetchData = async () => {
+    try {
+      await axios.get("http://localhost:4000/fetch-questions");
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const startTimer = () => {
+    clearInterval(intervalRef.current);
+    let timerValue = 5;
+    setTimer(timerValue);
+
+    intervalRef.current = setInterval(() => {
+      timerValue--;
+      setTimer(timerValue);
+      if (timerValue <= 0) {
+        setEnlargeImg(false);
+        clearInterval(intervalRef.current);
+        if (!choiceClicked) {
+          noChoiceClicked();
+        }
+      }
+    }, 1000);
+  };
+
+  const handleCardClick = (q, choiceNum, cardNum) => {
+    const b1 = document.getElementById("button1");
+    const b2 = document.getElementById("button2");
+    const b3 = document.getElementById("button3");
+    const b4 = document.getElementById("button4");
+
+    b1.classList.remove("h-full");
+    b1.classList.add("h-2/3");
+
+    b2.classList.remove("h-full");
+    b2.classList.add("h-2/3");
+
+    b3.classList.remove("h-full");
+    b3.classList.add("h-2/3");
+
+    b4.classList.remove("h-full");
+    b4.classList.add("h-2/3");
+
+    if (cardNum == 1) {
+      b1.classList.remove("h-2/3");
+      b1.classList.add("h-full");
+      setChoiceForClicked(1);
+    } else if (cardNum == 2) {
+      b2.classList.remove("h-2/3");
+      b2.classList.add("h-full");
+      setChoiceForClicked(2);
+    } else if (cardNum == 3) {
+      b3.classList.remove("h-2/3");
+      b3.classList.add("h-full");
+      setChoiceForClicked(3);
+    } else if (cardNum == 4) {
+      b4.classList.remove("h-2/3");
+      b4.classList.add("h-full");
+      setChoiceForClicked(4);
+    }
+  };
+
   return (
     <>
       {profile && (
         <div className="flex flex-col w-screen h-screen place-content-end bg-stone-bg bg-cover">
           <Header
-            pageTitle={pageTitle}
+            pageTitle="Head On"
             username={username}
             profilePicture={characterImg}
             actualSocket={socket}
@@ -563,39 +641,47 @@ export default function HeadOnGame() {
 
               {currQues !== null && (
                 <>
-                  <div className="flex flex-col place-items-center w-screen h-2/3">
+                  <div className="flex flex-col place-items-center w-screen h-full">
                     {enlargeImg && (
                       <>
-                        <div className="flex absolute place-content-center place-items-center w-11/12 h-auto z-10 bg-white">
+                        <div className="flex absolute place-content-center place-items-center h-screen top-0 z-30 gap-5">
+                          <div className="flex absolute bg-black w-screen h-screen opacity-75"></div>
                           <button
-                            className="absolute left-0 top-0 w-10 h-10"
+                            className=" w-10 h-10 z-30"
                             onClick={() => setEnlargeImg(!enlargeImg)}
                           >
-                            X
+                            <img src={close} className="w-20" />
                           </button>
                           <img
-                            className="flex w-fit h-fit"
+                            className="flex w-fit h-fit z-30"
                             src={currQues.imgRef}
                           />
                         </div>
                       </>
                     )}
-                    <div>
+                    <div className="flex w-full h-fit place-items-center place-content-center">
                       {timer && (
-                        <div className="flex flex-row place-items-center gap-5 p-2 place-content-center">
+                        <div className="flex w-full place-items-center place-content-center gap-5 p-2">
                           <span className="text-white">{timer}</span>
                           <div
                             className="bg-blue-500 w-full h-2 transition-all rounded-full"
-                            style={{ width: `${(timer / 100) * 100}` }}
+                            style={{ width: `${timer}%` }}
                           ></div>
                         </div>
                       )}
                     </div>
                     <div className="flex flex-row gap-5 bg-white w-10/12 h-1/4 mb-4 p-5">
+                      {currQues.imgRef && (
+                        <img
+                          className="w-10 h-10 cursor-pointer outline outline-1"
+                          src={currQues.imgRef}
+                          onClick={() => setEnlargeImg(!enlargeImg)}
+                        />
+                      )}
                       <span className="text-xl">{currQues.question}</span>
                     </div>
-                    <div className="flex relative flex-row h-2/3 w-screen">
-                      <div className="flex flex-col relative w-2/12 h-full left-40 place-items-center p-5 gap-4">
+                    <div className="flex relative flex-row h-2/3 w-screen place-items-center gap-64 place-content-center sm:gap-10 md:gap-20 lg:gap-40 xl:gap-64 2xl:gap-72">
+                      <div className="flex flex-col relative w-2/12 h-full place-items-center p-5 gap-4">
                         <img
                           src={cardChar}
                           className="flex absolute bottom-0 w-full h-full "
@@ -620,8 +706,14 @@ export default function HeadOnGame() {
                           ></div>
                         </div>
                       </div>
+                      <button
+                        className="text-white bg-green-500 p-10"
+                        onClick={() => handleChoiceClick()}
+                      >
+                        Pick Card
+                      </button>
                       {enemyData && (
-                        <div className="flex flex-col absolute right-40 place-items-center p-5 gap-4 rounded-lg w-2/12 h-full">
+                        <div className="flex flex-col relative place-items-center p-5 gap-4 w-2/12 h-full">
                           <img
                             src={cardEn}
                             className="flex absolute bottom-0 w-full h-full "
@@ -657,9 +749,9 @@ export default function HeadOnGame() {
                     {JSON.parse(currQues.choice1).v !== null && (
                       <button
                         id="button1"
-                        className="w-1/4 h-30 rounded-xl m-3 bg-white p-5 text-lg"
+                        className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
                         onClick={() =>
-                          handleChoiceClick(currQues, currQues.choice1)
+                          handleCardClick(currQues, currQues.choice1, 1)
                         }
                       >
                         <span>{JSON.parse(currQues.choice1).c}</span>
@@ -668,9 +760,9 @@ export default function HeadOnGame() {
                     {JSON.parse(currQues.choice2).v !== null && (
                       <button
                         id="button2"
-                        className="w-1/4 h-30 rounded-xl m-3 bg-white text-lg"
+                        className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
                         onClick={() =>
-                          handleChoiceClick(currQues, currQues.choice2)
+                          handleCardClick(currQues, currQues.choice2, 2)
                         }
                       >
                         <span>{JSON.parse(currQues.choice2).c}</span>
@@ -679,9 +771,9 @@ export default function HeadOnGame() {
                     {JSON.parse(currQues.choice3).v !== null && (
                       <button
                         id="button3"
-                        className="w-1/4 h-30 rounded-xl m-3 bg-white text-lg"
+                        className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
                         onClick={() =>
-                          handleChoiceClick(currQues, currQues.choice3)
+                          handleCardClick(currQues, currQues.choice3, 3)
                         }
                       >
                         <span>{JSON.parse(currQues.choice3).c}</span>
@@ -690,9 +782,9 @@ export default function HeadOnGame() {
                     {JSON.parse(currQues.choice4).v !== null && (
                       <button
                         id="button4"
-                        className="w-1/4 h-30 rounded-xl m-3 bg-white text-lg"
+                        className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
                         onClick={() =>
-                          handleChoiceClick(currQues, currQues.choice4)
+                          handleCardClick(currQues, currQues.choice4, 4)
                         }
                       >
                         <span>{JSON.parse(currQues.choice4).c}</span>

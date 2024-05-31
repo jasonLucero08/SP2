@@ -41,7 +41,8 @@ const saveScorePerLevel = async (
   userid,
   levelsUnlocked,
   levelStars,
-  starTotal
+  starTotal,
+  starCurrent
 ) => {
   try {
     const { error } = await supabase
@@ -50,6 +51,7 @@ const saveScorePerLevel = async (
         levelsUnlocked: levelsUnlocked,
         levelStars: levelStars,
         totalStars: starTotal,
+        currentStars: starCurrent,
       })
       .eq("id", userid);
 

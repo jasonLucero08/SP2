@@ -13,6 +13,7 @@ import star from "../images/star.png";
 import nonstar from "../images/nonstar.png";
 import cardChar from "../images/card-filled.png";
 import cardEn from "../images/card-simple.png";
+import close from "../images/close.png";
 
 function ourReducer(draft, action) {
   switch (action.type) {
@@ -20,15 +21,23 @@ function ourReducer(draft, action) {
       draft.playing = true;
       draft.currentQuestion = getCurrentQuestion();
       draft.playerHealth = draft.questionsLength;
-      draft.score = draft.questionsLength;
+      draft.score = 0;
       draft.gameOver = false;
-      draft.stars = 3;
+      draft.stars = 0;
       draft.win = false;
       window.location.reload();
       return;
     case "noChoiceClicked":
       draft.playerHealth -= 1;
-      draft.score -= 1;
+      draft.currentQuestion = getCurrentQuestion();
+
+      if (draft.currentQuestion == null && draft.score > 0) {
+        draft.win = true;
+      }
+
+      if (draft.playerHealth <= 0) {
+        draft.gameOver = true;
+      }
       return;
     case "guessAttempt":
       const threeStarLimit = 0.8 * draft.questionsLength;
@@ -36,16 +45,18 @@ function ourReducer(draft, action) {
 
       if (action.value === "false") {
         draft.playerHealth -= 1;
-        draft.score -= 1;
+      } else {
+        draft.score += 1;
       }
 
-      if (draft.stars == 3 && draft.score < threeStarLimit) {
-        draft.stars -= 1;
-      } else if (draft.stars == 2 && draft.score < twoStarLimit) {
-        draft.stars -= 1;
-      } else if (draft.score == 0) {
-        draft.stars -= 1;
+      if (draft.playerHealth <= 0) {
         draft.gameOver = true;
+      } else if (draft.score >= threeStarLimit) {
+        draft.stars = 3;
+      } else if (draft.score >= twoStarLimit) {
+        draft.stars = 2;
+      } else {
+        draft.stars = 1;
       }
 
       console.log("Score: " + draft.score);
@@ -53,7 +64,7 @@ function ourReducer(draft, action) {
 
       draft.currentQuestion = getCurrentQuestion();
 
-      if (draft.currentQuestion == null) {
+      if (draft.currentQuestion == null && draft.score > 0) {
         draft.win = true;
       }
       return;
@@ -62,9 +73,9 @@ function ourReducer(draft, action) {
       draft.playing = true;
       draft.currentQuestion = getCurrentQuestion();
       draft.playerHealth = draft.questionsLength;
-      draft.score = draft.questionsLength;
+      draft.score = 0;
       draft.gameOver = false;
-      draft.stars = 3;
+      draft.stars = 0;
       draft.win = false;
       return;
 
@@ -103,7 +114,7 @@ const initialState = {
   playerHealth: 100,
   win: false,
   gameOver: false,
-  stars: 3,
+  stars: 0,
 };
 
 export default function Level() {
@@ -128,6 +139,9 @@ export default function Level() {
   const [timer, setTimer] = useState(null);
   const intervalRef = useRef(null);
   const [choiceClicked, setChoiceClicked] = useState(false);
+
+  const [questionForClicked, setQuestionForClicked] = useState(null);
+  const [choiceForClicked, setChoiceForClicked] = useState(null);
 
   const getPageTitle = () => {
     switch (location.state.num) {
@@ -255,6 +269,18 @@ export default function Level() {
     b1.classList.add("bg-white");
     b1.disabled = false;
 
+    b1.classList.remove("h-full");
+    b1.classList.add("h-2/3");
+
+    b2.classList.remove("h-full");
+    b2.classList.add("h-2/3");
+
+    b3.classList.remove("h-full");
+    b3.classList.add("h-2/3");
+
+    b4.classList.remove("h-full");
+    b4.classList.add("h-2/3");
+
     b2.classList.remove("bg-green-200");
     b2.classList.remove("bg-red-200");
     b2.classList.add("bg-white");
@@ -271,18 +297,75 @@ export default function Level() {
     b4.disabled = false;
   };
 
-  const handleChoiceClick = (q, choiceNum) => {
+  const handleCardClick = (q, choiceNum, cardNum) => {
+    const b1 = document.getElementById("button1");
+    const b2 = document.getElementById("button2");
+    const b3 = document.getElementById("button3");
+    const b4 = document.getElementById("button4");
+
+    b1.classList.remove("h-full");
+    b1.classList.add("h-2/3");
+
+    b2.classList.remove("h-full");
+    b2.classList.add("h-2/3");
+
+    b3.classList.remove("h-full");
+    b3.classList.add("h-2/3");
+
+    b4.classList.remove("h-full");
+    b4.classList.add("h-2/3");
+
+    if (cardNum == 1) {
+      b1.classList.remove("h-2/3");
+      b1.classList.add("h-full");
+      setChoiceForClicked(1);
+    } else if (cardNum == 2) {
+      b2.classList.remove("h-2/3");
+      b2.classList.add("h-full");
+      setChoiceForClicked(2);
+    } else if (cardNum == 3) {
+      b3.classList.remove("h-2/3");
+      b3.classList.add("h-full");
+      setChoiceForClicked(3);
+    } else if (cardNum == 4) {
+      b4.classList.remove("h-2/3");
+      b4.classList.add("h-full");
+      setChoiceForClicked(4);
+    }
+  };
+
+  const handleChoicePick = () => {
     setChoiceClicked(true);
-    showButtonColors(q);
+    showButtonColors(state.currentQuestion);
     clearInterval(intervalRef.current);
 
     setTimeout(function () {
+      setChoiceForClicked(null);
       hideButtonColors();
 
-      dispatch({
-        type: "guessAttempt",
-        value: JSON.parse(choiceNum).v.toString(),
-      });
+      if (choiceForClicked === 1) {
+        dispatch({
+          type: "guessAttempt",
+          value: JSON.parse(state.currentQuestion.choice1).v.toString(),
+        });
+      } else if (choiceForClicked === 2) {
+        dispatch({
+          type: "guessAttempt",
+          value: JSON.parse(state.currentQuestion.choice2).v.toString(),
+        });
+      } else if (choiceForClicked === 3) {
+        dispatch({
+          type: "guessAttempt",
+          value: JSON.parse(state.currentQuestion.choice3).v.toString(),
+        });
+      } else if (choiceForClicked === 4) {
+        dispatch({
+          type: "guessAttempt",
+          value: JSON.parse(state.currentQuestion.choice4).v.toString(),
+        });
+      }
+
+      setChoiceClicked(false);
     }, 1500);
   };
 
@@ -297,6 +380,7 @@ export default function Level() {
 
     const userData = await getUserInfo(profile.id);
     var starTotal = userData.totalStars;
+    var starCurrent = userData.currentStars;
 
     levelsUnlockedJSON = userData.levelsUnlocked;
     levelStarsJSON = userData.levelStars;
@@ -322,6 +406,7 @@ export default function Level() {
 
       starsToAdd = currStars - levelStarsJSON[levelid];
       starTotal += starsToAdd;
+      starCurrent += starsToAdd;
       levelStarsJSON[levelid] = currStars;
     }
 
@@ -329,7 +414,8 @@ export default function Level() {
       profile.id,
       levelsUnlockedJSON,
       levelStarsJSON,
-      starTotal
+      starTotal,
+      starCurrent
     );
 
     dispatch({ type: "startOver" });
@@ -337,6 +423,17 @@ export default function Level() {
     const nextLevel = location.state.num + 1;
     console.log(nextLevel);
     navigate("/singleplayer-level", { state: { num: nextLevel } });
+  };
+
+  const handleRetryClick = () => {
+    dispatch({ type: "startOver" });
+    navigate("/singleplayer-level", {
+      state: { num: location.state.num },
+    });
+  };
+
+  const handleExitBtnClick = () => {
+    navigate("/singleplayermap");
   };
 
   const setCharacter = (data) => {
@@ -355,6 +452,7 @@ export default function Level() {
       timerValue--;
       setTimer(timerValue);
       if (timerValue <= 0) {
+        setEnlargeImg(false);
         clearInterval(intervalRef.current);
 
         if (!choiceClicked) {
@@ -399,6 +497,7 @@ export default function Level() {
 
   useEffect(() => {
     startTimer();
+    setChoiceClicked(false);
   }, [state.currentQuestion]);
 
   useEffect(() => {
@@ -472,7 +571,20 @@ export default function Level() {
                       Perhaps you have a lot more to learn regarding this
                       topic...
                     </span>
-                    <button className="bg-blue-300">Retry</button>
+                    <button
+                      className="bg-blue-300"
+                      onClick={() => {
+                        handleRetryClick();
+                      }}
+                    >
+                      Retry
+                    </button>
+                    <button
+                      className="bg-red-300"
+                      onClick={() => handleExitBtnClick()}
+                    >
+                      Exit
+                    </button>
                   </div>
                 </div>
               )}
@@ -495,18 +607,19 @@ export default function Level() {
                       </div>
                     )}
                   </div>
-                  <div className="flex flex-col place-items-center w-screen h-2/3">
+                  <div className="flex flex-col place-items-center w-screen h-full">
                     {enlargeImg && (
                       <>
-                        <div className="flex absolute place-content-center place-items-center w-11/12 h-auto z-10 bg-white">
+                        <div className="flex absolute place-content-center place-items-center h-screen top-0 z-30 gap-5">
+                          <div className="flex absolute bg-black w-screen h-screen opacity-75"></div>
                           <button
-                            className="absolute left-0 top-0 w-10 h-10"
+                            className=" w-10 h-10 z-30"
                             onClick={() => setEnlargeImg(!enlargeImg)}
                           >
-                            X
+                            <img src={close} className="w-20" />
                           </button>
                           <img
-                            className="flex w-fit h-fit"
+                            className="flex w-fit h-fit z-30"
                             src={state.currentQuestion.imgRef}
                           />
                         </div>
@@ -515,7 +628,7 @@ export default function Level() {
                     <div className="flex flex-row gap-5 bg-white w-10/12 h-1/4 mb-4 p-5">
                       {state.currentQuestion.imgRef && (
                         <img
-                          className="w-10 h-10 cursor-pointer"
+                          className="w-10 h-10 cursor-pointer outline outline-1"
                           src={state.currentQuestion.imgRef}
                           onClick={() => setEnlargeImg(!enlargeImg)}
                         />
@@ -524,8 +637,8 @@ export default function Level() {
                         {state.currentQuestion.question}
                       </span>
                     </div>
-                    <div className="flex relative flex-row h-2/3 w-screen">
-                      <div className="flex flex-col relative w-2/12 h-full left-40 place-items-center p-5 gap-4">
+                    <div className="flex relative flex-row h-2/3 w-screen place-items-center gap-64 place-content-center sm:gap-10 md:gap-20 lg:gap-40 xl:gap-64 2xl:gap-72">
+                      <div className="flex flex-col relative w-2/12 h-full place-items-center p-5 gap-4">
                         <img
                           src={cardChar}
                           className="flex absolute bottom-0 w-full h-full "
@@ -553,7 +666,15 @@ export default function Level() {
                           ></div>
                         </div>
                       </div>
-                      <div className="flex flex-col absolute right-40 place-items-center p-5 gap-4 rounded-lg w-2/12 h-full">
+                      <button
+                        className="text-white bg-green-500 p-10"
+                        onClick={() => {
+                          handleChoicePick();
+                        }}
+                      >
+                        Pick Card
+                      </button>
+                      <div className="flex flex-col relative place-items-center p-5 gap-4 w-2/12 h-full">
                         <img
                           src={cardEn}
                           className="flex absolute bottom-0 w-full h-full "
@@ -577,11 +698,12 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice1).v !== null && (
                       <button
                         id="button1"
-                        className="w-1/4 h-full rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
+                        className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
                         onClick={() =>
-                          handleChoiceClick(
+                          handleCardClick(
                             state.currentQuestion,
-                            state.currentQuestion.choice1
+                            state.currentQuestion.choice1,
+                            1
                           )
                         }
                       >
@@ -593,11 +715,12 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice2).v !== null && (
                       <button
                         id="button2"
-                        className="w-1/4 h-full rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
+                        className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
                         onClick={() =>
-                          handleChoiceClick(
+                          handleCardClick(
                             state.currentQuestion,
-                            state.currentQuestion.choice2
+                            state.currentQuestion.choice2,
+                            2
                           )
                         }
                       >
@@ -609,11 +732,12 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice3).v !== null && (
                       <button
                         id="button3"
-                        className="w-1/4 h-full rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
+                        className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
                         onClick={() =>
-                          handleChoiceClick(
+                          handleCardClick(
                             state.currentQuestion,
-                            state.currentQuestion.choice3
+                            state.currentQuestion.choice3,
+                            3
                           )
                         }
                       >
@@ -625,11 +749,12 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice4).v !== null && (
                       <button
                         id="button4"
-                        className="w-1/4 h-full rounded-t-lg bg-white p-5 text-lg place-self-end hover:animate-pulse"
+                        className="w-1/4 h-2/3 rounded-t-lg bg-white p-5 text-lg place-self-end hover:animate-pulse"
                         onClick={() =>
-                          handleChoiceClick(
+                          handleCardClick(
                             state.currentQuestion,
-                            state.currentQuestion.choice4
+                            state.currentQuestion.choice4,
+                            4
                           )
                         }
                       >
