@@ -7,11 +7,13 @@ import Home from "./pages/Home";
 import SinglePlayerMap from "./pages/SingleplayerMap";
 import Level from "./pages/Level";
 import Customize from "./pages/Customize";
-import Admin from "./pages/Admin";
 import HeadOnLobby from "./pages/HeadOnLobby";
 import HeadOnGame from "./pages/HeadOnGame";
 import Profile from "./pages/Profile";
 import Stats from "./pages/Stats";
+import AddQuestion from "./pages/AddQuestion";
+import ModifyQuestion from "./pages/ModifyQuestion";
+import DeleteQuestion from "./pages/DeleteQuestion";
 
 function App() {
   return (
@@ -26,7 +28,9 @@ function App() {
         <Route path="/head-on-lobby" element={<HeadOnLobby />} />
         <Route path="/room/:roomId" element={<HeadOnGame />} />
         <Route path="/shop" element={<Customize />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin-add-question" element={<AddQuestion />} />
+        <Route path="/admin-modify-question" element={<AddQuestion />} />
+        <Route path="/admin-delete-question" element={<AddQuestion />} />
       </Routes>
     </div>
   );

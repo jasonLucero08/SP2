@@ -35,6 +35,7 @@ export default function Home() {
   const [usernameError, setUsernameError] = useState(null);
 
   const [characterImg, setCharacterImg] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const handleRegisterBtnClick = async (e) => {
     e.preventDefault();
@@ -110,8 +111,21 @@ export default function Home() {
     navigate("/profile");
   };
 
+  const handleAddQClick = () => {
+    navigate("/admin-add-question");
+  };
+
+  const handleModifyQClick = () => {
+    navigate("/admin-modify-question");
+  };
+
+  const handleDeleteQClick = () => {
+    navigate("/admin-delete-question");
+  };
+
   const handleLogOutBtnClick = async (e) => {
     e.preventDefault();
+    setIsAdmin(false);
     signOut();
   };
 
@@ -120,6 +134,12 @@ export default function Home() {
     if (profile) {
       if (profile.username === null || profile.fullname === null) {
         setInfoIncomplete(true);
+      } else if (
+        profile.username === "admin-456" ||
+        profile.fullname === "admin-456"
+      ) {
+        setUsername(profile.username);
+        setIsAdmin(true);
       } else {
         setUsername(profile.username);
         setCharacterImg(profile.selectedImgUrl);
@@ -196,25 +216,25 @@ export default function Home() {
         <div className="flex flex-col gap-4 w-2/6 h-full overflow-hidden place-content-center">
           {profile ? (
             <div className="flex absolute right-0 top-10 gap-5 place-items-center">
-              {characterImg && (
-                <button
-                  className="group flex relative place-items-center place-content-end gap-5 px-10 py-3 hover:px-14 hover:py-4 transition-all"
-                  onClick={() => handleProfileClick()}
-                >
-                  <img
-                    src={white}
-                    className="flex absolute w-full h-full left-0 z-0"
-                  />
-                  <span className="flex text-xl font-bold group-hover:text-2xl transition-all z-10">
-                    {username}
-                  </span>
+              <button
+                className="group flex relative place-items-center place-content-end gap-5 px-10 py-3 hover:px-14 hover:py-4 transition-all"
+                onClick={() => handleProfileClick()}
+              >
+                <img
+                  src={white}
+                  className="flex absolute w-full h-full left-0 z-0"
+                />
+                <span className="flex text-xl font-bold group-hover:text-2xl transition-all z-10">
+                  {username}
+                </span>
+                {characterImg && (
                   <img
                     src={characterImg}
                     alt="Profile"
                     className="flex w-10 fill-white rounded-full group-hover:w-14 transition-all z-10"
                   />
-                </button>
-              )}
+                )}
+              </button>
             </div>
           ) : (
             <div className="flex gap-5 w-full place-content-end">
@@ -240,59 +260,91 @@ export default function Home() {
             </div>
           )}
 
-          <button
-            className="group flex relative gap-5 w-4/6 text-white font-bold text-xl rounded-s-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all cursor-pointer"
-            onClick={handleSingleplayerBtnClick}
-          >
-            <img src={green} className="flex absolute w-full h-full left-0" />
-            <img
-              src={single_player}
-              className="w-7 group-hover:w-10 transition-all z-10"
-            />
-            <span className="text-xl group-hover:text-2xl transition-all z-10">
-              Singleplayer
-            </span>
-          </button>
-          <button
-            className="group flex relative gap-5 w-4/6 text-white font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
-            onClick={handleHeadOnBtnClick}
-          >
-            <img src={purple} className="flex absolute w-full h-full left-0" />
-            <img
-              src={head_on}
-              className="w-7 group-hover:w-10 transition-all z-10"
-            />
-            <span className="text-xl group-hover:text-2xl transition-all z-10">
-              Head On
-            </span>
-          </button>
+          {isAdmin ? (
+            <>
+              <button
+                className="group flex relative gap-5 w-4/6 text-white font-bold text-xl rounded-s-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all cursor-pointer"
+                onClick={() => handleAddQClick()}
+              >
+                <img
+                  src={green}
+                  className="flex absolute w-full h-full left-0"
+                />
+                <img
+                  src={single_player}
+                  className="w-7 group-hover:w-10 transition-all z-10"
+                />
+                <span className="text-xl group-hover:text-2xl transition-all z-10">
+                  Singleplayer
+                </span>
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="group flex relative gap-5 w-4/6 text-white font-bold text-xl rounded-s-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all cursor-pointer"
+                onClick={handleSingleplayerBtnClick}
+              >
+                <img
+                  src={green}
+                  className="flex absolute w-full h-full left-0"
+                />
+                <img
+                  src={single_player}
+                  className="w-7 group-hover:w-10 transition-all z-10"
+                />
+                <span className="text-xl group-hover:text-2xl transition-all z-10">
+                  Singleplayer
+                </span>
+              </button>
+              <button
+                className="group flex relative gap-5 w-4/6 text-white font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
+                onClick={handleHeadOnBtnClick}
+              >
+                <img
+                  src={purple}
+                  className="flex absolute w-full h-full left-0"
+                />
+                <img
+                  src={head_on}
+                  className="w-7 group-hover:w-10 transition-all z-10"
+                />
+                <span className="text-xl group-hover:text-2xl transition-all z-10">
+                  Head On
+                </span>
+              </button>
 
-          <button
-            className="group flex relative gap-5 w-4/6 font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
-            onClick={handleShopBtnClick}
-          >
-            <img src={orange} className="flex absolute w-full h-full left-0" />
-            <img
-              src={shop}
-              className="w-7 group-hover:w-10 transition-all z-10"
-            />
-            <span className=" text-white text-xl group-hover:text-2xl transition-all z-10">
-              Shop
-            </span>
-          </button>
-          <button
-            className="group flex relative gap-5  w-4/6 font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
-            onClick={handleStatsBtnClick}
-          >
-            <img src={red} className="flex absolute w-full h-full left-0" />
-            <img
-              src={stats}
-              className="w-7 group-hover:w-10 transition-all z-10"
-            />
-            <span className="text-white text-xl group-hover:text-2xl transition-all z-10">
-              Leaderboard
-            </span>
-          </button>
+              <button
+                className="group flex relative gap-5 w-4/6 font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
+                onClick={handleShopBtnClick}
+              >
+                <img
+                  src={orange}
+                  className="flex absolute w-full h-full left-0"
+                />
+                <img
+                  src={shop}
+                  className="w-7 group-hover:w-10 transition-all z-10"
+                />
+                <span className=" text-white text-xl group-hover:text-2xl transition-all z-10">
+                  Shop
+                </span>
+              </button>
+              <button
+                className="group flex relative gap-5  w-4/6 font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
+                onClick={handleStatsBtnClick}
+              >
+                <img src={red} className="flex absolute w-full h-full left-0" />
+                <img
+                  src={stats}
+                  className="w-7 group-hover:w-10 transition-all z-10"
+                />
+                <span className="text-white text-xl group-hover:text-2xl transition-all z-10">
+                  Leaderboard
+                </span>
+              </button>
+            </>
+          )}
           {/* <button
             className="group flex relative gap-5 w-4/6 font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
             onClick={handleSettingsBtnClick}
