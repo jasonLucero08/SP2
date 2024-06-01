@@ -555,7 +555,7 @@ export default function Level() {
     setTimer(timerValue);
 
     intervalRef.current = setInterval(() => {
-      // timerValue--;
+      timerValue--;
       setTimer(timerValue);
       if (timerValue <= 0) {
         setEnlargeImg(false);
