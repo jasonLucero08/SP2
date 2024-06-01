@@ -172,6 +172,9 @@ export default function HeadOnGame() {
     }
 
     go();
+    return () => {
+      socket.off("timer");
+    };
   }, []);
 
   useEffect(() => {
