@@ -153,7 +153,7 @@ export default function HeadOnGame() {
           setPlayerHealth(100);
           setPlayerScore(0);
         }
-        socket.once("timer", () => {
+        socket.on("timer", () => {
           startTimer();
         });
 
