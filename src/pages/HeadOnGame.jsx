@@ -154,13 +154,13 @@ export default function HeadOnGame() {
           setPlayerScore(0);
         }
 
+        socket.once("timer", () => {
+          startTimer();
+        });
+
         socket.emit("clearStatData");
         socket.emit("clearUserChoiceList");
         fetchData();
-
-        socket.on("timer", () => {
-          startTimer();
-        });
         socket.once("question", (question) => {
           setCurrQues(question);
         });
