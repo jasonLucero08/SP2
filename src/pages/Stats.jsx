@@ -86,7 +86,7 @@ export default function Stats() {
               onClick={() => handleTabClick("stars")}
             >
               <img src={star} className="w-5" />
-              <span className="text-xl font-bold">Stars</span>
+              <span className="text-xl font-bold">Total Stars Collected</span>
             </button>
             <button
               className={`flex grow bg-white rounded-t-lg p-4 place-items-center gap-4 border-black transition-all ${
@@ -96,37 +96,47 @@ export default function Stats() {
               id="charactersTab"
             >
               <img src={unlocked_characters} className="w-5" />
-              <span className="text-xl font-bold">Characters</span>
+              <span className="text-xl font-bold">
+                Total Characters Unlocked
+              </span>
             </button>
           </div>
           <div className="flex flex-col bg-white h-full gap-4 p-5 overflow-y-scroll overflow-hidden">
             {allUsers.length > 0 &&
               allUsers.map((user) => (
-                <div
-                  className="flex bg-gray-200 p-7 rounded-lg place-items-center gap-7"
-                  key={user.id}
-                >
-                  <img
-                    src={user.selectedImgUrl}
-                    className="w-16 rounded-full"
-                  />
-                  <span className="flex grow text-2xl">{user.username}</span>
-                  <div className="flex place-content-center place-items-center gap-3">
-                    {activeTab === "stars" ? (
-                      <>
-                        <img src={star} className="w-10" />{" "}
-                        <span className="flex text-2xl">{user.totalStars}</span>
-                      </>
-                    ) : (
-                      <>
-                        <img src={unlocked_characters} className="w-10" />{" "}
-                        <span className="flex text-2xl">
-                          {user.totalCharactersUnlocked}
-                        </span>
-                      </>
-                    )}
-                  </div>
-                </div>
+                <>
+                  {user.username !== "admin-456" && (
+                    <div
+                      className="flex bg-gray-200 p-7 rounded-lg place-items-center gap-7"
+                      key={user.id}
+                    >
+                      <img
+                        src={user.selectedImgUrl}
+                        className="w-16 rounded-full"
+                      />
+                      <span className="flex grow text-2xl">
+                        {user.username}
+                      </span>
+                      <div className="flex place-content-center place-items-center gap-3">
+                        {activeTab === "stars" ? (
+                          <>
+                            <img src={star} className="w-10" />{" "}
+                            <span className="flex text-2xl">
+                              {user.totalStars}
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <img src={unlocked_characters} className="w-10" />{" "}
+                            <span className="flex text-2xl">
+                              {user.totalCharactersUnlocked}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </>
               ))}
           </div>
         </div>

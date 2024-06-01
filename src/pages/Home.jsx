@@ -18,6 +18,9 @@ import red from "../images/red-banner.png";
 import orange from "../images/orange-banner.png";
 import purple from "../images/purple-banner.png";
 import green from "../images/green-banner.png";
+import deleteQ from "../images/delete.png";
+import addQ from "../images/addQ.png";
+import editQ from "../images/editQ.png";
 
 import Header from "../components/Header";
 import InputField from "../components/InputField";
@@ -218,7 +221,9 @@ export default function Home() {
             <div className="flex absolute right-0 top-10 gap-5 place-items-center">
               <button
                 className="group flex relative place-items-center place-content-end gap-5 px-10 py-3 hover:px-14 hover:py-4 transition-all"
-                onClick={() => handleProfileClick()}
+                onClick={() => {
+                  !isAdmin && handleProfileClick();
+                }}
               >
                 <img
                   src={white}
@@ -271,11 +276,42 @@ export default function Home() {
                   className="flex absolute w-full h-full left-0"
                 />
                 <img
-                  src={single_player}
+                  src={addQ}
                   className="w-7 group-hover:w-10 transition-all z-10"
                 />
                 <span className="text-xl group-hover:text-2xl transition-all z-10">
-                  Singleplayer
+                  Add Question
+                </span>
+              </button>
+
+              <button
+                className="group flex relative gap-5 w-4/6 text-white font-bold text-xl rounded-s-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all cursor-pointer"
+                onClick={handleModifyQClick}
+              >
+                <img
+                  src={orange}
+                  className="flex absolute w-full h-full left-0"
+                />
+                <img
+                  src={editQ}
+                  className="w-7 group-hover:w-10 transition-all z-10"
+                />
+                <span className="text-xl group-hover:text-2xl transition-all z-10">
+                  Modify Question
+                </span>
+              </button>
+
+              <button
+                className="group flex relative gap-5 w-4/6 text-white font-bold text-xl rounded-s-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all cursor-pointer"
+                onClick={handleDeleteQClick}
+              >
+                <img src={red} className="flex absolute w-full h-full left-0" />
+                <img
+                  src={deleteQ}
+                  className="w-7 group-hover:w-10 transition-all z-10"
+                />
+                <span className="text-xl group-hover:text-2xl transition-all z-10">
+                  Delete Question
                 </span>
               </button>
             </>

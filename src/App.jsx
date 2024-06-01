@@ -29,8 +29,8 @@ function App() {
         <Route path="/room/:roomId" element={<HeadOnGame />} />
         <Route path="/shop" element={<Customize />} />
         <Route path="/admin-add-question" element={<AddQuestion />} />
-        <Route path="/admin-modify-question" element={<AddQuestion />} />
-        <Route path="/admin-delete-question" element={<AddQuestion />} />
+        <Route path="/admin-modify-question" element={<ModifyQuestion />} />
+        <Route path="/admin-delete-question" element={<DeleteQuestion />} />
       </Routes>
     </div>
   );
