@@ -5,7 +5,7 @@ let socket;
 
 export const initializeSocket = () => {
   if (!socket) {
-    socket = io("https://456-mu.vercel.app/", { transports: ["websocket"] });
+    socket = io("https://456-server.glitch.me/", { transports: ["websocket"] });
   }
 
   return socket;
