@@ -18,6 +18,12 @@ import cardChar from "../images/card-filled.png";
 import cardEn from "../images/card-simple.png";
 import close from "../images/close.png";
 
+import speech_bubble from "../images/speech-bubble.png";
+import card1 from "../images/card1.png";
+import card2 from "../images/card2.png";
+import card3 from "../images/card3.png";
+import card4 from "../images/card4.png";
+
 import { initializeSocket } from "../initSocket";
 
 function ourReducer(draft, action) {
@@ -580,43 +586,116 @@ export default function HeadOnGame() {
     const b2 = document.getElementById("button2");
     const b3 = document.getElementById("button3");
     const b4 = document.getElementById("button4");
-
-    if (b1) {
-      b1.classList.remove("h-full");
-      b1.classList.add("h-2/3");
-    }
-
-    if (b2) {
-      b2.classList.remove("h-full");
-      b2.classList.add("h-2/3");
-    }
-
-    if (b3) {
-      b3.classList.remove("h-full");
-      b3.classList.add("h-2/3");
-    }
-
-    if (b4) {
-      b4.classList.remove("h-full");
-      b4.classList.add("h-2/3");
-    }
+    const bPick = document.getElementById("pick-card");
 
     if (cardNum == 1) {
-      b1.classList.remove("h-2/3");
-      b1.classList.add("h-full");
-      setChoiceForClicked(1);
+      if (b1) {
+        if (b1.classList.contains("h-2/3")) {
+          b1.classList.remove("h-2/3");
+          b1.classList.add("h-full");
+          setChoiceForClicked(1);
+        } else {
+          b1.classList.remove("h-full");
+          b1.classList.add("h-2/3");
+          setChoiceForClicked(null);
+        }
+
+        if (b2 && b2.classList.contains("h-full")) {
+          b2.classList.remove("h-full");
+          b2.classList.add("h-2/3");
+        }
+
+        if (b3 && b3.classList.contains("h-full")) {
+          b3.classList.remove("h-full");
+          b3.classList.add("h-2/3");
+        }
+
+        if (b4 && b4.classList.contains("h-full")) {
+          b4.classList.remove("h-full");
+          b4.classList.add("h-2/3");
+        }
+      }
     } else if (cardNum == 2) {
-      b2.classList.remove("h-2/3");
-      b2.classList.add("h-full");
-      setChoiceForClicked(2);
+      if (b2) {
+        if (b2.classList.contains("h-2/3")) {
+          b2.classList.remove("h-2/3");
+          b2.classList.add("h-full");
+          setChoiceForClicked(2);
+        } else {
+          b2.classList.remove("h-full");
+          b2.classList.add("h-2/3");
+          setChoiceForClicked(null);
+        }
+
+        if (b1 && b1.classList.contains("h-full")) {
+          b1.classList.remove("h-full");
+          b1.classList.add("h-2/3");
+        }
+
+        if (b3 && b3.classList.contains("h-full")) {
+          b3.classList.remove("h-full");
+          b3.classList.add("h-2/3");
+        }
+
+        if (b4 && b4.classList.contains("h-full")) {
+          b4.classList.remove("h-full");
+          b4.classList.add("h-2/3");
+        }
+      }
     } else if (cardNum == 3) {
-      b3.classList.remove("h-2/3");
-      b3.classList.add("h-full");
-      setChoiceForClicked(3);
+      if (b3) {
+        if (b3.classList.contains("h-2/3")) {
+          b3.classList.remove("h-2/3");
+          b3.classList.add("h-full");
+          setChoiceForClicked(3);
+        } else {
+          b3.classList.remove("h-full");
+          b3.classList.add("h-2/3");
+          setChoiceForClicked(null);
+        }
+
+        if (b2 && b2.classList.contains("h-full")) {
+          b2.classList.remove("h-full");
+          b2.classList.add("h-2/3");
+        }
+
+        if (b1 && b1.classList.contains("h-full")) {
+          b1.classList.remove("h-full");
+          b1.classList.add("h-2/3");
+        }
+
+        if (b4 && b4.classList.contains("h-full")) {
+          b4.classList.remove("h-full");
+          b4.classList.add("h-2/3");
+        }
+      }
     } else if (cardNum == 4) {
-      b4.classList.remove("h-2/3");
-      b4.classList.add("h-full");
-      setChoiceForClicked(4);
+      if (b4) {
+        if (b4.classList.contains("h-2/3")) {
+          b4.classList.remove("h-2/3");
+          b4.classList.add("h-full");
+          setChoiceForClicked(4);
+        } else {
+          b4.classList.remove("h-full");
+          b4.classList.add("h-2/3");
+          setChoiceForClicked(null);
+        }
+
+        if (b2 && b2.classList.contains("h-full")) {
+          b2.classList.remove("h-full");
+          b2.classList.add("h-2/3");
+        }
+
+        if (b3 && b3.classList.contains("h-full")) {
+          b3.classList.remove("h-full");
+          b3.classList.add("h-2/3");
+        }
+
+        if (b1 && b1.classList.contains("h-full")) {
+          b1.classList.remove("h-full");
+          b1.classList.add("h-2/3");
+        }
+      }
     }
   };
 
@@ -752,7 +831,7 @@ export default function HeadOnGame() {
                     )}
                     <span className="text-xl">{currQues.question}</span>
                   </div>
-                  <div className="flex relative flex-row h-2/3 w-screen place-items-center gap-64 place-content-center sm:gap-10 md:gap-20 lg:gap-40 xl:gap-64 2xl:gap-72">
+                  <div className="flex relative flex-row h-5/6 w-screen place-items-center gap-64 place-content-center sm:gap-10 md:gap-20 lg:gap-40 xl:gap-64 2xl:gap-72">
                     <div className="flex flex-col relative w-2/12 h-full place-items-center p-5 gap-4">
                       <img
                         src={cardChar}
@@ -779,8 +858,17 @@ export default function HeadOnGame() {
                       </div>
                     </div>
                     <button
-                      className="text-white bg-green-500 p-10"
-                      onClick={() => handleChoiceClick()}
+                      id="pick-card"
+                      className="text-white p-10 rounded-xl transition-all"
+                      onClick={() => {
+                        handleChoicePick();
+                      }}
+                      disabled={!choiceForClicked}
+                      style={{
+                        background: choiceForClicked
+                          ? "rgb(0, 158, 96)"
+                          : "gray",
+                      }}
                     >
                       Pick Card
                     </button>
@@ -817,49 +905,73 @@ export default function HeadOnGame() {
                   </div>
                 </div>
 
-                <div className="flex flex-row h-1/4 w-screen place-content-center px-10">
+                <div className="flex flex-row h-2/5 w-screen place-content-center px-10 overflow-hidden">
                   {JSON.parse(currQues.choice1).v !== null && (
                     <button
                       id="button1"
-                      className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
+                      className="flex place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
                       onClick={() =>
                         handleCardClick(currQues, currQues.choice1, 1)
                       }
                     >
-                      <span>{JSON.parse(currQues.choice1).c}</span>
+                      <img
+                        src={card1}
+                        className="flex absolute top-0 left-0 w-full sm:h-full xl:h-max"
+                      />
+                      <span className="z-10">
+                        {JSON.parse(currQues.choice1).c}
+                      </span>
                     </button>
                   )}
                   {JSON.parse(currQues.choice2).v !== null && (
                     <button
                       id="button2"
-                      className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
+                      className="flex place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
                       onClick={() =>
                         handleCardClick(currQues, currQues.choice2, 2)
                       }
                     >
-                      <span>{JSON.parse(currQues.choice2).c}</span>
+                      <img
+                        src={card2}
+                        className="flex absolute top-0 left-0 w-full sm:h-full xl:h-max"
+                      />
+                      <span className="z-10">
+                        {JSON.parse(currQues.choice2).c}
+                      </span>
                     </button>
                   )}
                   {JSON.parse(currQues.choice3).v !== null && (
                     <button
                       id="button3"
-                      className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
+                      className="flex place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
                       onClick={() =>
                         handleCardClick(currQues, currQues.choice3, 3)
                       }
                     >
-                      <span>{JSON.parse(currQues.choice3).c}</span>
+                      <img
+                        src={card3}
+                        className="flex absolute top-0 left-0 w-full sm:h-full xl:h-max"
+                      />
+                      <span className="z-10">
+                        {JSON.parse(currQues.choice3).c}
+                      </span>
                     </button>
                   )}
                   {JSON.parse(currQues.choice4).v !== null && (
                     <button
                       id="button4"
-                      className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
+                      className="flex place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
                       onClick={() =>
                         handleCardClick(currQues, currQues.choice4, 4)
                       }
                     >
-                      <span>{JSON.parse(currQues.choice4).c}</span>
+                      <img
+                        src={card4}
+                        className="flex absolute top-0 left-0 w-full sm:h-full xl:h-max"
+                      />
+                      <span className="z-10">
+                        {JSON.parse(currQues.choice4).c}
+                      </span>
                     </button>
                   )}
                 </div>

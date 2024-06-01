@@ -37,7 +37,7 @@ export default function LevelCard({ ...props }) {
         className="flex absolute w-fit h-fit"
         id={props.imageId}
       />
-      <span className="flex relative flex-grow text-3xl font-bold z-10 text-white">
+      <span className="flex relative flex-grow text-3xl font-bold z-10 text-white drop-shadow-sm">
         {props.levelNum}
       </span>
       <span className="flex relative text-xl z-10 mb-3 text-white">

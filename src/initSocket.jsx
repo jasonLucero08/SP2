@@ -1,6 +1,6 @@
 import io from "socket.io-client";
 
-// const socket = io("http://localhost:4000");
+// const socket = io("https://456-server.glitch.me/");
 let socket;
 
 export const initializeSocket = () => {

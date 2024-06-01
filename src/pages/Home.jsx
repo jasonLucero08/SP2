@@ -21,6 +21,7 @@ import green from "../images/green-banner.png";
 import deleteQ from "../images/delete.png";
 import addQ from "../images/addQ.png";
 import editQ from "../images/editQ.png";
+import brown from "../images/brown-banner.png";
 
 import Header from "../components/Header";
 import InputField from "../components/InputField";
@@ -220,7 +221,7 @@ export default function Home() {
           {profile ? (
             <div className="flex absolute right-0 top-10 gap-5 place-items-center">
               <button
-                className="group flex relative place-items-center place-content-end gap-5 px-10 py-3 hover:px-14 hover:py-4 transition-all"
+                className="group flex relative place-items-center place-content-end gap-5 px-24 py-5 hover:px-26 transition-all"
                 onClick={() => {
                   !isAdmin && handleProfileClick();
                 }}
@@ -229,7 +230,7 @@ export default function Home() {
                   src={white}
                   className="flex absolute w-full h-full left-0 z-0"
                 />
-                <span className="flex text-xl font-bold group-hover:text-2xl transition-all z-10">
+                <span className="flex text-2xl font-bold group-hover:text-3xl transition-all z-10">
                   {username}
                 </span>
                 {characterImg && (
@@ -250,7 +251,7 @@ export default function Home() {
                 <span className="text-2xl font-bold">Login to Play!</span>
               </button> */}
               <div className="flex font-bold text-xl px-5 py-2 place-content-center place-items-center absolute right-0 top-10">
-                <div className="flex flex-row z-10 px-5 py-2  place-content-center place-items-center gap-5">
+                <div className="flex flex-row z-10 px-5 py-2 place-content-center place-items-center gap-5">
                   <span>Log in to play:</span>
                   <Auth
                     supabaseClient={supabase}
@@ -318,7 +319,7 @@ export default function Home() {
           ) : (
             <>
               <button
-                className="group flex relative gap-5 w-4/6 text-white font-bold text-xl rounded-s-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all cursor-pointer"
+                className="group flex relative gap-5 w-5/6 text-white font-bold text-xl rounded-s-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all"
                 onClick={handleSingleplayerBtnClick}
               >
                 <img
@@ -334,7 +335,7 @@ export default function Home() {
                 </span>
               </button>
               <button
-                className="group flex relative gap-5 w-4/6 text-white font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
+                className="group flex relative gap-5 w-5/6 text-white font-bold text-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all"
                 onClick={handleHeadOnBtnClick}
               >
                 <img
@@ -351,7 +352,7 @@ export default function Home() {
               </button>
 
               <button
-                className="group flex relative gap-5 w-4/6 font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
+                className="group flex relative gap-5 w-5/6 text-white font-bold text-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all"
                 onClick={handleShopBtnClick}
               >
                 <img
@@ -367,7 +368,7 @@ export default function Home() {
                 </span>
               </button>
               <button
-                className="group flex relative gap-5  w-4/6 font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
+                className="group flex relative gap-5 w-5/6 text-white font-bold text-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all"
                 onClick={handleStatsBtnClick}
               >
                 <img src={red} className="flex absolute w-full h-full left-0" />
@@ -396,7 +397,7 @@ export default function Home() {
           </button> */}
           {profile && (
             <button
-              className="group flex relative gap-5 w-4/6 font-bold text-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all"
+              className="group flex relative gap-5 w-5/6 font-bold text-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all"
               onClick={handleLogOutBtnClick}
             >
               <img src={white} className="flex absolute w-full h-full left-0" />

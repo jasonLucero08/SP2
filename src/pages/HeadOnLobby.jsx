@@ -5,6 +5,8 @@ import { getUserInfo } from "../hooks/Hooks";
 import { initializeSocket } from "../initSocket";
 
 import Header from "../components/Header";
+import create from "../images/create.png";
+import join from "../images/join.png";
 
 export default function HeadOnLobby() {
   const socket = initializeSocket();
@@ -22,7 +24,6 @@ export default function HeadOnLobby() {
   const [remove, setRemove] = useState(false);
 
   const createRoom = () => {
-    setRemove(true);
     socket.emit("createRoom", (code) => {
       setRoomCode(code);
       setMessage(`Room created with code: ${code}`);
@@ -30,7 +31,6 @@ export default function HeadOnLobby() {
   };
 
   const joinRoom = () => {
-    setRemove(true);
     const code = prompt("Enter room code:");
     socket.emit("joinRoom", code, (response) => {
       if (response.success) {
@@ -70,27 +70,32 @@ export default function HeadOnLobby() {
         profilePicture={characterImg}
       />
 
-      {!remove && (
-        <div className="flex flex-row gap-40 place-content-center place-items-center h-lvh">
-          <div className="flex flex-col place-items-center gap-5">
-            <div
-              className="bg-white w-80 h-96"
-              onClick={() => createRoom()}
-            ></div>
-            <span className="text-xl font-bold text-white">Create Lobby</span>
-          </div>
-
-          <div className="flex flex-col place-items-center gap-5">
-            <div
-              className="bg-white w-80 h-96"
-              onClick={() => joinRoom()}
-            ></div>
-            <span className="text-xl font-bold text-white">Join Room</span>
+      <div className="flex flex-col gap-10 place-content-center place-items-center h-screen w-screen">
+        <div
+          className="flex flex-col place-items-center gap-5 bg-white w-1/3 p-5 rounded-xl cursor-pointer hover:w-1/2 transition-all"
+          onClick={() => createRoom()}
+        >
+          <div className="flex flex-row gap-5 place-items-center w-full">
+            <img src={create} className="w-20" />
+            <span className="text-xl font-bold ">Create Lobby</span>
           </div>
         </div>
-      )}
+        {roomCode && (
+          <p className="flex flex-col place-items-center w-1/3 p-5 rounded-xl text-xl bg-white hover:w-1/2 hover:text-2xl transition-all">
+            Room created with code: {roomCode}
+          </p>
+        )}
 
-      {remove && (
+        <div
+          className="flex flex-row place-items-center gap-5 bg-white w-1/3 p-5 rounded-xl cursor-pointer hover:w-1/2 transition-all"
+          onClick={() => joinRoom()}
+        >
+          <img src={join} className="w-20" />
+          <span className="text-xl font-bold">Join Room</span>
+        </div>
+      </div>
+
+      {/* {remove && (
         <div className="flex w-full h-full justify-center">
           <div className="flex flex-col gap-7 relative bg-white w-1/2 h-1/2 place-content-center place-self-center place-items-center">
             <button
@@ -107,7 +112,7 @@ export default function HeadOnLobby() {
             </span>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

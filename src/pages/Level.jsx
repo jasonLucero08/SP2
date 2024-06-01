@@ -14,6 +14,11 @@ import nonstar from "../images/nonstar.png";
 import cardChar from "../images/card-filled.png";
 import cardEn from "../images/card-simple.png";
 import close from "../images/close.png";
+import speech_bubble from "../images/speech-bubble.png";
+import card1 from "../images/card1.png";
+import card2 from "../images/card2.png";
+import card3 from "../images/card3.png";
+import card4 from "../images/card4.png";
 
 function ourReducer(draft, action) {
   switch (action.type) {
@@ -39,6 +44,13 @@ function ourReducer(draft, action) {
         draft.gameOver = true;
       }
       return;
+    case "getNewQuestion":
+      draft.currentQuestion = getCurrentQuestion();
+
+      if (draft.currentQuestion == null && draft.score > 0) {
+        draft.win = true;
+      }
+      return;
     case "guessAttempt":
       const threeStarLimit = 0.8 * draft.questionsLength;
       const twoStarLimit = 0.6 * draft.questionsLength;
@@ -61,12 +73,6 @@ function ourReducer(draft, action) {
 
       console.log("Score: " + draft.score);
       console.log("Stars: " + draft.stars);
-
-      draft.currentQuestion = getCurrentQuestion();
-
-      if (draft.currentQuestion == null && draft.score > 0) {
-        draft.win = true;
-      }
       return;
 
     case "startPlaying":
@@ -318,43 +324,116 @@ export default function Level() {
     const b2 = document.getElementById("button2");
     const b3 = document.getElementById("button3");
     const b4 = document.getElementById("button4");
-
-    if (b1) {
-      b1.classList.remove("h-full");
-      b1.classList.add("h-2/3");
-    }
-
-    if (b2) {
-      b2.classList.remove("h-full");
-      b2.classList.add("h-2/3");
-    }
-
-    if (b3) {
-      b3.classList.remove("h-full");
-      b3.classList.add("h-2/3");
-    }
-
-    if (b4) {
-      b4.classList.remove("h-full");
-      b4.classList.add("h-2/3");
-    }
+    const bPick = document.getElementById("pick-card");
 
     if (cardNum == 1) {
-      b1.classList.remove("h-2/3");
-      b1.classList.add("h-full");
-      setChoiceForClicked(1);
+      if (b1) {
+        if (b1.classList.contains("h-2/3")) {
+          b1.classList.remove("h-2/3");
+          b1.classList.add("h-full");
+          setChoiceForClicked(1);
+        } else {
+          b1.classList.remove("h-full");
+          b1.classList.add("h-2/3");
+          setChoiceForClicked(null);
+        }
+
+        if (b2 && b2.classList.contains("h-full")) {
+          b2.classList.remove("h-full");
+          b2.classList.add("h-2/3");
+        }
+
+        if (b3 && b3.classList.contains("h-full")) {
+          b3.classList.remove("h-full");
+          b3.classList.add("h-2/3");
+        }
+
+        if (b4 && b4.classList.contains("h-full")) {
+          b4.classList.remove("h-full");
+          b4.classList.add("h-2/3");
+        }
+      }
     } else if (cardNum == 2) {
-      b2.classList.remove("h-2/3");
-      b2.classList.add("h-full");
-      setChoiceForClicked(2);
+      if (b2) {
+        if (b2.classList.contains("h-2/3")) {
+          b2.classList.remove("h-2/3");
+          b2.classList.add("h-full");
+          setChoiceForClicked(2);
+        } else {
+          b2.classList.remove("h-full");
+          b2.classList.add("h-2/3");
+          setChoiceForClicked(null);
+        }
+
+        if (b1 && b1.classList.contains("h-full")) {
+          b1.classList.remove("h-full");
+          b1.classList.add("h-2/3");
+        }
+
+        if (b3 && b3.classList.contains("h-full")) {
+          b3.classList.remove("h-full");
+          b3.classList.add("h-2/3");
+        }
+
+        if (b4 && b4.classList.contains("h-full")) {
+          b4.classList.remove("h-full");
+          b4.classList.add("h-2/3");
+        }
+      }
     } else if (cardNum == 3) {
-      b3.classList.remove("h-2/3");
-      b3.classList.add("h-full");
-      setChoiceForClicked(3);
+      if (b3) {
+        if (b3.classList.contains("h-2/3")) {
+          b3.classList.remove("h-2/3");
+          b3.classList.add("h-full");
+          setChoiceForClicked(3);
+        } else {
+          b3.classList.remove("h-full");
+          b3.classList.add("h-2/3");
+          setChoiceForClicked(null);
+        }
+
+        if (b2 && b2.classList.contains("h-full")) {
+          b2.classList.remove("h-full");
+          b2.classList.add("h-2/3");
+        }
+
+        if (b1 && b1.classList.contains("h-full")) {
+          b1.classList.remove("h-full");
+          b1.classList.add("h-2/3");
+        }
+
+        if (b4 && b4.classList.contains("h-full")) {
+          b4.classList.remove("h-full");
+          b4.classList.add("h-2/3");
+        }
+      }
     } else if (cardNum == 4) {
-      b4.classList.remove("h-2/3");
-      b4.classList.add("h-full");
-      setChoiceForClicked(4);
+      if (b4) {
+        if (b4.classList.contains("h-2/3")) {
+          b4.classList.remove("h-2/3");
+          b4.classList.add("h-full");
+          setChoiceForClicked(4);
+        } else {
+          b4.classList.remove("h-full");
+          b4.classList.add("h-2/3");
+          setChoiceForClicked(null);
+        }
+
+        if (b2 && b2.classList.contains("h-full")) {
+          b2.classList.remove("h-full");
+          b2.classList.add("h-2/3");
+        }
+
+        if (b3 && b3.classList.contains("h-full")) {
+          b3.classList.remove("h-full");
+          b3.classList.add("h-2/3");
+        }
+
+        if (b1 && b1.classList.contains("h-full")) {
+          b1.classList.remove("h-full");
+          b1.classList.add("h-2/3");
+        }
+      }
     }
   };
 
@@ -363,33 +442,36 @@ export default function Level() {
     showButtonColors(state.currentQuestion);
     clearInterval(intervalRef.current);
 
+    if (choiceForClicked === 1) {
+      dispatch({
+        type: "guessAttempt",
+        value: JSON.parse(state.currentQuestion.choice1).v.toString(),
+      });
+    } else if (choiceForClicked === 2) {
+      dispatch({
+        type: "guessAttempt",
+        value: JSON.parse(state.currentQuestion.choice2).v.toString(),
+      });
+    } else if (choiceForClicked === 3) {
+      dispatch({
+        type: "guessAttempt",
+        value: JSON.parse(state.currentQuestion.choice3).v.toString(),
+      });
+    } else if (choiceForClicked === 4) {
+      dispatch({
+        type: "guessAttempt",
+        value: JSON.parse(state.currentQuestion.choice4).v.toString(),
+      });
+    } else if (choiceForClicked === null) {
+      alert("Pick a card!");
+    }
+
+    setChoiceClicked(false);
+
     setTimeout(function () {
       setChoiceForClicked(null);
       hideButtonColors();
-
-      if (choiceForClicked === 1) {
-        dispatch({
-          type: "guessAttempt",
-          value: JSON.parse(state.currentQuestion.choice1).v.toString(),
-        });
-      } else if (choiceForClicked === 2) {
-        dispatch({
-          type: "guessAttempt",
-          value: JSON.parse(state.currentQuestion.choice2).v.toString(),
-        });
-      } else if (choiceForClicked === 3) {
-        dispatch({
-          type: "guessAttempt",
-          value: JSON.parse(state.currentQuestion.choice3).v.toString(),
-        });
-      } else if (choiceForClicked === 4) {
-        dispatch({
-          type: "guessAttempt",
-          value: JSON.parse(state.currentQuestion.choice4).v.toString(),
-        });
-      }
-
-      setChoiceClicked(false);
+      dispatch({ type: "getNewQuestion" });
     }, 1500);
   };
 
@@ -473,7 +555,7 @@ export default function Level() {
     setTimer(timerValue);
 
     intervalRef.current = setInterval(() => {
-      timerValue--;
+      // timerValue--;
       setTimer(timerValue);
       if (timerValue <= 0) {
         setEnlargeImg(false);
@@ -649,27 +731,32 @@ export default function Level() {
                         </div>
                       </>
                     )}
-                    <div className="flex flex-row gap-5 bg-white w-10/12 h-1/4 mb-4 p-5">
+                    <div className="flex flex-row relative gap-5 w-10/12 h-1/4 pt-5 px-5">
+                      <img
+                        src={speech_bubble}
+                        className="flex absolute top-0 left-0 w-full h-full"
+                      />
                       {state.currentQuestion.imgRef && (
                         <img
-                          className="w-10 h-10 cursor-pointer outline outline-1"
+                          className="w-10 h-10 cursor-pointer outline outline-1 z-10"
                           src={state.currentQuestion.imgRef}
                           onClick={() => setEnlargeImg(!enlargeImg)}
                         />
                       )}
-                      <span className="text-xl">
+                      <span className="text-xl z-10">
                         {state.currentQuestion.question}
                       </span>
                     </div>
-                    <div className="flex relative flex-row h-2/3 w-screen place-items-center gap-64 place-content-center sm:gap-10 md:gap-20 lg:gap-40 xl:gap-64 2xl:gap-72">
+                    <div className="flex relative flex-row h-5/6 w-screen place-items-center gap-64 place-content-center sm:gap-10 md:gap-20 lg:gap-40 xl:gap-64 2xl:gap-72">
                       <div className="flex flex-col relative w-2/12 h-full place-items-center p-5 gap-4">
                         <img
                           src={cardChar}
                           className="flex absolute bottom-0 w-full h-full "
                         />
-                        <div className="w-5/6 z-10 mt-7">
-                          <img className="rounded" src={characterImg} />
-                        </div>
+                        <img
+                          className="rounded w-5/6 z-10 mt-7"
+                          src={characterImg}
+                        />
                         <div className="flex gap-10 z-10 place-items-end h-6">
                           <span className="absolute left-10 text-lg font-bold ">
                             {username}
@@ -691,9 +778,16 @@ export default function Level() {
                         </div>
                       </div>
                       <button
-                        className="text-white bg-green-500 p-10"
+                        id="pick-card"
+                        className="text-white p-10 rounded-xl transition-all"
                         onClick={() => {
                           handleChoicePick();
+                        }}
+                        disabled={!choiceForClicked}
+                        style={{
+                          background: choiceForClicked
+                            ? "rgb(0, 158, 96)"
+                            : "gray",
                         }}
                       >
                         Pick Card
@@ -718,11 +812,11 @@ export default function Level() {
                     </div>
                   </div>
 
-                  <div className="flex flex-row h-1/4 w-screen place-content-center px-10">
+                  <div className="flex flex-row h-2/5 w-screen place-content-center px-10 overflow-hidden">
                     {JSON.parse(state.currentQuestion.choice1).v !== null && (
                       <button
                         id="button1"
-                        className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
+                        className="flex place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
                         onClick={() =>
                           handleCardClick(
                             state.currentQuestion,
@@ -731,7 +825,11 @@ export default function Level() {
                           )
                         }
                       >
-                        <span>
+                        <img
+                          src={card1}
+                          className="flex absolute top-0 left-0 w-full sm:h-full xl:h-max"
+                        />
+                        <span className="z-10">
                           {JSON.parse(state.currentQuestion.choice1).c}
                         </span>
                       </button>
@@ -739,7 +837,7 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice2).v !== null && (
                       <button
                         id="button2"
-                        className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
+                        className="flex place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3  p-5 text-lg place-self-end hover:animate-pulse transition-all"
                         onClick={() =>
                           handleCardClick(
                             state.currentQuestion,
@@ -748,7 +846,11 @@ export default function Level() {
                           )
                         }
                       >
-                        <span>
+                        <img
+                          src={card2}
+                          className="flex absolute top-0 left-0 w-full sm:h-full xl:h-max"
+                        />
+                        <span className="z-10">
                           {JSON.parse(state.currentQuestion.choice2).c}
                         </span>
                       </button>
@@ -756,7 +858,7 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice3).v !== null && (
                       <button
                         id="button3"
-                        className="w-1/4 h-2/3 rounded-t-lg mr-3 bg-white p-5 text-lg place-self-end hover:animate-pulse"
+                        className="flex place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3  p-5 text-lg place-self-end hover:animate-pulse transition-all"
                         onClick={() =>
                           handleCardClick(
                             state.currentQuestion,
@@ -765,7 +867,11 @@ export default function Level() {
                           )
                         }
                       >
-                        <span>
+                        <img
+                          src={card3}
+                          className="flex absolute top-0 left-0 w-full sm:h-full xl:h-max"
+                        />
+                        <span className="z-10">
                           {JSON.parse(state.currentQuestion.choice3).c}
                         </span>
                       </button>
@@ -773,7 +879,7 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice4).v !== null && (
                       <button
                         id="button4"
-                        className="w-1/4 h-2/3 rounded-t-lg bg-white p-5 text-lg place-self-end hover:animate-pulse"
+                        className="flex place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3  p-5 text-lg place-self-end hover:animate-pulse transition-all"
                         onClick={() =>
                           handleCardClick(
                             state.currentQuestion,
@@ -782,7 +888,11 @@ export default function Level() {
                           )
                         }
                       >
-                        <span>
+                        <img
+                          src={card4}
+                          className="flex absolute top-0 left-0 w-full sm:h-full xl:h-max"
+                        />
+                        <span className="z-10">
                           {JSON.parse(state.currentQuestion.choice4).c}
                         </span>
                       </button>
