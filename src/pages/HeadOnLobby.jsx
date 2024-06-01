@@ -44,19 +44,6 @@ export default function HeadOnLobby() {
 
   useEffect(() => {
     socket.connect();
-
-    // async function get() {
-    //   try {
-    //     const userData = await getUserInfo(session?.user.id);
-    //     setUserInfo(userData);
-    //     setUsername(userData.username);
-    //     setCharacterImg(userData.selectedImgUrl);
-    //   } catch (err) {
-    //     console.error("Error: ", err.message);
-    //   }
-    // }
-
-    // get();
     if (profile) {
       setUserInfo(profile);
       setUsername(profile.username);

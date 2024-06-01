@@ -242,12 +242,12 @@ export default function HeadOnGame() {
 
   useEffect(() => {
     socket.on("showCorrectChoices", (list) => {
-      // showButtonColors();
+      showButtonColors();
       clearInterval(intervalRef.current);
 
       setTimeout(function () {
         socket.emit("clearUserChoiceList");
-        // hideButtonColors();
+        hideButtonColors();
 
         fetchData();
         socket.once("question", (question) => {
@@ -555,7 +555,7 @@ export default function HeadOnGame() {
 
   const startTimer = () => {
     clearInterval(intervalRef.current);
-    let timerValue = 5;
+    let timerValue = 30;
     setTimer(timerValue);
 
     intervalRef.current = setInterval(() => {

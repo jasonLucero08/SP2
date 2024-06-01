@@ -138,10 +138,33 @@ export default function AddQuestion() {
     console.log("Choice4:", choice4, "Val:", choice4Val);
     console.log("File:", file);
 
-    const choice1JSON = { c: choice1, v: choice1Val };
-    const choice2JSON = { c: choice2, v: choice2Val };
-    const choice3JSON = { c: choice3, v: choice3Val };
-    const choice4JSON = { c: choice4, v: choice4Val };
+    var choice1JSON;
+    var choice2JSON;
+    var choice3JSON;
+    var choice4JSON;
+    if (choice1) {
+      choice1JSON = `{ "c": "${choice1}", "v": ${choice1Val} }`;
+    } else {
+      choice1JSON = `{ "c": ${choice1}, "v": ${choice1Val} }`;
+    }
+
+    if (choice2) {
+      choice2JSON = `{ "c": "${choice2}", "v": ${choice2Val} }`;
+    } else {
+      choice2JSON = `{ "c": ${choice2}, "v": ${choice2Val} }`;
+    }
+
+    if (choice3) {
+      choice3JSON = `{ "c": "${choice3}", "v": ${choice3Val} }`;
+    } else {
+      choice3JSON = `{ "c": ${choice3}, "v": ${choice3Val} }`;
+    }
+
+    if (choice4) {
+      choice4JSON = `{ "c": "${choice4}", "v": ${choice4Val} }`;
+    } else {
+      choice4JSON = `{ "c": ${choice4}, "v": ${choice4Val} }`;
+    }
 
     try {
       if (file) {
