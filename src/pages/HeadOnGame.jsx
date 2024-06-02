@@ -448,7 +448,7 @@ export default function HeadOnGame() {
     setTimer(timerValue);
 
     intervalRef.current = setInterval(() => {
-      // timerValue--;
+      timerValue--;
       setTimer(timerValue);
       if (timerValue <= 0) {
         setEnlargeImg(false);
