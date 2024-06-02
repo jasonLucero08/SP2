@@ -5,7 +5,7 @@ let socket;
 
 export const initializeSocket = () => {
   if (!socket) {
-    socket = io("http://localhost:3000", { transports: ["websocket"] });
+    socket = io("https://456-server.glitch.me/", { transports: ["websocket"] });
   }
 
   return socket;
