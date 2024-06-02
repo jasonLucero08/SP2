@@ -141,6 +141,8 @@ export default function HeadOnGame() {
   const [gameOver, setGameOver] = useState(false);
   const [gameWin, setGameWin] = useState(false);
 
+  const [cardsCanClick, setCardsCanClick] = useState(false);
+
   useEffect(() => {
     getPageTitle();
 
@@ -264,6 +266,7 @@ export default function HeadOnGame() {
           setCurrQues(question);
           startTimer();
         });
+        setCardsCanClick(false);
       }, 1500);
     });
 
@@ -409,77 +412,6 @@ export default function HeadOnGame() {
     }
   };
 
-  const handleChoiceClick = (q, choiceNum) => {
-    setChoiceClicked(true);
-    let val;
-
-    if (choiceForClicked === 1) {
-      if (JSON.parse(currQues.choice1).v.toString() === "false") {
-        val = "false";
-        var tempHealth = playerHealth;
-        tempHealth = tempHealth - 5;
-        setPlayerHealth(tempHealth);
-        console.log(tempHealth);
-      } else {
-        val = "true";
-        var tempScore = playerScore;
-        tempScore = tempScore + 1;
-        setPlayerScore(tempScore);
-        console.log(tempScore);
-      }
-    } else if (choiceForClicked === 2) {
-      if (JSON.parse(currQues.choice2).v.toString() === "false") {
-        val = "false";
-        var tempHealth = playerHealth;
-        tempHealth = tempHealth - 5;
-        setPlayerHealth(tempHealth);
-        console.log(tempHealth);
-      } else {
-        val = "true";
-        var tempScore = playerScore;
-        tempScore = tempScore + 1;
-        setPlayerScore(tempScore);
-        console.log(tempScore);
-      }
-    } else if (choiceForClicked === 3) {
-      if (JSON.parse(currQues.choice3).v.toString() === "false") {
-        val = "false";
-        var tempHealth = playerHealth;
-        tempHealth = tempHealth - 5;
-        setPlayerHealth(tempHealth);
-        console.log(tempHealth);
-      } else {
-        val = "true";
-        var tempScore = playerScore;
-        tempScore = tempScore + 1;
-        setPlayerScore(tempScore);
-        console.log(tempScore);
-      }
-    } else if (choiceForClicked === 4) {
-      if (JSON.parse(currQues.choice4).v.toString() === "false") {
-        val = "false";
-        var tempHealth = playerHealth;
-        tempHealth = tempHealth - 5;
-        setPlayerHealth(tempHealth);
-        console.log(tempHealth);
-      } else {
-        val = "true";
-        var tempScore = playerScore;
-        tempScore = tempScore + 1;
-        setPlayerScore(tempScore);
-        console.log(tempScore);
-      }
-    }
-    setChoiceForClicked(null);
-    setChoiceClicked(false);
-
-    socket.emit("sendChoice", {
-      roomCode: location.state.code,
-      uData: userInfo,
-      val: val,
-    });
-  };
-
   const noChoiceClicked = () => {
     clearInterval(intervalRef.current);
     setPlayerHealth((prevHealth) => {
@@ -496,68 +428,15 @@ export default function HeadOnGame() {
     });
   };
 
-  const handleSaveBtnClick = async () => {
-    var currScore = state.score;
-    var currStars = state.stars;
-
-    var levelsUnlockedJSON = null;
-    var levelStarsJSON = null;
-    var starsToAdd = 0;
-    var nextLevelId = "";
-
-    const userData = profile;
-    var starTotal = userData.totalStars;
-
-    levelsUnlockedJSON = userData.levelsUnlocked;
-    levelStarsJSON = userData.levelStars;
-
-    if (currScore > levelsUnlockedJSON[levelid]) {
-      if (levelid != "L13" && levelsUnlockedJSON[levelid] == 0) {
-        const arr = levelid.split("");
-        let lastElement = arr[arr.length - 1];
-        const changedVal = parseInt(lastElement) + 1;
-        arr[arr.length - 1] = changedVal.toString();
-        nextLevelId = arr.join("");
-
-        levelsUnlockedJSON[nextLevelId] = 0;
-      }
-
-      levelsUnlockedJSON[levelid] = currScore;
-    }
-
-    if (currStars > levelStarsJSON[levelid]) {
-      if (levelid != "L13" && levelStarsJSON[levelid] == 0) {
-        levelStarsJSON[nextLevelId] = 0;
-      }
-
-      starsToAdd = currStars - levelStarsJSON[levelid];
-      starTotal += starsToAdd;
-      levelStarsJSON[levelid] = currStars;
-    }
-
-    await saveScorePerLevel(
-      profile.id,
-      levelsUnlockedJSON,
-      levelStarsJSON,
-      starTotal
-    );
-
-    const userData2 = profile;
-    console.log(userData2.levelsUnlocked);
-    console.log(userData2.levelStars);
-    console.log(userData2.totalStars);
-  };
-
   const setCharacter = (data) => {
     setCharacterImg(data.selectedImgUrl);
     const b = data.selectedImgUrl.split("/");
     setCharacterName(b[b.length - 1].split(".").slice(0, -1).join("."));
   };
 
-  // const handleQuesImgClick = (img) => {};
   const fetchData = async () => {
     try {
-      await axios.get("https://456-server.glitch.me/fetch-questions");
+      await axios.get("http://localhost:3000/fetch-questions");
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -569,7 +448,7 @@ export default function HeadOnGame() {
     setTimer(timerValue);
 
     intervalRef.current = setInterval(() => {
-      timerValue--;
+      // timerValue--;
       setTimer(timerValue);
       if (timerValue <= 0) {
         setEnlargeImg(false);
@@ -586,7 +465,6 @@ export default function HeadOnGame() {
     const b2 = document.getElementById("button2");
     const b3 = document.getElementById("button3");
     const b4 = document.getElementById("button4");
-    const bPick = document.getElementById("pick-card");
 
     if (cardNum == 1) {
       if (b1) {
@@ -697,6 +575,111 @@ export default function HeadOnGame() {
         }
       }
     }
+  };
+
+  const handleChoiceClick = (q, choiceNum) => {
+    const b1 = document.getElementById("button1");
+    const b2 = document.getElementById("button2");
+    const b3 = document.getElementById("button3");
+    const b4 = document.getElementById("button4");
+
+    setCardsCanClick(true);
+    setChoiceClicked(true);
+    let val;
+
+    if (b1) {
+      if (b1.classList.contains("h-full")) {
+        b1.classList.remove("h-full");
+        b1.classList.add("h-2/3");
+      }
+    }
+
+    if (b2) {
+      if (b2.classList.contains("h-full")) {
+        b2.classList.remove("h-full");
+        b2.classList.add("h-2/3");
+      }
+    }
+
+    if (b3) {
+      if (b3.classList.contains("h-full")) {
+        b3.classList.remove("h-full");
+        b3.classList.add("h-2/3");
+      }
+    }
+
+    if (b4) {
+      if (b4.classList.contains("h-full")) {
+        b4.classList.remove("h-full");
+        b4.classList.add("h-2/3");
+      }
+    }
+
+    if (choiceForClicked === 1) {
+      if (JSON.parse(currQues.choice1).v.toString() === "false") {
+        val = "false";
+        var tempHealth = playerHealth;
+        tempHealth = tempHealth - 5;
+        setPlayerHealth(tempHealth);
+        console.log(tempHealth);
+      } else {
+        val = "true";
+        var tempScore = playerScore;
+        tempScore = tempScore + 1;
+        setPlayerScore(tempScore);
+        console.log(tempScore);
+      }
+    } else if (choiceForClicked === 2) {
+      if (JSON.parse(currQues.choice2).v.toString() === "false") {
+        val = "false";
+        var tempHealth = playerHealth;
+        tempHealth = tempHealth - 5;
+        setPlayerHealth(tempHealth);
+        console.log(tempHealth);
+      } else {
+        val = "true";
+        var tempScore = playerScore;
+        tempScore = tempScore + 1;
+        setPlayerScore(tempScore);
+        console.log(tempScore);
+      }
+    } else if (choiceForClicked === 3) {
+      if (JSON.parse(currQues.choice3).v.toString() === "false") {
+        val = "false";
+        var tempHealth = playerHealth;
+        tempHealth = tempHealth - 5;
+        setPlayerHealth(tempHealth);
+        console.log(tempHealth);
+      } else {
+        val = "true";
+        var tempScore = playerScore;
+        tempScore = tempScore + 1;
+        setPlayerScore(tempScore);
+        console.log(tempScore);
+      }
+    } else if (choiceForClicked === 4) {
+      if (JSON.parse(currQues.choice4).v.toString() === "false") {
+        val = "false";
+        var tempHealth = playerHealth;
+        tempHealth = tempHealth - 5;
+        setPlayerHealth(tempHealth);
+        console.log(tempHealth);
+      } else {
+        val = "true";
+        var tempScore = playerScore;
+        tempScore = tempScore + 1;
+        setPlayerScore(tempScore);
+        console.log(tempScore);
+      }
+    }
+    setChoiceForClicked(null);
+    setChoiceClicked(false);
+
+    socket.emit("sendChoice", {
+      roomCode: location.state.code,
+      uData: userInfo,
+      val: val,
+    });
   };
 
   const handleExitBtnClick = async () => {
@@ -909,10 +892,11 @@ export default function HeadOnGame() {
                   {JSON.parse(currQues.choice1).v !== null && (
                     <button
                       id="button1"
-                      className="flex place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
+                      className="flex bg-white place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
                       onClick={() =>
                         handleCardClick(currQues, currQues.choice1, 1)
                       }
+                      disabled={cardsCanClick}
                     >
                       <img
                         src={card1}
@@ -926,10 +910,11 @@ export default function HeadOnGame() {
                   {JSON.parse(currQues.choice2).v !== null && (
                     <button
                       id="button2"
-                      className="flex place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
+                      className="flex bg-white place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
                       onClick={() =>
                         handleCardClick(currQues, currQues.choice2, 2)
                       }
+                      disabled={cardsCanClick}
                     >
                       <img
                         src={card2}
@@ -943,10 +928,11 @@ export default function HeadOnGame() {
                   {JSON.parse(currQues.choice3).v !== null && (
                     <button
                       id="button3"
-                      className="flex place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
+                      className="flex bg-white place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
                       onClick={() =>
                         handleCardClick(currQues, currQues.choice3, 3)
                       }
+                      disabled={cardsCanClick}
                     >
                       <img
                         src={card3}
@@ -960,10 +946,11 @@ export default function HeadOnGame() {
                   {JSON.parse(currQues.choice4).v !== null && (
                     <button
                       id="button4"
-                      className="flex place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
+                      className="flex bg-white place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
                       onClick={() =>
                         handleCardClick(currQues, currQues.choice4, 4)
                       }
+                      disabled={cardsCanClick}
                     >
                       <img
                         src={card4}

@@ -816,7 +816,7 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice1).v !== null && (
                       <button
                         id="button1"
-                        className="flex place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
+                        className="flex bg-white place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
                         onClick={() =>
                           handleCardClick(
                             state.currentQuestion,
@@ -837,7 +837,7 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice2).v !== null && (
                       <button
                         id="button2"
-                        className="flex place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3  p-5 text-lg place-self-end hover:animate-pulse transition-all"
+                        className="flex bg-white place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3  p-5 text-lg place-self-end hover:animate-pulse transition-all"
                         onClick={() =>
                           handleCardClick(
                             state.currentQuestion,
@@ -858,7 +858,7 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice3).v !== null && (
                       <button
                         id="button3"
-                        className="flex place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3  p-5 text-lg place-self-end hover:animate-pulse transition-all"
+                        className="flex bg-white place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3  p-5 text-lg place-self-end hover:animate-pulse transition-all"
                         onClick={() =>
                           handleCardClick(
                             state.currentQuestion,
@@ -879,7 +879,7 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice4).v !== null && (
                       <button
                         id="button4"
-                        className="flex place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3  p-5 text-lg place-self-end hover:animate-pulse transition-all"
+                        className="flex bg-white place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3  p-5 text-lg place-self-end hover:animate-pulse transition-all"
                         onClick={() =>
                           handleCardClick(
                             state.currentQuestion,
