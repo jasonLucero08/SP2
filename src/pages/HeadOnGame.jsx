@@ -861,7 +861,7 @@ export default function HeadOnGame() {
                       id="pick-card"
                       className="text-white p-10 rounded-xl transition-all"
                       onClick={() => {
-                        handleChoicePick();
+                        handleChoiceClick();
                       }}
                       disabled={!choiceForClicked}
                       style={{
