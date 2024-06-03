@@ -5,6 +5,11 @@ export default {
     extend: {
       backgroundImage: {
         "stone-bg": "url('/src/images/stone.png')",
+        "scroll-bg": "url('/src/images/scrollbg.png')",
+        "card-bg": "url('/src/images/cardBG.png')",
+      },
+      fontFamily: {
+        titles: ["KC Obra Letra", "sans-serif"],
       },
     },
   },

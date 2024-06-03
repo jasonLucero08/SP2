@@ -73,6 +73,7 @@ export default function Stats() {
         pageTitle="Leaderboard"
         username={userName}
         profilePicture={characterImg}
+        titleColor={"bg-red-600"}
       />
 
       {profile && (

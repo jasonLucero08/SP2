@@ -5,6 +5,7 @@ import { getUserInfo } from "../hooks/Hooks";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "../supabaseClient";
+import "../css/index.css";
 
 import app_logo from "../images/456_logo.png";
 import log_out from "../images/log-out.png";
@@ -21,7 +22,8 @@ import green from "../images/green-banner.png";
 import deleteQ from "../images/delete.png";
 import addQ from "../images/addQ.png";
 import editQ from "../images/editQ.png";
-import brown from "../images/brown-banner.png";
+import blue from "../images/blue-banner.png";
+import cream from "../images/cream-banner.png";
 
 import Header from "../components/Header";
 import InputField from "../components/InputField";
@@ -152,7 +154,7 @@ export default function Home() {
   }, [profile]);
 
   return (
-    <div className="h-screen w-screen flex flex-row place-items-center place-content-center bg-stone-bg bg-cover">
+    <div className="h-screen w-screen flex flex-row place-items-center place-content-center bg-stone-bg bg-cover font-titles">
       {infoIncomplete && (
         <div className="h-screen w-screen flex absolute place-content-center place-items-center">
           <div className="h-screen w-screen bg-black opacity-50 z-20"></div>
@@ -198,17 +200,11 @@ export default function Home() {
           </div>
         </div>
       )}
-      {/* <Header
-        isHome={true}
-        pageTitle="HOME"
-        username={!infoIncomplete && username}
-        profilePicture={characterImg}
-      /> */}
 
       <div className="flex flex-col grow place-items-center place-content-center w-4/6">
         {/* <div className="flex absolute bg-slate-700 w-2/4 h-full z-0 rounded-t-full overflow-hidden"></div> */}
         <div className="flex flex-col place-content-center place-items-center gap-5">
-          <img className="w-3/5 z-10" src={app_logo} alt="456! Logo" />
+          <img className="w-10/12 z-10" src={app_logo} alt="456! Logo" />
           <div className="flex px-20 text-center text-white font-bold text-xl z-10">
             Welcome to 456! An application to test your wits regarding Discrete
             Mathematics in Computer Science. Come and test your knowledge now!
@@ -227,7 +223,7 @@ export default function Home() {
                 }}
               >
                 <img
-                  src={white}
+                  src={cream}
                   className="flex absolute w-full h-full left-0 z-0"
                 />
                 <span className="flex text-3xl font-bold group-hover:text-4xl transition-all z-10">
@@ -255,7 +251,7 @@ export default function Home() {
                   onlyThirdPartyProviders
                 />
               </div>
-              <img src={white} className="flex absolute w-full left-0 z-0" />
+              <img src={cream} className="flex absolute w-full left-0 z-0" />
               {/* </div> */}
             </div>
           )}
@@ -263,7 +259,7 @@ export default function Home() {
           {isAdmin ? (
             <>
               <button
-                className="group flex relative gap-5 w-5/6 text-white font-bold text-xl rounded-s-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:py-7 transition-all cursor-pointer"
+                className="group flex relative gap-5 w-5/6 rounded-s-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:py-7 transition-all cursor-pointer"
                 onClick={() => handleAddQClick()}
               >
                 <img
@@ -274,13 +270,13 @@ export default function Home() {
                   src={addQ}
                   className="w-7 group-hover:w-10 transition-all z-10"
                 />
-                <span className="text-xl group-hover:text-2xl transition-all z-10">
+                <span className="text-white text-2xl group-hover:text-3xl transition-all z-10">
                   Add Question
                 </span>
               </button>
 
               <button
-                className="group flex relative gap-5 w-5/6 text-white font-bold text-xl rounded-s-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:py-7 transition-all cursor-pointer"
+                className="group flex relative gap-5 w-5/6 rounded-s-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:py-7 transition-all cursor-pointer"
                 onClick={handleModifyQClick}
               >
                 <img
@@ -291,13 +287,13 @@ export default function Home() {
                   src={editQ}
                   className="w-7 group-hover:w-10 transition-all z-10"
                 />
-                <span className="text-xl group-hover:text-2xl transition-all z-10">
+                <span className="text-white text-2xl group-hover:text-3xl transition-all z-10">
                   Modify Question
                 </span>
               </button>
 
               <button
-                className="group flex relative gap-5 w-5/6 text-white font-bold text-xl rounded-s-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all cursor-pointer"
+                className="group flex relative gap-5 w-5/6 rounded-s-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all cursor-pointer"
                 onClick={handleDeleteQClick}
               >
                 <img src={red} className="flex absolute w-full h-full left-0" />
@@ -305,7 +301,7 @@ export default function Home() {
                   src={deleteQ}
                   className="w-7 group-hover:w-10 transition-all z-10"
                 />
-                <span className="text-xl group-hover:text-2xl transition-all z-10">
+                <span className="text-white text-2xl group-hover:text-3xl transition-all z-10">
                   Delete Question
                 </span>
               </button>
@@ -313,7 +309,7 @@ export default function Home() {
           ) : (
             <>
               <button
-                className="group flex relative gap-5 w-5/6 text-white font-bold text-xl rounded-s-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all"
+                className="group flex relative gap-5 w-5/6  rounded-s-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all"
                 onClick={handleSingleplayerBtnClick}
               >
                 <img
@@ -324,12 +320,12 @@ export default function Home() {
                   src={single_player}
                   className="w-7 group-hover:w-10 transition-all z-10"
                 />
-                <span className="text-xl group-hover:text-2xl transition-all z-10">
+                <span className="text-white text-2xl group-hover:text-3xl transition-all z-10 ">
                   Singleplayer
                 </span>
               </button>
               <button
-                className="group flex relative gap-5 w-5/6 text-white font-bold text-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all"
+                className="group flex relative gap-5 w-5/6  px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all"
                 onClick={handleHeadOnBtnClick}
               >
                 <img
@@ -340,13 +336,13 @@ export default function Home() {
                   src={head_on}
                   className="w-7 group-hover:w-10 transition-all z-10"
                 />
-                <span className="text-xl group-hover:text-2xl transition-all z-10">
+                <span className="text-white text-2xl group-hover:text-3xl transition-all z-10">
                   Head On
                 </span>
               </button>
 
               <button
-                className="group flex relative gap-5 w-5/6 text-white font-bold text-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all"
+                className="group flex relative gap-5 w-5/6 px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all"
                 onClick={handleShopBtnClick}
               >
                 <img
@@ -357,12 +353,12 @@ export default function Home() {
                   src={shop}
                   className="w-7 group-hover:w-10 transition-all z-10"
                 />
-                <span className=" text-white text-xl group-hover:text-2xl transition-all z-10">
+                <span className="text-white text-2xl group-hover:text-3xl transition-all z-10">
                   Shop
                 </span>
               </button>
               <button
-                className="group flex relative gap-5 w-5/6 text-white font-bold text-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all"
+                className="group flex relative gap-5 w-5/6 px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all"
                 onClick={handleStatsBtnClick}
               >
                 <img src={red} className="flex absolute w-full h-full left-0" />
@@ -370,7 +366,7 @@ export default function Home() {
                   src={stats}
                   className="w-7 group-hover:w-10 transition-all z-10"
                 />
-                <span className="text-white text-xl group-hover:text-2xl transition-all z-10">
+                <span className="text-white text-2xl group-hover:text-3xl transition-all z-10">
                   Leaderboard
                 </span>
               </button>
@@ -391,12 +387,12 @@ export default function Home() {
           </button> */}
           {profile && (
             <button
-              className="group flex relative gap-5 w-5/6 font-bold text-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all"
+              className="group rounded-s-xl flex relative gap-5 w-5/6 px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all"
               onClick={handleLogOutBtnClick}
             >
-              <img src={white} className="flex absolute w-full h-full left-0" />
+              <img src={blue} className="flex absolute w-full h-full left-0" />
               <img src={log_out} className="flex w-8 z-10" />
-              <span className="text-xl group-hover:text-2xl transition-all z-10">
+              <span className="text-2xl group-hover:text-3xl transition-all z-10 text-white">
                 Log Out
               </span>
             </button>

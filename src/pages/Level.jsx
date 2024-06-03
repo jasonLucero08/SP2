@@ -19,6 +19,7 @@ import card1 from "../images/card1.png";
 import card2 from "../images/card2.png";
 import card3 from "../images/card3.png";
 import card4 from "../images/card4.png";
+import arrow_w from "../images/arrow_white.png";
 
 function ourReducer(draft, action) {
   switch (action.type) {
@@ -538,8 +539,57 @@ export default function Level() {
     });
   };
 
-  const handleExitBtnClick = () => {
-    navigate("/singleplayermap");
+  const handleExitBtnClick = async () => {
+    var currScore = state.score;
+    var currStars = state.stars;
+
+    var levelsUnlockedJSON = null;
+    var levelStarsJSON = null;
+    var starsToAdd = 0;
+    var nextLevelId = "";
+
+    const userData = await getUserInfo(profile.id);
+    var starTotal = userData.totalStars;
+    var starCurrent = userData.currentStars;
+
+    levelsUnlockedJSON = userData.levelsUnlocked;
+    levelStarsJSON = userData.levelStars;
+
+    if (currScore > levelsUnlockedJSON[levelid]) {
+      if (levelid != "L13" && levelsUnlockedJSON[levelid] == 0) {
+        const arr = levelid.split("");
+        let lastElement = arr[arr.length - 1];
+        const changedVal = parseInt(lastElement) + 1;
+        arr[arr.length - 1] = changedVal.toString();
+        nextLevelId = arr.join("");
+
+        levelsUnlockedJSON[nextLevelId] = 0;
+      }
+
+      levelsUnlockedJSON[levelid] = currScore;
+    }
+
+    if (currStars > levelStarsJSON[levelid]) {
+      if (levelid != "L13" && levelStarsJSON[levelid] == 0) {
+        levelStarsJSON[nextLevelId] = 0;
+      }
+
+      starsToAdd = currStars - levelStarsJSON[levelid];
+      starTotal += starsToAdd;
+      starCurrent += starsToAdd;
+      levelStarsJSON[levelid] = currStars;
+    }
+
+    await saveScorePerLevel(
+      profile.id,
+      levelsUnlockedJSON,
+      levelStarsJSON,
+      starTotal,
+      starCurrent
+    );
+
+    navigate("/");
+    window.location.reload();
   };
 
   const setCharacter = (data) => {
@@ -555,7 +605,7 @@ export default function Level() {
     setTimer(timerValue);
 
     intervalRef.current = setInterval(() => {
-      timerValue--;
+      // timerValue--;
       setTimer(timerValue);
       if (timerValue <= 0) {
         setEnlargeImg(false);
@@ -613,6 +663,10 @@ export default function Level() {
       setCharacter(profile);
     }
   }, [state.playing]);
+
+  const handleBackBtnClick = () => {
+    navigate("/singleplayermap");
+  };
 
   return (
     <>
@@ -687,7 +741,7 @@ export default function Level() {
                     </button>
                     <button
                       className="bg-red-300"
-                      onClick={() => handleExitBtnClick()}
+                      onClick={() => navigate("/singleplayermap")}
                     >
                       Exit
                     </button>
@@ -697,12 +751,41 @@ export default function Level() {
 
               {state.currentQuestion !== null && (
                 <>
-                  <Header
-                    pageTitle={pageTitle}
-                    username={username}
-                    profilePicture={characterImg}
-                    isLevel={true}
-                  />
+                  {/* Start of Header */}
+                  <div className="flex relative w-screen h-min z-20 bg-stone-bg bg-cover place-items-center">
+                    <div className="flex h-3/4">
+                      <div className="flex relative place-items-center p-7 gap-5 bg-emerald-700 rounded-e-xl outline outline-yellow-300 outline-2">
+                        <div className="flex flex-row gap-5 place-items-center place-content-center">
+                          <img
+                            src={arrow_w}
+                            alt="home"
+                            className="w-6 z-10 cursor-pointer"
+                            onClick={handleBackBtnClick}
+                          />
+                          <span className="z-30 text-3xl text-white">
+                            {pageTitle}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      className="flex absolute right-0 h-3/4 bg-[rgba(250,229,187,255)] rounded-s-xl outline outline-amber-950 outline-2 place-content-center place-items-center gap-4 p-7 w-1/6 hover:w-1/3 transition-all"
+                      onClick={() => {
+                        navigate("/profile");
+                      }}
+                    >
+                      <span className="z-10 text-xl text-amber-950">
+                        {username}
+                      </span>
+                      <img
+                        src={characterImg}
+                        alt="Profile"
+                        className="w-9 fill-white rounded-full z-10 "
+                      />
+                    </button>
+                  </div>
+                  {/* End of Header */}
                   <div>
                     {timer && (
                       <div className="flex flex-row place-items-center gap-5 p-2 place-content-center w-full">
@@ -748,35 +831,34 @@ export default function Level() {
                         {state.currentQuestion.question}
                       </span>
                     </div>
-                    <div className="flex relative flex-row h-5/6 w-screen place-items-center gap-64 place-content-center sm:gap-10 md:gap-20 lg:gap-40 xl:gap-64 2xl:gap-72">
-                      <div className="flex flex-col relative w-2/12 h-full place-items-center p-5 gap-4">
-                        <img
+                    <div className="flex relative  flex-row h-5/6 w-screen place-items-center gap-64 place-content-center sm:gap-10 md:gap-20 lg:gap-40 xl:gap-64 2xl:gap-72">
+                      <div className="flex flex-col bg-card-bg rounded-xl relative w-2/12 h-full place-items-center p-5 gap-3">
+                        {/* <img
                           src={cardChar}
                           className="flex absolute bottom-0 w-full h-full "
-                        />
+                        /> */}
+                        <span className="left-10 text-2xl w-full text-center">
+                          {username}
+                        </span>
                         <img
-                          className="rounded w-5/6 z-10 mt-7"
+                          className="rounded w-5/6 z-10"
                           src={characterImg}
                         />
-                        <div className="flex gap-10 z-10 place-items-end h-6">
-                          <span className="absolute left-10 text-lg font-bold ">
-                            {username}
-                          </span>
-                          <span className="absolute right-10 text-sm">
-                            {state.score}
-                          </span>
+                        <div className="flex flex-row place-items-center gap-5">
+                          <span>HP</span>
+                          <div className=" h-3 w-36 bg-red-500 rounded-lg">
+                            <div
+                              className="h-3 w-full bg-green-500 rounded-lg"
+                              style={{
+                                width: `${
+                                  (state.playerHealth / state.questionsLength) *
+                                  100
+                                }%`,
+                              }}
+                            ></div>
+                          </div>
                         </div>
-                        <div className="absolute bottom-9 h-3 w-36 bg-red-500 rounded-lg">
-                          <div
-                            className="h-3 w-full bg-green-400 rounded-lg"
-                            style={{
-                              width: `${
-                                (state.playerHealth / state.questionsLength) *
-                                100
-                              }%`,
-                            }}
-                          ></div>
-                        </div>
+                        <span className="text-xl">Score: {state.score}</span>
                       </div>
                       <button
                         id="pick-card"
@@ -817,7 +899,7 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice1).v !== null && (
                       <button
                         id="button1"
-                        className="flex bg-white place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
+                        className="flex bg-scroll-bg place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
                         onClick={() =>
                           handleCardClick(
                             state.currentQuestion,
@@ -838,7 +920,7 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice2).v !== null && (
                       <button
                         id="button2"
-                        className="flex bg-white place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3  p-5 text-lg place-self-end hover:animate-pulse transition-all"
+                        className="flex bg-scroll-bg place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3  p-5 text-lg place-self-end hover:animate-pulse transition-all"
                         onClick={() =>
                           handleCardClick(
                             state.currentQuestion,
@@ -859,7 +941,7 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice3).v !== null && (
                       <button
                         id="button3"
-                        className="flex bg-white place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3  p-5 text-lg place-self-end hover:animate-pulse transition-all"
+                        className="flex bg-scroll-bg place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3  p-5 text-lg place-self-end hover:animate-pulse transition-all"
                         onClick={() =>
                           handleCardClick(
                             state.currentQuestion,
@@ -880,7 +962,7 @@ export default function Level() {
                     {JSON.parse(state.currentQuestion.choice4).v !== null && (
                       <button
                         id="button4"
-                        className="flex bg-white place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3  p-5 text-lg place-self-end hover:animate-pulse transition-all"
+                        className="flex bg-scroll-bg place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3  p-5 text-lg place-self-end hover:animate-pulse transition-all"
                         onClick={() =>
                           handleCardClick(
                             state.currentQuestion,

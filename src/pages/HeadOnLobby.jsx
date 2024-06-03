@@ -68,6 +68,8 @@ export default function HeadOnLobby() {
         pageTitle="Head On"
         username={username}
         profilePicture={characterImg}
+        actualSocket={socket}
+        titleColor={"bg-purple-700"}
       />
 
       <div className="flex flex-col gap-10 place-content-center place-items-center h-screen w-screen">

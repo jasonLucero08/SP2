@@ -7,6 +7,7 @@ import star from "../images/star.png";
 import { supabase } from "../supabaseClient";
 
 import shop from "../images/shop.png";
+import shop_banner from "../images/shopBanner.png";
 
 const imgBucketUrl =
   "https://pnduassrodsmyexxhtsf.supabase.co/storage/v1/object/public/playable-characters/";
@@ -136,59 +137,74 @@ export default function Customize() {
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-stone-bg bg-cover">
+    <div className="h-screen w-screen flex flex-col place-items-center bg-stone-bg bg-cover">
       <Header
-        pageTitle="Select Your Character"
+        pageTitle="Buy Characters"
         username={username}
         profilePicture={characterImg}
+        titleColor={"bg-amber-500"}
       />
 
-      <div className="flex flex-row w-screen h-screen gap-5 place-content-center place-items-center p-10 overflow-hidden">
-        <div className="flex flex-col w-1/3 gap-3 p-10 ">
+      <img src={shop_banner} className="w-2/5" />
+
+      <div className="flex flex-row w-screen h-screen gap-5 place-content-center place-items-center p-5 overflow-hidden">
+        <div className="flex flex-col w-2/5 h-full gap-2">
+          {userInfo && (
+            <div className="flex flex-row w-full h-full bg-scroll-bg text-amber-900 bg-cover outline outline-3 outline-amber-900 place-content-center place-items-center gap-2 p-3 rounded-xl">
+              <span className="text-2xl">Your Current Stars:</span>
+              <img src={star} className="w-6 h-6" />
+              <span className="text-xl font-bold">{userInfo.currentStars}</span>
+            </div>
+          )}
           {userInfo && selectedImg && selectedImgName && (
-            <div className="flex flex-col px-6 py-10 place-items-center bg-white rounded-xl gap-5">
-              <img src={selectedImg} className="rounded w-2/3" />
-              <div className="flex w-full place-content-center place-items-center">
-                <span className="flex grow text-xl font-bold">
-                  {selectedImgName}
-                </span>
-                <span className="flex flex-row gap-2 text-xl font-bold">
-                  Cost: <img src={star} className="w-6 h-6" />
-                  {selectedCharacterCost}
-                </span>
+            <div className="flex flex-col w-full h-full place-items-center bg-scroll-bg bg-cover outline outline-amber-900 text-amber-900 rounded-xl p-5 gap-5">
+              <span className="flex text-3xl shadow drop-shadow-2xl w-full place-content-center">
+                Character Preview
+              </span>
+              <div className="flex flex-row">
+                <div className="flex flex-col place-items-center gap-5 w-full h-fit">
+                  <img
+                    src={selectedImg}
+                    className="rounded w-11/2 outline outline-amber-900"
+                  />
+                  {bought ? (
+                    <span>bought</span>
+                  ) : (
+                    <button
+                      className="flex w-full bg-red-500 place-content-center text-white p-2 rounded-full"
+                      onClick={() => buy()}
+                    >
+                      Buy
+                    </button>
+                  )}
+                </div>
+                <div className="flex flex-col w-full place-items-center place-content-center gap-14">
+                  <div className="flex flex-col text-center w-full gap-3">
+                    <span className="text-2xl underline underline-offset-4">
+                      Character Name:
+                    </span>
+                    <span className="text-3xl font-bold ">
+                      {selectedImgName}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col w-full place-items-center place-content-center gap-3">
+                    <span className="text-2xl underline underline-offset-4">
+                      Cost:
+                    </span>
+                    <span className="flex flex-row gap-2 text-3xl font-bold place-items-center">
+                      <img src={star} className="w-6 h-6" />
+                      {selectedCharacterCost}
+                    </span>
+                  </div>
+                </div>
               </div>
-              {bought ? (
-                <span>bought</span>
-              ) : (
-                <button
-                  className="flex w-full bg-red-500 place-content-center text-white p-2 rounded-full"
-                  onClick={() => buy()}
-                >
-                  Buy
-                </button>
-              )}
             </div>
           )}
         </div>
 
-        <div className="flex flex-col relative w-2/3 h-full bg-white overflow-hidden rounded-xl">
-          <div className="flex text-black bg-amber-500 place-content-center place-items-center p-5 gap-10">
-            <div className="flex flex-row place-items-center gap-10 grow px-5">
-              <img src={shop} className="w-20" />
-              <span className="text-5xl text-white">Shop</span>
-            </div>
-            {userInfo && (
-              <div className="flex flex-row w-2/5 h-4/5 bg-white place-content-center place-items-center gap-2 rounded-xl">
-                <span>Your Current Stars:</span>
-                <img src={star} className="w-6 h-6" />
-                <span className="text-xl font-bold">
-                  {userInfo.currentStars}
-                </span>
-              </div>
-            )}
-          </div>
-
-          <div className="grid grid-cols-5 gap-5 bg-gray-300 overflow-hidden overflow-y-scroll p-5 h-full">
+        <div className="flex flex-col relative w-3/5 h-full overflow-hidden rounded-xl outline outline-2 outline-amber-900 text-amber-900">
+          <div className="grid grid-cols-4 gap-5 bg-scroll-bg overflow-hidden overflow-y-scroll p-5 h-full">
             {images !== null && (
               <>
                 {images.map((image) => {
@@ -200,7 +216,7 @@ export default function Customize() {
                   });
                   return (
                     <button
-                      className="flex flex-col gap-5 h-fit w-full bg-white place-content-center place-items-center p-5 rounded-md"
+                      className="flex flex-col gap-5 h-fit w-full outline outline-2 outline-amber-950 place-content-center place-items-center p-5 rounded-md"
                       onClick={() => handleImgClick(image)}
                       key={image.id}
                       // disabled={handleDisabled(image)}
@@ -209,8 +225,8 @@ export default function Customize() {
                         className="w-5/6 rounded"
                         src={imgBucketUrl + image.name}
                       />
-                      <div className="flex flex-row w-full gap-1 place-items-center">
-                        <span className="flex grow ">
+                      <div className="flex flex-row w-full gap-1 text-xl place-items-center">
+                        <span className="flex grow">
                           {image.name.split(".").slice(0, -1).join(".")}
                         </span>
                         <img src={star} className="w-4 h-4" />

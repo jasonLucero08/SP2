@@ -3,10 +3,17 @@
 @tailwind utilities;
 body {
   margin: 0;
-  font-family: "Exo 2", sans-serif;
-  font-optical-sizing: auto;
+  font-family: "KC Obra Letra";
   font-weight: 400;
-  font-style: normal;
+  src: url(../fonts/KCObraLetraRegular.woff) format("woff");
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  @font-face {
+    font-family: "KC Obra Letra";
+    font-weight: 400;
+    src: url(../fonts/KCObraLetraRegular.woff) format("woff");
+  }
 }

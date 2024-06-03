@@ -1,13 +1,10 @@
 import React from "react";
-import user_profile from "../images/user_profile.png";
-import home from "../images/home.png";
 import { useNavigate } from "react-router-dom";
 
-import { initializeSocket } from "../initSocket";
-
+import home from "../images/home.png";
 import left_arrow from "../images/left_arrow.png";
-import mid_banner from "../images/mid-banner.png";
-import right_banner from "../images/right-banner.png";
+import home_w from "../images/home_white.png";
+import arrow_w from "../images/arrow_white.png";
 
 export default function Header({
   isProfile,
@@ -16,6 +13,7 @@ export default function Header({
   profilePicture,
   actualSocket,
   isLevel,
+  titleColor,
 }) {
   // const socket = initializeSocket();
   const navigate = useNavigate();
@@ -35,52 +33,79 @@ export default function Header({
   return (
     <div className="flex relative w-screen h-min z-20 bg-stone-bg bg-cover place-items-center">
       <div className="flex h-3/4">
-        {/* //   <div className="flex relative px-5 py-6 gap-5 place-items-center"> */}
-
-        <div className="flex relative place-items-center p-7 gap-5 bg-white rounded-e-xl">
-          {/* <img src={left_banner} className="flex absolute left-0 w-full h-16" /> */}
+        <div
+          className={`flex relative place-items-center p-7 gap-5 ${titleColor} rounded-e-xl outline outline-amber-950 outline-2`}
+        >
           {!isLevel ? (
-            <img
-              src={home}
-              alt="home"
-              className="w-8 z-10 cursor-pointer"
-              onClick={handleHomeBtnClick}
-            />
+            <div>
+              {titleColor === "bg-[rgba(250,229,187,255)]" ? (
+                <div className="flex flex-row gap-5 place-items-center place-content-center">
+                  <img
+                    src={home}
+                    alt="home"
+                    className="w-8 z-10 cursor-pointer"
+                    onClick={handleHomeBtnClick}
+                  />
+                  <span className="z-30 text-3xl text-amber-950">
+                    {pageTitle}
+                  </span>
+                </div>
+              ) : (
+                <div className="flex flex-row gap-5 place-items-center place-content-center">
+                  <img
+                    src={home_w}
+                    alt="home"
+                    className="w-8 z-10 cursor-pointer"
+                    onClick={handleHomeBtnClick}
+                  />
+                  <span className="z-30 text-3xl text-white">{pageTitle}</span>
+                </div>
+              )}
+            </div>
           ) : (
-            <img
-              src={left_arrow}
-              alt="home"
-              className="w-6 z-10 cursor-pointer"
-              onClick={handleBackBtnClick}
-            />
+            <div>
+              {titleColor === "bg-[rgba(250,229,187,255)]" ? (
+                <div className="flex flex-row gap-5 place-items-center place-content-center">
+                  <img
+                    src={left_arrow}
+                    alt="home"
+                    className="w-6 z-10 cursor-pointer"
+                    onClick={handleBackBtnClick}
+                  />
+                  <span className="z-30 text-3xl text-amber-950">
+                    {pageTitle}
+                  </span>
+                </div>
+              ) : (
+                <div className="flex flex-row gap-5 place-items-center place-content-center">
+                  <img
+                    src={arrow_w}
+                    alt="home"
+                    className="w-6 z-10 cursor-pointer"
+                    onClick={handleBackBtnClick}
+                  />
+                  <span className="z-30 text-3xl text-white">{pageTitle}</span>
+                </div>
+              )}
+            </div>
           )}
-          <span className="z-10 font-bold text-xl">{pageTitle}</span>
         </div>
       </div>
 
-      {/* <div className="flex bg-green-300 h-full">
-        <div className="flex relative font-bold text-xl w-fit">
-          <img src={mid_banner} className="flex absolute w-full" />
-          
-        </div>
-      </div> */}
-
       {!isProfile && (
-        // <div className="flex absolute right-0 h-3/4 hover:w-1/3 bg-purple-600 rounded-s-xl">
         <button
-          className="flex absolute right-0 h-3/4 bg-amber-600 rounded-s-xl place-content-center place-items-center gap-4 p-7 w-1/6 hover:w-1/3 transition-all"
+          className="flex absolute right-0 h-3/4 bg-[rgba(250,229,187,255)] rounded-s-xl outline outline-amber-950 outline-2 place-content-center place-items-center gap-4 p-7 w-1/6 hover:w-1/3 transition-all"
           onClick={() => {
             navigate("/profile");
           }}
         >
-          <span className="z-10 text-xl text-white font-bold">{username}</span>
+          <span className="z-10 text-xl text-amber-950">{username}</span>
           <img
             src={profilePicture}
             alt="Profile"
             className="w-9 fill-white rounded-full z-10 "
           />
         </button>
-        // </div>
       )}
     </div>
   );
