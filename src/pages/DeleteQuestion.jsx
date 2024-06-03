@@ -276,7 +276,7 @@ export default function DeleteQuestion() {
       </div>
       {/* End of Header */}
 
-      <div className="flex bg-white p-10">
+      <div className="flex bg-white p-10 h-screen">
         <form
           className="flex flex-col w-full h-full gap-10"
           onSubmit={handleFormSubmit}

@@ -72,26 +72,26 @@ export default function HeadOnLobby() {
 
       <div className="flex flex-col gap-10 place-content-center place-items-center h-screen w-screen">
         <div
-          className="flex flex-col place-items-center gap-5 bg-white w-1/3 p-5 rounded-xl cursor-pointer hover:w-1/2 transition-all"
+          className="flex flex-col place-items-center gap-5 bg-purple-600 w-1/2 p-10 rounded-xl cursor-pointer hover:w-3/4 transition-all"
           onClick={() => createRoom()}
         >
           <div className="flex flex-row gap-5 place-items-center w-full">
             <img src={create} className="w-20" />
-            <span className="text-xl font-bold ">Create Lobby</span>
+            <span className="text-3xl font-bold text-white">Create Lobby</span>
           </div>
         </div>
         {roomCode && (
-          <p className="flex flex-col place-items-center w-1/3 p-5 rounded-xl text-xl bg-white hover:w-1/2 hover:text-2xl transition-all">
+          <p className="flex flex-col place-items-center w-1/2 p-5 rounded-xl text-3xl bg-white hover:w-2/3 hover:text-4xl transition-all">
             Room created with code: {roomCode}
           </p>
         )}
 
         <div
-          className="flex flex-row place-items-center gap-5 bg-white w-1/3 p-5 rounded-xl cursor-pointer hover:w-1/2 transition-all"
+          className="flex flex-row place-items-center gap-5 bg-red-600 w-1/2 p-10 rounded-xl cursor-pointer hover:w-3/4 transition-all"
           onClick={() => joinRoom()}
         >
           <img src={join} className="w-20" />
-          <span className="text-xl font-bold">Join Room</span>
+          <span className="text-3xl font-bold text-white">Join Room</span>
         </div>
       </div>
 

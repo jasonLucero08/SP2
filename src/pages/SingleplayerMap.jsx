@@ -64,7 +64,7 @@ export default function SinglePlayerMap() {
         profilePicture={characterImg}
       />
 
-      <div className="grid grid-cols-4 w-screen h-screen gap-10 overflow-y-scroll no-scrollbar p-10">
+      <div className="grid grid-cols-4 place-items-center w-screen h-screen gap-10 overflow-y-scroll no-scrollbar p-10">
         <LevelCard
           id="L1"
           imageId="L1-img"

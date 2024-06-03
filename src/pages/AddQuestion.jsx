@@ -231,7 +231,7 @@ export default function AddQuestion() {
   }, []);
 
   return (
-    <div className="flex flex-col w-screen h-screen bg-stone-bg bg-cover">
+    <div className="flex flex-col w-screen h-screen bg-stone-bg bg-cover overflow-hidden">
       {/* Header */}
       <div className="flex py-5 w-screen z-20 bg-stone-bg bg-cover place-items-center">
         <div className="flex relative place-items-center px-5 gap-5">

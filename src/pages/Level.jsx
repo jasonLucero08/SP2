@@ -701,6 +701,7 @@ export default function Level() {
                     pageTitle={pageTitle}
                     username={username}
                     profilePicture={characterImg}
+                    isLevel={true}
                   />
                   <div>
                     {timer && (

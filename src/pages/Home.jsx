@@ -219,9 +219,9 @@ export default function Home() {
       <>
         <div className="flex flex-col gap-4 w-2/6 h-full overflow-hidden place-content-center">
           {profile ? (
-            <div className="flex absolute right-0 top-10 gap-5 place-items-center">
+            <div className="flex w-full place-self-end gap-5 place-items-center">
               <button
-                className="group flex relative place-items-center place-content-end gap-5 px-24 py-5 hover:px-26 transition-all"
+                className="group flex relative place-items-center w-full place-content-center gap-5 px-24 py-5 hover:px-26 transition-all"
                 onClick={() => {
                   !isAdmin && handleProfileClick();
                 }}
@@ -230,7 +230,7 @@ export default function Home() {
                   src={white}
                   className="flex absolute w-full h-full left-0 z-0"
                 />
-                <span className="flex text-2xl font-bold group-hover:text-3xl transition-all z-10">
+                <span className="flex text-3xl font-bold group-hover:text-4xl transition-all z-10">
                   {username}
                 </span>
                 {characterImg && (
@@ -243,33 +243,27 @@ export default function Home() {
               </button>
             </div>
           ) : (
-            <div className="flex gap-5 w-full place-content-end">
-              {/* <button
-                className="flex flex-row place-items-center place-self-center gap-5 bg-slate-500 p-5 rounded-md text-white"
-                onClick={() => navigate("/login")}
-              >
-                <span className="text-2xl font-bold">Login to Play!</span>
-              </button> */}
-              <div className="flex font-bold text-xl px-5 py-2 place-content-center place-items-center absolute right-0 top-10">
-                <div className="flex flex-row z-10 px-5 py-2 place-content-center place-items-center gap-5">
-                  <span>Log in to play:</span>
-                  <Auth
-                    supabaseClient={supabase}
-                    appearance={{ theme: ThemeSupa }}
-                    theme="dark"
-                    providers={["google"]}
-                    onlyThirdPartyProviders
-                  />
-                </div>
-                <img src={white} className="flex absolute w-full  left-0 z-0" />
+            <div className="flex relative gap-5 w-full place-items-center">
+              {/* <div className="flex font-bold  px-5 py-2 place-content-center place-items-center"> */}
+              <div className="flex w-full flex-row text-2xl font-bold z-10 px-10 py-2 gap-5 place-items-center">
+                <span className="flex grow">Log in to play:</span>
+                <Auth
+                  supabaseClient={supabase}
+                  appearance={{ theme: ThemeSupa }}
+                  theme="dark"
+                  providers={["google"]}
+                  onlyThirdPartyProviders
+                />
               </div>
+              <img src={white} className="flex absolute w-full left-0 z-0" />
+              {/* </div> */}
             </div>
           )}
 
           {isAdmin ? (
             <>
               <button
-                className="group flex relative gap-5 w-4/6 text-white font-bold text-xl rounded-s-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all cursor-pointer"
+                className="group flex relative gap-5 w-5/6 text-white font-bold text-xl rounded-s-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:py-7 transition-all cursor-pointer"
                 onClick={() => handleAddQClick()}
               >
                 <img
@@ -286,7 +280,7 @@ export default function Home() {
               </button>
 
               <button
-                className="group flex relative gap-5 w-4/6 text-white font-bold text-xl rounded-s-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all cursor-pointer"
+                className="group flex relative gap-5 w-5/6 text-white font-bold text-xl rounded-s-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:py-7 transition-all cursor-pointer"
                 onClick={handleModifyQClick}
               >
                 <img
@@ -303,7 +297,7 @@ export default function Home() {
               </button>
 
               <button
-                className="group flex relative gap-5 w-4/6 text-white font-bold text-xl rounded-s-xl px-10 py-3 place-items-center place-self-end hover:w-full hover:py-7 transition-all cursor-pointer"
+                className="group flex relative gap-5 w-5/6 text-white font-bold text-xl rounded-s-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all cursor-pointer"
                 onClick={handleDeleteQClick}
               >
                 <img src={red} className="flex absolute w-full h-full left-0" />

@@ -437,6 +437,7 @@ export default function HeadOnGame() {
   const fetchData = async () => {
     try {
       await axios.get("https://456-server.glitch.me/fetch-questions");
+      // await axios.get("http://localhost:3000/fetch-questions");
     } catch (error) {
       console.error("Error fetching data:", error);
     }
