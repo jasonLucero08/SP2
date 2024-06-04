@@ -24,6 +24,8 @@ import addQ from "../images/addQ.png";
 import editQ from "../images/editQ.png";
 import blue from "../images/blue-banner.png";
 import cream from "../images/cream-banner.png";
+import magenta from "../images/help.png";
+import help_icon from "../images/help-icon.png";
 
 import Header from "../components/Header";
 import InputField from "../components/InputField";
@@ -127,6 +129,10 @@ export default function Home() {
 
   const handleDeleteQClick = () => {
     navigate("/admin-delete-question");
+  };
+
+  const handleHelpClick = () => {
+    navigate("/help");
   };
 
   const handleLogOutBtnClick = async (e) => {
@@ -368,6 +374,22 @@ export default function Home() {
                 />
                 <span className="text-white text-2xl group-hover:text-3xl transition-all z-10">
                   Leaderboard
+                </span>
+              </button>
+              <button
+                className="group flex relative gap-5 w-5/6  rounded-s-xl px-10 py-5 place-items-center place-self-end hover:w-full hover:px-14 hover:py-8 transition-all"
+                onClick={handleHelpClick}
+              >
+                <img
+                  src={magenta}
+                  className="flex absolute w-full h-full left-0"
+                />
+                <img
+                  src={help_icon}
+                  className="w-7 group-hover:w-10 transition-all z-10"
+                />
+                <span className="text-white text-2xl group-hover:text-3xl transition-all z-10 ">
+                  Help
                 </span>
               </button>
             </>

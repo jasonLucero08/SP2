@@ -79,14 +79,14 @@ export default function SinglePlayerMap() {
 
   return (
     <div className="flex flex-col h-screen w-screen bg-stone-bg bg-cover place-content-center place-items-center">
-      {/* <Header
+      <Header
         pageTitle="Level Selection"
         username={userName}
         profilePicture={characterImg}
         titleColor={"bg-emerald-700"}
-      /> */}
+      />
       {/* Start of Header */}
-      <div className="flex relative w-screen h-min z-20 bg-stone-bg bg-cover place-items-center">
+      {/* <div className="flex relative w-screen h-min z-20 bg-stone-bg bg-cover place-items-center">
         <div className="flex h-3/4">
           <div className="flex relative place-items-center p-7 gap-5 bg-emerald-700 rounded-e-xl outline outline-yellow-300 outline-2">
             <div className="flex flex-row gap-5 place-items-center place-content-center">
@@ -114,7 +114,7 @@ export default function SinglePlayerMap() {
             className="w-9 fill-white rounded-full z-10 "
           />
         </button>
-      </div>
+      </div> */}
       {/* End of Header */}
 
       <div className="grid grid-cols-4 place-items-center w-screen h-screen gap-10 overflow-y-scroll no-scrollbar px-10 ">

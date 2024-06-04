@@ -93,12 +93,7 @@ export default function Header({
       </div>
 
       {!isProfile && (
-        <button
-          className="flex absolute right-0 h-3/4 bg-[rgba(250,229,187,255)] rounded-s-xl outline outline-amber-950 outline-2 place-content-center place-items-center gap-4 p-7 w-1/6 hover:w-1/3 transition-all"
-          onClick={() => {
-            navigate("/profile");
-          }}
-        >
+        <button className="flex absolute right-0 h-3/4 bg-[rgba(250,229,187,255)] rounded-s-xl outline outline-amber-950 outline-2 place-content-center place-items-center gap-4 p-7 w-1/6 hover:w-1/3 transition-all cursor-default">
           <span className="z-10 text-xl text-amber-950">{username}</span>
           <img
             src={profilePicture}

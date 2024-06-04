@@ -81,9 +81,9 @@ export default function HeadOnLobby() {
         >
           <img src={create_banner} className="w-full" />
         </div>
-        {roomCode && (
+        {message && (
           <p className="flex flex-col place-items-center w-1/2 p-5 rounded-xl text-3xl bg-[rgb(168,77,20)] text-white bg-cover hover:w-2/3 hover:text-4xl transition-all">
-            Room created with code: {roomCode}
+            {message}
           </p>
         )}
 

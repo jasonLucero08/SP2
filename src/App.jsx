@@ -14,6 +14,7 @@ import Stats from "./pages/Stats";
 import AddQuestion from "./pages/AddQuestion";
 import ModifyQuestion from "./pages/ModifyQuestion";
 import DeleteQuestion from "./pages/DeleteQuestion";
+import Help from "./pages/Help";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/admin-add-question" element={<AddQuestion />} />
         <Route path="/admin-modify-question" element={<ModifyQuestion />} />
         <Route path="/admin-delete-question" element={<DeleteQuestion />} />
+        <Route path="/help" element={<Help />} />
       </Routes>
     </div>
   );

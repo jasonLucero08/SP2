@@ -20,8 +20,8 @@ export default function Customize() {
   const [images, setImages] = useState([]);
 
   const [characterImg, setCharacterImg] = useState(null);
-  const [selectedImg, setSelectedImg] = useState(imgBucketUrl + "Kaius.jpg");
-  const [selectedImgName, setSelectedImgName] = useState("Kaius");
+  const [selectedImg, setSelectedImg] = useState(null);
+  const [selectedImgName, setSelectedImgName] = useState(null);
 
   const [characterCosts, setCharacterCosts] = useState(null);
   const [selectedCharacterCost, setSelectedCharacterCost] = useState(0);

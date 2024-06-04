@@ -476,9 +476,9 @@ export default function Level() {
     }
 
     setChoiceClicked(false);
+    setChoiceForClicked(null);
 
     setTimeout(function () {
-      setChoiceForClicked(null);
       hideButtonColors();
       dispatch({ type: "getNewQuestion" });
     }, 1500);
