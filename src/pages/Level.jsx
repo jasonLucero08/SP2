@@ -613,8 +613,21 @@ export default function Level() {
     setTimer(timerValue);
 
     intervalRef.current = setInterval(() => {
+      const timerDiv = document.getElementById("timer");
+      if (timerDiv) {
+        if (timerDiv.classList.contains("bg-pink-600")) {
+          timerDiv.classList.add("bg-emerald-600");
+          timerDiv.classList.remove("bg-pink-600");
+        }
+      }
       timerValue--;
       setTimer(timerValue);
+      if (timerValue <= 15) {
+        if (timerDiv.classList.contains("bg-emerald-600")) {
+          timerDiv.classList.add("bg-pink-600");
+          timerDiv.classList.remove("bg-emerald-600");
+        }
+      }
       if (timerValue <= 0) {
         setEnlargeImg(false);
         clearInterval(intervalRef.current);
@@ -812,7 +825,8 @@ export default function Level() {
                       <div className="flex flex-row place-items-center gap-5 p-2 place-content-center w-full">
                         <span className="text-white text-xl">{timer}</span>
                         <div
-                          className="bg-pink-600 w-full h-2 transition-all rounded-full"
+                          id="timer"
+                          className="bg-emerald-600 w-full h-2 transition-all rounded-full"
                           style={{ width: `${timer}%` }}
                         ></div>
                       </div>

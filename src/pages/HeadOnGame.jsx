@@ -146,6 +146,10 @@ export default function HeadOnGame() {
 
   const [cardsCanClick, setCardsCanClick] = useState(false);
   const [questionCounter, setQuestionCounter] = useState(1);
+  const [playerPicked, setPlayerPicked] = useState("Waiting...");
+  const [enemyPicked, setEnemyPicked] = useState("Waiting...");
+
+  const [leftMessage, setLeftMessage] = useState(null);
 
   useEffect(() => {
     getPageTitle();
@@ -172,6 +176,7 @@ export default function HeadOnGame() {
 
         socket.emit("clearStatData");
         socket.emit("clearUserChoiceList");
+        socket.emit("clearHasPicked");
         fetchData();
         socket.once("question", (question) => {
           setCurrQues(question);
@@ -211,7 +216,7 @@ export default function HeadOnGame() {
     return () => {
       socket.off("broadcastStatChange");
     };
-  }, [playerHealth, playerScore, currQues]);
+  }, [playerHealth, currQues]);
 
   useEffect(() => {
     if (playerHealth !== null && playerHealth <= 0) {
@@ -258,22 +263,46 @@ export default function HeadOnGame() {
 
   useEffect(() => {
     socket.on("showCorrectChoices", (list) => {
+      const arr = Object.keys(list);
+
+      arr.forEach((name) => {
+        if (name === username) {
+          if (
+            list[name].choice === "incorrect" ||
+            list[name].choice === "null"
+          ) {
+            var temp = playerHealth;
+            temp = temp - 5;
+            setPlayerHealth(temp);
+          } else {
+            var temp = playerScore;
+            temp = temp + 1;
+            setPlayerScore(temp);
+          }
+        }
+      });
+
       showButtonColors();
       clearInterval(intervalRef.current);
+      setPlayerPicked("");
+      setEnemyPicked("");
 
       setTimeout(function () {
         socket.emit("clearUserChoiceList");
-        hideButtonColors();
+        socket.emit("clearHasPicked");
 
         fetchData();
         socket.once("question", (question) => {
           setCurrQues(question);
           startTimer();
+          setCardsCanClick(false);
+          var temp = questionCounter;
+          temp = temp + 1;
+          setQuestionCounter(temp);
+          hideButtonColors();
+          setPlayerPicked("Waiting...");
+          setEnemyPicked("Waiting...");
         });
-        setCardsCanClick(false);
-        var temp = questionCounter;
-        temp = temp + 1;
-        setQuestionCounter(temp);
       }, 1500);
     });
 
@@ -281,6 +310,29 @@ export default function HeadOnGame() {
       socket.off("showCorrectChoices");
     };
   }, [currQues]);
+
+  useEffect(() => {
+    socket.on("showHasPicked", (list) => {
+      const arr = Object.keys(list);
+
+      arr.forEach((name) => {
+        if (name !== username) {
+          console.log(list);
+          setEnemyPicked(list[name].message);
+        }
+      });
+    });
+    return () => {
+      socket.off("showHasPicked");
+    };
+  }, [playerPicked]);
+
+  useEffect(() => {
+    socket.on("winner", (data) => {
+      setLeftMessage(data);
+      setGameWin(true);
+    });
+  }, []);
 
   const getPageTitle = () => {
     switch (location.state.num) {
@@ -421,13 +473,13 @@ export default function HeadOnGame() {
 
   const noChoiceClicked = () => {
     clearInterval(intervalRef.current);
-    setPlayerHealth((prevHealth) => {
-      const updatedHealth = prevHealth - 5;
-      console.log(updatedHealth); // This should now reflect the correct updated value
-      return updatedHealth;
-    });
+    // setPlayerHealth((prevHealth) => {
+    //   const updatedHealth = prevHealth - 5;
+    //   console.log(updatedHealth); // This should now reflect the correct updated value
+    //   return updatedHealth;
+    // });
 
-    const val = "false";
+    const val = "null";
     socket.emit("sendChoice", {
       roomCode: location.state.code,
       uData: profile,
@@ -456,8 +508,21 @@ export default function HeadOnGame() {
     setTimer(timerValue);
 
     intervalRef.current = setInterval(() => {
-      timerValue--;
+      const timerDiv = document.getElementById("timer");
+      if (timerDiv) {
+        if (timerDiv.classList.contains("bg-pink-600")) {
+          timerDiv.classList.add("bg-emerald-600");
+          timerDiv.classList.remove("bg-pink-600");
+        }
+      }
+      // timerValue--;
       setTimer(timerValue);
+      if (timerValue <= 15) {
+        if (timerDiv.classList.contains("bg-emerald-600")) {
+          timerDiv.classList.add("bg-pink-600");
+          timerDiv.classList.remove("bg-emerald-600");
+        }
+      }
       if (timerValue <= 0) {
         setEnlargeImg(false);
         clearInterval(intervalRef.current);
@@ -625,68 +690,38 @@ export default function HeadOnGame() {
 
     if (choiceForClicked === 1) {
       if (JSON.parse(currQues.choice1).v.toString() === "false") {
-        val = "false";
-        var tempHealth = playerHealth;
-        tempHealth = tempHealth - 5;
-        setPlayerHealth(tempHealth);
-        console.log(tempHealth);
+        val = "incorrect";
       } else {
-        val = "true";
-        var tempScore = playerScore;
-        tempScore = tempScore + 1;
-        setPlayerScore(tempScore);
-        console.log(tempScore);
+        val = "correct";
       }
     } else if (choiceForClicked === 2) {
       if (JSON.parse(currQues.choice2).v.toString() === "false") {
-        val = "false";
-        var tempHealth = playerHealth;
-        tempHealth = tempHealth - 5;
-        setPlayerHealth(tempHealth);
-        console.log(tempHealth);
+        val = "incorrect";
       } else {
-        val = "true";
-        var tempScore = playerScore;
-        tempScore = tempScore + 1;
-        setPlayerScore(tempScore);
-        console.log(tempScore);
+        val = "correct";
       }
     } else if (choiceForClicked === 3) {
       if (JSON.parse(currQues.choice3).v.toString() === "false") {
-        val = "false";
-        var tempHealth = playerHealth;
-        tempHealth = tempHealth - 5;
-        setPlayerHealth(tempHealth);
-        console.log(tempHealth);
+        val = "incorrect";
       } else {
-        val = "true";
-        var tempScore = playerScore;
-        tempScore = tempScore + 1;
-        setPlayerScore(tempScore);
-        console.log(tempScore);
+        val = "correct";
       }
     } else if (choiceForClicked === 4) {
       if (JSON.parse(currQues.choice4).v.toString() === "false") {
-        val = "false";
-        var tempHealth = playerHealth;
-        tempHealth = tempHealth - 5;
-        setPlayerHealth(tempHealth);
-        console.log(tempHealth);
+        val = "incorrect";
       } else {
-        val = "true";
-        var tempScore = playerScore;
-        tempScore = tempScore + 1;
-        setPlayerScore(tempScore);
-        console.log(tempScore);
+        val = "correct";
       }
     }
     setChoiceForClicked(null);
     setChoiceClicked(false);
+    setPlayerPicked("This player has picked a card!");
 
     socket.emit("sendChoice", {
       roomCode: location.state.code,
       uData: userInfo,
       val: val,
+      playerPicked: "This player has picked a card!",
     });
   };
 
@@ -791,6 +826,9 @@ export default function HeadOnGame() {
                   <span className="text-6xl font-bold text-white z-10">
                     You Win
                   </span>
+                  {leftMessage && (
+                    <span className="text-xl z-10">{leftMessage}</span>
+                  )}
                   <span className="text-2xl z-10">You get 2 stars!</span>
                   <button
                     className="bg-blue-500 z-10 rounded p-5 w-2/3 text-lg hover:w-full hover:text-2xl transition-all"
@@ -858,7 +896,8 @@ export default function HeadOnGame() {
                       <div className="flex w-full place-items-center place-content-center gap-5 p-2">
                         <span className="text-white text-xl">{timer}</span>
                         <div
-                          className="bg-pink-600 w-full h-2 transition-all rounded-full"
+                          id="timer"
+                          className="bg-emerald-600 w-full h-2 transition-all rounded-full"
                           style={{ width: `${timer}%` }}
                         ></div>
                       </div>
@@ -879,28 +918,31 @@ export default function HeadOnGame() {
                     <span className="text-2xl z-10">{currQues.question}</span>
                   </div>
                   <div className="flex relative  flex-row h-5/6 w-screen place-items-center gap-40 place-content-center">
-                    <div className="flex flex-col bg-card-bg bg-cover rounded-xl relative w-[16vw] h-full place-items-center p-2">
-                      <div className="flex flex-col outline w-full h-full rounded-lg place-content-center place-items-center text-amber-900">
-                        <span className="py-2 left-10 text-3xl w-full text-center text-black drop-shadow-[0_2px_2px_rgba( ,255,255,1)]">
-                          {username}
-                        </span>
-                        <img
-                          className="rounded w-[12vw] z-10"
-                          src={characterImg}
-                        />
-                        <div className="flex flex-row place-items-center gap-5 py-2">
-                          <span>HP</span>
-                          <div className=" h-3 w-36 bg-red-500 rounded-lg">
-                            <div
-                              className="h-3 w-full bg-green-600 rounded-lg"
-                              style={{
-                                width: `${(playerHealth * 100) / 100}%`,
-                              }}
-                            ></div>
+                    <div className="flex flex-col place-content-center place-items-center">
+                      <div className="flex flex-col bg-card-bg bg-cover rounded-xl relative w-[16vw] h-full place-items-center p-2">
+                        <div className="flex flex-col outline w-full h-full rounded-lg place-content-center place-items-center text-amber-900">
+                          <span className="py-2 left-10 text-3xl w-full text-center text-black drop-shadow-[0_2px_2px_rgba( ,255,255,1)]">
+                            {username}
+                          </span>
+                          <img
+                            className="rounded w-[12vw] z-10"
+                            src={characterImg}
+                          />
+                          <div className="flex flex-row place-items-center gap-5 py-2">
+                            <span>HP</span>
+                            <div className=" h-3 w-36 bg-red-500 rounded-lg">
+                              <div
+                                className="h-3 w-full bg-green-600 rounded-lg"
+                                style={{
+                                  width: `${(playerHealth * 100) / 100}%`,
+                                }}
+                              ></div>
+                            </div>
                           </div>
+                          <span className="text-xl">Score: {playerScore}</span>
                         </div>
-                        <span className="text-xl">Score: {playerScore}</span>
                       </div>
+                      <span className="text-white text-lg">{playerPicked}</span>
                     </div>
                     <div className="flex flex-col place-content-center place-items-center gap-4">
                       <span className="text-white text-3xl">
@@ -923,31 +965,38 @@ export default function HeadOnGame() {
                       </button>
                     </div>
                     {enemyData && (
-                      <div className="flex flex-col relative place-items-center p-2 gap-4 w-[16vw] h-full bg-card-bg rounded-xl">
-                        <div className="flex flex-col outline w-full h-full rounded-lg place-content-center place-items-center text-amber-900">
-                          <span className="py-2 left-10 text-3xl w-full text-center text-black drop-shadow-[0_2px_2px_rgba( ,255,255,1)]">
-                            {enemyData.username}
-                          </span>
-                          <img
-                            className="rounded w-[12vw] z-10"
-                            src={enemyData.selectedImgUrl}
-                          />
+                      <div className="flex flex-col place-items-center">
+                        <div className="flex flex-col relative place-items-center p-2 gap-4 w-[16vw] h-full bg-card-bg bg-cover rounded-xl">
+                          <div className="flex flex-col outline w-full h-full rounded-lg place-content-center place-items-center text-amber-900">
+                            <span className="py-2 left-10 text-3xl w-full text-center text-black drop-shadow-[0_2px_2px_rgba( ,255,255,1)]">
+                              {enemyData.username}
+                            </span>
+                            <img
+                              className="rounded w-[12vw] z-10"
+                              src={enemyData.selectedImgUrl}
+                            />
 
-                          <div className="flex flex-row place-items-center gap-5 py-2">
-                            <span>HP: </span>
-                            <div className="h-3 w-36 bg-red-500 rounded-lg">
-                              <div
-                                className="h-3 w-full bg-green-600 rounded-lg"
-                                style={{
-                                  width: `${(enemyHealth / 100) * 100}%`,
-                                }}
-                              ></div>
+                            <div className="flex flex-row place-items-center gap-5 py-2">
+                              <span>HP: </span>
+                              <div className="h-3 w-36 bg-red-500 rounded-lg">
+                                <div
+                                  className="h-3 w-full bg-green-600 rounded-lg"
+                                  style={{
+                                    width: `${(enemyHealth / 100) * 100}%`,
+                                  }}
+                                ></div>
+                              </div>
+                            </div>
+                            <div className="flex gap-10 z-10 place-items-end h-6">
+                              <span className="text-xl">
+                                Score: {enemyScore}
+                              </span>
                             </div>
                           </div>
-                          <div className="flex gap-10 z-10 place-items-end h-6">
-                            <span className="text-xl">Score: {enemyScore}</span>
-                          </div>
                         </div>
+                        <span className="text-white text-lg">
+                          {enemyPicked}
+                        </span>
                       </div>
                     )}
                   </div>
