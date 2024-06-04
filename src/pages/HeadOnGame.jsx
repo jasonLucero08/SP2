@@ -515,7 +515,7 @@ export default function HeadOnGame() {
           timerDiv.classList.remove("bg-pink-600");
         }
       }
-      // timerValue--;
+      timerValue--;
       setTimer(timerValue);
       if (timerValue <= 15) {
         if (timerDiv.classList.contains("bg-emerald-600")) {
