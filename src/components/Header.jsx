@@ -34,7 +34,7 @@ export default function Header({
     <div className="flex relative w-screen h-min z-20 bg-stone-bg bg-cover place-items-center">
       <div className="flex h-3/4">
         <div
-          className={`flex relative place-items-center p-7 gap-5 ${titleColor} rounded-e-xl outline outline-amber-950 outline-2`}
+          className={`flex relative place-items-center p-7 gap-5 ${titleColor} rounded-e-xl outline outline-yellow-300 outline-2`}
         >
           {!isLevel ? (
             <div>

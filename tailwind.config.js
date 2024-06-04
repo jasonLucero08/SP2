@@ -7,6 +7,7 @@ export default {
         "stone-bg": "url('/src/images/stone.png')",
         "scroll-bg": "url('/src/images/scrollbg.png')",
         "card-bg": "url('/src/images/cardBG.png')",
+        "red-card-bg": "url('/src/images/card-red.png')",
       },
       fontFamily: {
         titles: ["KC Obra Letra", "sans-serif"],

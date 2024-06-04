@@ -18,11 +18,14 @@ import cardChar from "../images/card-filled.png";
 import cardEn from "../images/card-simple.png";
 import close from "../images/close.png";
 
-import speech_bubble from "../images/speech-bubble.png";
+import speech_bubble from "../images/speechbubble.png";
 import card1 from "../images/card1.png";
 import card2 from "../images/card2.png";
 import card3 from "../images/card3.png";
 import card4 from "../images/card4.png";
+
+import red_card from "../images/red-levelCard.png";
+import green_card from "../images/green-levelCard.png";
 
 import { initializeSocket } from "../initSocket";
 
@@ -142,6 +145,7 @@ export default function HeadOnGame() {
   const [gameWin, setGameWin] = useState(false);
 
   const [cardsCanClick, setCardsCanClick] = useState(false);
+  const [questionCounter, setQuestionCounter] = useState(1);
 
   useEffect(() => {
     getPageTitle();
@@ -267,6 +271,9 @@ export default function HeadOnGame() {
           startTimer();
         });
         setCardsCanClick(false);
+        var temp = questionCounter;
+        temp = temp + 1;
+        setQuestionCounter(temp);
       }, 1500);
     });
 
@@ -329,48 +336,48 @@ export default function HeadOnGame() {
     const b4 = document.getElementById("button4");
 
     if (b1) {
-      b1.classList.remove("bg-white");
+      b1.classList.remove("bg-scroll-bg");
       b1.classList.add(
         `${
           JSON.parse(currQues.choice1).v.toString() === "true"
-            ? "bg-green-200"
-            : "bg-red-200"
+            ? "bg-green-300"
+            : "bg-red-300"
         }`
       );
       b1.disabled = true;
     }
 
     if (b2) {
-      b2.classList.remove("bg-white");
+      b2.classList.remove("bg-scroll-bg");
       b2.classList.add(
         `${
           JSON.parse(currQues.choice2).v.toString() === "true"
-            ? "bg-green-200"
-            : "bg-red-200"
+            ? "bg-green-300"
+            : "bg-red-300"
         }`
       );
       b2.disabled = true;
     }
 
     if (b3) {
-      b3.classList.remove("bg-white");
+      b3.classList.remove("bg-scroll-bg");
       b3.classList.add(
         `${
           JSON.parse(currQues.choice3).v.toString() === "true"
-            ? "bg-green-200"
-            : "bg-red-200"
+            ? "bg-green-300"
+            : "bg-red-300"
         }`
       );
       b3.disabled = true;
     }
 
     if (b4) {
-      b4.classList.remove("bg-white");
+      b4.classList.remove("bg-scroll-bg");
       b4.classList.add(
         `${
           JSON.parse(currQues.choice4).v.toString() === "true"
-            ? "bg-green-200"
-            : "bg-red-200"
+            ? "bg-green-300"
+            : "bg-red-300"
         }`
       );
       b4.disabled = true;
@@ -384,30 +391,30 @@ export default function HeadOnGame() {
     const b4 = document.getElementById("button4");
 
     if (b1) {
-      b1.classList.remove("bg-green-200");
-      b1.classList.remove("bg-red-200");
-      b1.classList.add("bg-white");
+      b1.classList.remove("bg-green-300");
+      b1.classList.remove("bg-red-300");
+      b1.classList.add("bg-scroll-bg");
       b1.disabled = false;
     }
 
     if (b2) {
-      b2.classList.remove("bg-green-200");
-      b2.classList.remove("bg-red-200");
-      b2.classList.add("bg-white");
+      b2.classList.remove("bg-green-300");
+      b2.classList.remove("bg-red-300");
+      b2.classList.add("bg-scroll-bg");
       b2.disabled = false;
     }
 
     if (b3) {
-      b3.classList.remove("bg-green-200");
-      b3.classList.remove("bg-red-200");
-      b3.classList.add("bg-white");
+      b3.classList.remove("bg-green-300");
+      b3.classList.remove("bg-red-300");
+      b3.classList.add("bg-scroll-bg");
       b3.disabled = false;
     }
 
     if (b4) {
-      b4.classList.remove("bg-green-200");
-      b4.classList.remove("bg-red-200");
-      b4.classList.add("bg-white");
+      b4.classList.remove("bg-green-300");
+      b4.classList.remove("bg-red-300");
+      b4.classList.add("bg-scroll-bg");
       b4.disabled = false;
     }
   };
@@ -683,20 +690,66 @@ export default function HeadOnGame() {
     });
   };
 
-  const handleExitBtnClick = async () => {
+  const handleWinExitBtnClick = async () => {
     var userTotalStars = profile.totalStars;
     var userCurrentStars = profile.currentStars;
+    var userTotalHOGames = profile.totalHeadOnGames;
+    var userTotalHOWins = profile.totalHeadOnWins;
+    var winRate;
 
     userTotalStars += 2;
     userCurrentStars += 2;
+    userTotalHOGames += 1;
+    userTotalHOWins += 1;
+
+    winRate = Math.round((userTotalHOWins / userTotalHOGames) * 100);
 
     console.log("userTotalStars:", userTotalStars);
     console.log("userCurrentStars:", userCurrentStars);
+    console.log("userTotalHOGames:", userTotalHOGames);
+    console.log("userTotalHOWins:", userTotalHOWins);
 
     try {
       const { error } = await supabase
         .from("profile")
-        .update({ totalStars: userTotalStars, currentStars: userCurrentStars })
+        .update({
+          totalStars: userTotalStars,
+          currentStars: userCurrentStars,
+          totalHeadOnGames: userTotalHOGames,
+          totalHeadOnWins: userTotalHOWins,
+          HeadOnWinRate: winRate,
+        })
+        .eq("id", profile.id);
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error("Error updating stars:", error.message);
+    }
+
+    socket.disconnect();
+    navigate("/");
+  };
+
+  const handleLossBtnClick = async () => {
+    var userTotalHOGames = profile.totalHeadOnGames;
+    var userTotalHOWins = profile.totalHeadOnWins;
+    var winRate;
+
+    userTotalHOGames += 1;
+
+    winRate = Math.round((userTotalHOWins / userTotalHOGames) * 100);
+    console.log("userTotalHOGames:", userTotalHOGames);
+    console.log("userTotalHOWins:", userTotalHOWins);
+
+    try {
+      const { error } = await supabase
+        .from("profile")
+        .update({
+          totalHeadOnGames: userTotalHOGames,
+          HeadOnWinRate: winRate,
+        })
         .eq("id", profile.id);
 
       if (error) {
@@ -718,8 +771,12 @@ export default function HeadOnGame() {
             {gameWin && (
               <div className="h-screen w-screen flex absolute place-content-center place-items-center z-40">
                 <div className="h-screen w-screen bg-black opacity-50"></div>
-                <div className="flex flex-col absolute h-1/2 w-1/3 bg-white rounded-xl p-5 place-content-center text-center gap-5">
-                  <div className="flex flex-row place-content-center gap-3">
+                <div className="flex flex-col absolute h-3/4 w-1/3 rounded-xl px-10 py-24 text-center gap-5 text-white place-items-center">
+                  <img
+                    src={green_card}
+                    className="flex absolute h-full w-full top-0 left-0"
+                  />
+                  <div className="flex flex-row place-content-center gap-3 z-10">
                     {[...Array(2)].map((item, index) => {
                       return (
                         <img
@@ -731,13 +788,13 @@ export default function HeadOnGame() {
                       );
                     })}
                   </div>
-                  <span className="text-6xl font-bold text-green-500">
+                  <span className="text-6xl font-bold text-white z-10">
                     You Win
                   </span>
-                  <span className="text-2xl">You get 2 stars!</span>
+                  <span className="text-2xl z-10">You get 2 stars!</span>
                   <button
-                    className="bg-blue-300"
-                    onClick={() => handleExitBtnClick()}
+                    className="bg-blue-500 z-10 rounded p-5 w-2/3 text-lg hover:w-full hover:text-2xl transition-all"
+                    onClick={() => handleWinExitBtnClick()}
                   >
                     Exit
                   </button>
@@ -748,18 +805,19 @@ export default function HeadOnGame() {
             {gameOver && (
               <div className="h-screen w-screen flex absolute place-content-center place-items-center z-40">
                 <div className="h-screen w-screen bg-black opacity-50"></div>
-                <div className="flex flex-col absolute h-1/2 w-1/3 bg-white rounded-xl p-7 place-content-center text-center gap-5">
-                  <span className="text-6xl font-bold text-red-500">
-                    Game Over
-                  </span>
-                  <span className="text-base">
+                <div className="flex flex-col absolute h-3/4 w-1/3 rounded-xl px-10 py-32 text-center gap-5 text-white place-items-center">
+                  <img
+                    src={red_card}
+                    className="flex absolute h-full w-full top-0 left-0"
+                  />
+                  <span className="text-6xl font-bold z-10">Game Over</span>
+                  <span className="text-lg z-10">
                     Perhaps you have a lot more to learn regarding this topic...
                   </span>
                   <button
-                    className="bg-red-300"
+                    className="bg-blue-500 z-10 rounded p-5 w-2/3 text-lg hover:w-full hover:text-2xl transition-all"
                     onClick={() => {
-                      socket.disconnect();
-                      navigate("/");
+                      handleLossBtnClick();
                     }}
                   >
                     Exit
@@ -775,8 +833,9 @@ export default function HeadOnGame() {
                   username={username}
                   profilePicture={characterImg}
                   actualSocket={socket}
+                  titleColor={"bg-purple-700"}
                 />
-                <div className="flex flex-col place-items-center w-screen h-full">
+                <div className="flex flex-col place-items-center w-screen h-full gap-2">
                   {enlargeImg && (
                     <>
                       <div className="flex absolute place-content-center place-items-center h-screen top-0 z-30 gap-5">
@@ -797,103 +856,108 @@ export default function HeadOnGame() {
                   <div className="flex w-full h-fit place-items-center place-content-center">
                     {timer && (
                       <div className="flex w-full place-items-center place-content-center gap-5 p-2">
-                        <span className="text-white">{timer}</span>
+                        <span className="text-white text-xl">{timer}</span>
                         <div
-                          className="bg-blue-500 w-full h-2 transition-all rounded-full"
+                          className="bg-pink-600 w-full h-2 transition-all rounded-full"
                           style={{ width: `${timer}%` }}
                         ></div>
                       </div>
                     )}
                   </div>
-                  <div className="flex flex-row gap-5 bg-white w-10/12 h-1/4 mb-4 p-5">
+                  <div className="flex flex-row relative gap-5 w-8/12 h-[18vh] pt-5 px-20 text-center place-content-center text-white rounded-[50px]">
+                    <img
+                      src={speech_bubble}
+                      className="flex absolute top-0 left-0 w-full h-full"
+                    />
                     {currQues.imgRef && (
                       <img
-                        className="w-10 h-10 cursor-pointer outline outline-1"
+                        className="w-[4vw] h-[7vh] cursor-pointer outline outline-1 z-10"
                         src={currQues.imgRef}
                         onClick={() => setEnlargeImg(!enlargeImg)}
                       />
                     )}
-                    <span className="text-xl">{currQues.question}</span>
+                    <span className="text-2xl z-10">{currQues.question}</span>
                   </div>
-                  <div className="flex relative flex-row h-5/6 w-screen place-items-center gap-64 place-content-center sm:gap-10 md:gap-20 lg:gap-40 xl:gap-64 2xl:gap-72">
-                    <div className="flex flex-col relative w-2/12 h-full place-items-center p-5 gap-4">
-                      <img
-                        src={cardChar}
-                        className="flex absolute bottom-0 w-full h-full "
-                      />
-                      <div className="w-5/6 z-10 mt-7">
-                        <img className="rounded" src={characterImg} />
-                      </div>
-                      <div className="flex gap-10 z-10 place-items-end h-6">
-                        <span className="absolute left-10 text-lg font-bold ">
+                  <div className="flex relative  flex-row h-5/6 w-screen place-items-center gap-40 place-content-center">
+                    <div className="flex flex-col bg-card-bg bg-cover rounded-xl relative w-[16vw] h-full place-items-center p-2">
+                      <div className="flex flex-col outline w-full h-full rounded-lg place-content-center place-items-center text-amber-900">
+                        <span className="py-2 left-10 text-3xl w-full text-center text-black drop-shadow-[0_2px_2px_rgba( ,255,255,1)]">
                           {username}
                         </span>
-                        <span className="absolute right-10 text-sm">
-                          {playerScore}
-                        </span>
-                      </div>
-                      <div className="absolute bottom-9 h-3 w-36 bg-red-500 rounded-lg">
-                        <div
-                          className="h-3 w-full bg-green-400 rounded-lg"
-                          style={{
-                            width: `${(playerHealth * 100) / 100}%`,
-                          }}
-                        ></div>
+                        <img
+                          className="rounded w-[12vw] z-10"
+                          src={characterImg}
+                        />
+                        <div className="flex flex-row place-items-center gap-5 py-2">
+                          <span>HP</span>
+                          <div className=" h-3 w-36 bg-red-500 rounded-lg">
+                            <div
+                              className="h-3 w-full bg-green-600 rounded-lg"
+                              style={{
+                                width: `${(playerHealth * 100) / 100}%`,
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                        <span className="text-xl">Score: {playerScore}</span>
                       </div>
                     </div>
-                    <button
-                      id="pick-card"
-                      className="text-white p-10 rounded-xl transition-all"
-                      onClick={() => {
-                        handleChoiceClick();
-                      }}
-                      disabled={!choiceForClicked}
-                      style={{
-                        background: choiceForClicked
-                          ? "rgb(0, 158, 96)"
-                          : "gray",
-                      }}
-                    >
-                      Pick Card
-                    </button>
+                    <div className="flex flex-col place-content-center place-items-center gap-4">
+                      <span className="text-white text-3xl">
+                        Question: {questionCounter}
+                      </span>
+                      <button
+                        id="pick-card"
+                        className="text-white py-10 px-32 rounded-xl transition-all text-2xl"
+                        onClick={() => {
+                          handleChoiceClick();
+                        }}
+                        disabled={!choiceForClicked}
+                        style={{
+                          background: choiceForClicked
+                            ? "rgb(0, 158, 96)"
+                            : "gray",
+                        }}
+                      >
+                        Play Card
+                      </button>
+                    </div>
                     {enemyData && (
-                      <div className="flex flex-col relative place-items-center p-5 gap-4 w-2/12 h-full">
-                        <img
-                          src={cardEn}
-                          className="flex absolute bottom-0 w-full h-full "
-                        />
-                        <div className="w-5/6 z-10 mt-7">
-                          <img
-                            className="rounded"
-                            src={enemyData.selectedImgUrl}
-                          />
-                        </div>
-                        <div className="flex gap-10 z-10 place-items-end h-6">
-                          <span className="absolute left-10 text-sm">
-                            {enemyScore}
-                          </span>
-                          <span className="absolute right-10 text-lg font-bold ">
+                      <div className="flex flex-col relative place-items-center p-2 gap-4 w-[16vw] h-full bg-card-bg rounded-xl">
+                        <div className="flex flex-col outline w-full h-full rounded-lg place-content-center place-items-center text-amber-900">
+                          <span className="py-2 left-10 text-3xl w-full text-center text-black drop-shadow-[0_2px_2px_rgba( ,255,255,1)]">
                             {enemyData.username}
                           </span>
-                        </div>
-                        <div className="absolute bottom-9 h-3 w-36 bg-red-500 rounded-lg">
-                          <div
-                            className="h-3 w-full bg-green-400 rounded-lg"
-                            style={{
-                              width: `${(enemyHealth / 100) * 100}%`,
-                            }}
-                          ></div>
+                          <img
+                            className="rounded w-[12vw] z-10"
+                            src={enemyData.selectedImgUrl}
+                          />
+
+                          <div className="flex flex-row place-items-center gap-5 py-2">
+                            <span>HP: </span>
+                            <div className="h-3 w-36 bg-red-500 rounded-lg">
+                              <div
+                                className="h-3 w-full bg-green-600 rounded-lg"
+                                style={{
+                                  width: `${(enemyHealth / 100) * 100}%`,
+                                }}
+                              ></div>
+                            </div>
+                          </div>
+                          <div className="flex gap-10 z-10 place-items-end h-6">
+                            <span className="text-xl">Score: {enemyScore}</span>
+                          </div>
                         </div>
                       </div>
                     )}
                   </div>
                 </div>
 
-                <div className="flex flex-row h-2/5 w-screen place-content-center px-10 overflow-hidden">
+                <div className="flex flex-row h-[35vh] w-screen place-content-center px-10 overflow-hidden">
                   {JSON.parse(currQues.choice1).v !== null && (
                     <button
                       id="button1"
-                      className="flex bg-white place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
+                      className="flex bg-scroll-bg place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 place-self-end hover:animate-pulse transition-all"
                       onClick={() =>
                         handleCardClick(currQues, currQues.choice1, 1)
                       }
@@ -903,7 +967,7 @@ export default function HeadOnGame() {
                         src={card1}
                         className="flex absolute top-0 left-0 w-full sm:h-full xl:h-max"
                       />
-                      <span className="z-10">
+                      <span className="z-10 text-xl">
                         {JSON.parse(currQues.choice1).c}
                       </span>
                     </button>
@@ -911,7 +975,7 @@ export default function HeadOnGame() {
                   {JSON.parse(currQues.choice2).v !== null && (
                     <button
                       id="button2"
-                      className="flex bg-white place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
+                      className="flex bg-scroll-bg place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 place-self-end hover:animate-pulse transition-all"
                       onClick={() =>
                         handleCardClick(currQues, currQues.choice2, 2)
                       }
@@ -921,7 +985,7 @@ export default function HeadOnGame() {
                         src={card2}
                         className="flex absolute top-0 left-0 w-full sm:h-full xl:h-max"
                       />
-                      <span className="z-10">
+                      <span className="z-10 text-xl">
                         {JSON.parse(currQues.choice2).c}
                       </span>
                     </button>
@@ -929,7 +993,7 @@ export default function HeadOnGame() {
                   {JSON.parse(currQues.choice3).v !== null && (
                     <button
                       id="button3"
-                      className="flex bg-white place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
+                      className="flex bg-scroll-bg place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 place-self-end hover:animate-pulse transition-all"
                       onClick={() =>
                         handleCardClick(currQues, currQues.choice3, 3)
                       }
@@ -939,7 +1003,7 @@ export default function HeadOnGame() {
                         src={card3}
                         className="flex absolute top-0 left-0 w-full sm:h-full xl:h-max"
                       />
-                      <span className="z-10">
+                      <span className="z-10 text-xl">
                         {JSON.parse(currQues.choice3).c}
                       </span>
                     </button>
@@ -947,7 +1011,7 @@ export default function HeadOnGame() {
                   {JSON.parse(currQues.choice4).v !== null && (
                     <button
                       id="button4"
-                      className="flex bg-white place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 text-lg place-self-end hover:animate-pulse transition-all"
+                      className="flex bg-scroll-bg place-content-center place-items-center relative w-1/4 h-2/3 rounded-t-lg mr-3 p-5 place-self-end hover:animate-pulse transition-all"
                       onClick={() =>
                         handleCardClick(currQues, currQues.choice4, 4)
                       }
@@ -957,7 +1021,7 @@ export default function HeadOnGame() {
                         src={card4}
                         className="flex absolute top-0 left-0 w-full sm:h-full xl:h-max"
                       />
-                      <span className="z-10">
+                      <span className="z-10 text-xl">
                         {JSON.parse(currQues.choice4).c}
                       </span>
                     </button>

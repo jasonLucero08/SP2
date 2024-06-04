@@ -203,7 +203,7 @@ export default function Customize() {
           )}
         </div>
 
-        <div className="flex flex-col relative w-3/5 h-full overflow-hidden rounded-xl outline outline-2 outline-amber-900 text-amber-900">
+        <div className="flex flex-col relative w-3/5 h-full overflow-hidden rounded-xl outline outline-2 outline-amber-900 text-white">
           <div className="grid grid-cols-4 gap-5 bg-scroll-bg overflow-hidden overflow-y-scroll p-5 h-full">
             {images !== null && (
               <>
@@ -216,7 +216,7 @@ export default function Customize() {
                   });
                   return (
                     <button
-                      className="flex flex-col gap-5 h-fit w-full outline outline-2 outline-amber-950 place-content-center place-items-center p-5 rounded-md"
+                      className="flex flex-col gap-5 h-fit w-full bg-[rgb(168,77,20)] outline outline-2 outline-amber-900 place-content-center place-items-center p-5 rounded-md"
                       onClick={() => handleImgClick(image)}
                       key={image.id}
                       // disabled={handleDisabled(image)}

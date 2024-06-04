@@ -7,6 +7,8 @@ import { initializeSocket } from "../initSocket";
 import Header from "../components/Header";
 import create from "../images/create.png";
 import join from "../images/join.png";
+import join_banner from "../images/join-banner.png";
+import create_banner from "../images/create-banner.png";
 
 export default function HeadOnLobby() {
   const socket = initializeSocket();
@@ -74,26 +76,22 @@ export default function HeadOnLobby() {
 
       <div className="flex flex-col gap-10 place-content-center place-items-center h-screen w-screen">
         <div
-          className="flex flex-col place-items-center gap-5 bg-purple-600 w-1/2 p-10 rounded-xl cursor-pointer hover:w-3/4 transition-all"
+          className="flex flex-col place-items-center gap-5 w-1/3 rounded-xl cursor-pointer hover:w-1/2 transition-all"
           onClick={() => createRoom()}
         >
-          <div className="flex flex-row gap-5 place-items-center w-full">
-            <img src={create} className="w-20" />
-            <span className="text-3xl font-bold text-white">Create Lobby</span>
-          </div>
+          <img src={create_banner} className="w-full" />
         </div>
         {roomCode && (
-          <p className="flex flex-col place-items-center w-1/2 p-5 rounded-xl text-3xl bg-white hover:w-2/3 hover:text-4xl transition-all">
+          <p className="flex flex-col place-items-center w-1/2 p-5 rounded-xl text-3xl bg-[rgb(168,77,20)] text-white bg-cover hover:w-2/3 hover:text-4xl transition-all">
             Room created with code: {roomCode}
           </p>
         )}
 
         <div
-          className="flex flex-row place-items-center gap-5 bg-red-600 w-1/2 p-10 rounded-xl cursor-pointer hover:w-3/4 transition-all"
+          className="flex flex-row place-items-center gap-5 w-1/3 rounded-xl cursor-pointer hover:w-1/2 transition-all"
           onClick={() => joinRoom()}
         >
-          <img src={join} className="w-20" />
-          <span className="text-3xl font-bold text-white">Join Room</span>
+          <img src={join_banner} className="w-full" />
         </div>
       </div>
 

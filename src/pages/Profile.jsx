@@ -180,18 +180,21 @@ export default function Profile() {
                   {unlockedChars.map((image) => {
                     return (
                       <button
-                        className="flex flex-col relative place-content-center place-items-center w-36 h-40 outline outline-amber-900 outline-2 p-2 hover:cursor-pointer rounded gap-1"
+                        className="flex flex-col relative place-content-center place-items-center w-36 h-40 bg-[rgb(168,77,20)] text-white outline outline-amber-900 outline-2 p-2 hover:cursor-pointer rounded gap-1"
                         onClick={() => handleImgClick(image)}
                         key={image}
                         // disabled={handleDisabled(image)}
                       >
                         {profile.selectedImgUrl === image && (
                           <img
-                            className="flex absolute right-0 bottom-0 w-6"
+                            className="flex absolute right-0 bottom-0 w-6 "
                             src={check}
                           />
                         )}
-                        <img className="w-28 h-28 rounded" src={image} />
+                        <img
+                          className="w-28 h-28 rounded outline outline-amber-950 outline-1"
+                          src={image}
+                        />
                         <span className="text-xl">
                           {image.split("/").pop().split(".")[0]}
                         </span>

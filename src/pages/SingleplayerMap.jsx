@@ -8,6 +8,9 @@ import Header from "../components/Header";
 import LevelCard from "../components/LevelCard";
 import gray_card from "../images/gray-levelCard.png";
 import blue_card from "../images/blue-levelCard.png";
+import red_card from "../images/red-levelCard.png";
+import purple_card from "../images/purple-levelCard.png";
+import green_card from "../images/green-levelCard.png";
 import home_w from "../images/home_white.png";
 
 export default function SinglePlayerMap() {
@@ -23,7 +26,12 @@ export default function SinglePlayerMap() {
 
   const setLevels = (userData) => {
     const data = userData.levelsUnlocked;
+    var counter = 0;
     Object.keys(data).forEach(function (key) {
+      if (counter === 4) {
+        counter = 0;
+      }
+      counter++;
       var card = document.getElementById(key);
       let imgId = key + "-img";
       var cardImg = document.getElementById(imgId);
@@ -33,7 +41,15 @@ export default function SinglePlayerMap() {
       } else {
         // card.stars = userData.levelStars[key];
         // card.classList.add("bg-orange-300");
-        cardImg.src = blue_card;
+        if (counter === 1) {
+          cardImg.src = blue_card;
+        } else if (counter === 2) {
+          cardImg.src = red_card;
+        } else if (counter === 3) {
+          cardImg.src = purple_card;
+        } else if (counter === 4) {
+          cardImg.src = green_card;
+        }
       }
     });
   };
