@@ -197,16 +197,16 @@ export default function DeleteQuestion() {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     // Handle the form submission logic here
-    console.log("Form submitted");
-    console.log("Question id:", quesId);
-    console.log("LevelId:", pickerVal);
-    console.log("Question:", question);
+    // console.log("Form submitted");
+    // console.log("Question id:", quesId);
+    // console.log("LevelId:", pickerVal);
+    // console.log("Question:", question);
     handleChoiceVals();
-    console.log("Choice1:", choice1, "Val:", choice1Val);
-    console.log("Choice2:", choice2, "Val:", choice2Val);
-    console.log("Choice3:", choice3, "Val:", choice3Val);
-    console.log("Choice4:", choice4, "Val:", choice4Val);
-    console.log("File:", file);
+    // console.log("Choice1:", choice1, "Val:", choice1Val);
+    // console.log("Choice2:", choice2, "Val:", choice2Val);
+    // console.log("Choice3:", choice3, "Val:", choice3Val);
+    // console.log("Choice4:", choice4, "Val:", choice4Val);
+    // console.log("File:", file);
 
     try {
       if (file) {
@@ -276,7 +276,7 @@ export default function DeleteQuestion() {
       </div>
       {/* End of Header */}
 
-      <div className="flex bg-white p-10 h-screen">
+      <div className="flex bg-white p-10">
         <form
           className="flex flex-col w-full h-full gap-10"
           onSubmit={handleFormSubmit}

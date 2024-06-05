@@ -49,8 +49,8 @@ function ourReducer(draft, action) {
         draft.gameOver = true;
       }
 
-      console.log("Score: " + draft.score);
-      console.log("Stars: " + draft.stars);
+      // console.log("Score: " + draft.score);
+      // console.log("Stars: " + draft.stars);
 
       draft.currentQuestion = getCurrentQuestion();
 
@@ -83,8 +83,8 @@ function ourReducer(draft, action) {
       draft.questionsLength = draft.randomQuestions.length;
     }
 
-    console.log(draft.randomQuestions);
-    console.log(draft.randomQuestions.length);
+    // console.log(draft.randomQuestions);
+    // console.log(draft.randomQuestions.length);
     if (draft.randomQuestions.length == 0) {
       return null;
     } else {
@@ -317,7 +317,7 @@ export default function HeadOnGame() {
 
       arr.forEach((name) => {
         if (name !== username) {
-          console.log(list);
+          // console.log(list);
           setEnemyPicked(list[name].message);
         }
       });
@@ -473,11 +473,6 @@ export default function HeadOnGame() {
 
   const noChoiceClicked = () => {
     clearInterval(intervalRef.current);
-    // setPlayerHealth((prevHealth) => {
-    //   const updatedHealth = prevHealth - 5;
-    //   console.log(updatedHealth); // This should now reflect the correct updated value
-    //   return updatedHealth;
-    // });
 
     const val = "null";
     socket.emit("sendChoice", {
@@ -739,10 +734,10 @@ export default function HeadOnGame() {
 
     winRate = Math.round((userTotalHOWins / userTotalHOGames) * 100);
 
-    console.log("userTotalStars:", userTotalStars);
-    console.log("userCurrentStars:", userCurrentStars);
-    console.log("userTotalHOGames:", userTotalHOGames);
-    console.log("userTotalHOWins:", userTotalHOWins);
+    // console.log("userTotalStars:", userTotalStars);
+    // console.log("userCurrentStars:", userCurrentStars);
+    // console.log("userTotalHOGames:", userTotalHOGames);
+    // console.log("userTotalHOWins:", userTotalHOWins);
 
     try {
       const { error } = await supabase
@@ -775,8 +770,8 @@ export default function HeadOnGame() {
     userTotalHOGames += 1;
 
     winRate = Math.round((userTotalHOWins / userTotalHOGames) * 100);
-    console.log("userTotalHOGames:", userTotalHOGames);
-    console.log("userTotalHOWins:", userTotalHOWins);
+    // console.log("userTotalHOGames:", userTotalHOGames);
+    // console.log("userTotalHOWins:", userTotalHOWins);
 
     try {
       const { error } = await supabase

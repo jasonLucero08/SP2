@@ -76,8 +76,8 @@ function ourReducer(draft, action) {
         draft.stars = 1;
       }
 
-      console.log("Score: " + draft.score);
-      console.log("Stars: " + draft.stars);
+      // console.log("Score: " + draft.score);
+      // console.log("Stars: " + draft.stars);
       return;
 
     case "startPlaying":
@@ -109,8 +109,8 @@ function ourReducer(draft, action) {
 
     draft.questionCounter++;
 
-    console.log(draft.randomQuestions);
-    console.log(draft.randomQuestions.length);
+    // console.log(draft.randomQuestions);
+    // console.log(draft.randomQuestions.length);
     if (draft.randomQuestions.length == 0) {
       return null;
     } else {
@@ -536,7 +536,7 @@ export default function Level() {
     dispatch({ type: "startOver" });
 
     const nextLevel = location.state.num + 1;
-    console.log(nextLevel);
+    // console.log(nextLevel);
     navigate("/singleplayer-level", { state: { num: nextLevel } });
   };
 

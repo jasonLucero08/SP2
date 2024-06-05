@@ -58,7 +58,7 @@ export default function Home() {
     }
 
     if (data.length > 0) {
-      console.log(data);
+      // console.log(data);
       setUsernameError("Username is already taken. Please enter a new one.");
     } else {
       const { error2 } = await supabase

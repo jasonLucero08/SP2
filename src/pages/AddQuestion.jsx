@@ -127,16 +127,16 @@ export default function AddQuestion() {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     // Handle the form submission logic here
-    console.log("Form submitted");
-    console.log("Question id:", newQId);
-    console.log("LevelId:", pickerVal);
-    console.log("Question:", question);
+    // console.log("Form submitted");
+    // console.log("Question id:", newQId);
+    // console.log("LevelId:", pickerVal);
+    // console.log("Question:", question);
     handleChoiceVals();
-    console.log("Choice1:", choice1, "Val:", choice1Val);
-    console.log("Choice2:", choice2, "Val:", choice2Val);
-    console.log("Choice3:", choice3, "Val:", choice3Val);
-    console.log("Choice4:", choice4, "Val:", choice4Val);
-    console.log("File:", file);
+    // console.log("Choice1:", choice1, "Val:", choice1Val);
+    // console.log("Choice2:", choice2, "Val:", choice2Val);
+    // console.log("Choice3:", choice3, "Val:", choice3Val);
+    // console.log("Choice4:", choice4, "Val:", choice4Val);
+    // console.log("File:", file);
 
     var choice1JSON;
     var choice2JSON;

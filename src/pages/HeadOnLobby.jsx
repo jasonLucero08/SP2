@@ -55,7 +55,7 @@ export default function HeadOnLobby() {
 
   useEffect(() => {
     socket.on("roomReady", (roomCode) => {
-      console.log(`Room ${roomCode} is ready`);
+      // console.log(`Room ${roomCode} is ready`);
       navigate(`/room/${roomCode}`, { state: { num: 1, code: roomCode } });
     });
 

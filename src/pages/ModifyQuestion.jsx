@@ -197,16 +197,16 @@ export default function ModifyQuestion() {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     // Handle the form submission logic here
-    console.log("Form submitted");
-    console.log("Question id:", quesId);
-    console.log("LevelId:", pickerVal);
-    console.log("Question:", question);
+    // console.log("Form submitted");
+    // console.log("Question id:", quesId);
+    // console.log("LevelId:", pickerVal);
+    // console.log("Question:", question);
     handleChoiceVals();
-    console.log("Choice1:", choice1, "Val:", choice1Val);
-    console.log("Choice2:", choice2, "Val:", choice2Val);
-    console.log("Choice3:", choice3, "Val:", choice3Val);
-    console.log("Choice4:", choice4, "Val:", choice4Val);
-    console.log("File:", file);
+    // console.log("Choice1:", choice1, "Val:", choice1Val);
+    // console.log("Choice2:", choice2, "Val:", choice2Val);
+    // console.log("Choice3:", choice3, "Val:", choice3Val);
+    // console.log("Choice4:", choice4, "Val:", choice4Val);
+    // console.log("File:", file);
 
     const choice1JSON = { c: choice1, v: choice1Val };
     const choice2JSON = { c: choice2, v: choice2Val };
@@ -232,7 +232,7 @@ export default function ModifyQuestion() {
           }
 
           if (data) {
-            console.log(imgBucketUrl + data.fullPath);
+            // console.log(imgBucketUrl + data.fullPath);
             const { error } = await supabase
               .from("questions")
               .update({
