@@ -206,7 +206,12 @@ export default function Level() {
   };
 
   const setLevelQuestions = (data) => {
-    const sessionQuestionCount = data.length / 2;
+    var sessionQuestionCount;
+    if (data.length >= 20) {
+      sessionQuestionCount = 20;
+    } else {
+      sessionQuestionCount = data.length;
+    }
     var questionCount = 0;
 
     const questions = [];
